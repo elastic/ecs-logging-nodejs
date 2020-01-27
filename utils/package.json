@@ -1,0 +1,15 @@
+{
+  "name": "utils",
+  "version": "1.0.0",
+  "description": "",
+  "main": "create-schema.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Tomas Della Vedova",
+  "license": "ISC",
+  "devDependencies": {
+    "js-yaml": "^3.13.1"
+  }
+}
