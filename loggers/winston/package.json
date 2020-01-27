@@ -1,0 +1,41 @@
+{
+  "name": "@elastic/winston-ecs-format",
+  "version": "0.1.0",
+  "description": "A formatter for the winston logger compatible with Elastic Common Schema.
+",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elastic/ecs-logging-js.git"
+  },
+  "keywords": [
+    "winston",
+    "serializer",
+    "formatter",
+    "elasticsearch",
+    "ecs",
+    "elastic",
+    "common",
+    "schema"
+  ],
+  "author": "Tomas Della Vedova",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/elastic/ecs-logging-js/issues"
+  },
+  "homepage": "https://github.com/elastic/ecs-logging-js/blob/master/loggers/winston/README.md",
+  "scripts": {
+    "test": "ava"
+  },
+  "dependencies": {
+    "fast-json-stringify": "^1.16.1"
+  },
+  "devDependencies": {
+    "ava": "^3.1.0",
+    "is-my-json-valid": "^2.20.0",
+    "simple-get": "^3.1.0",
+    "standard": "^14.3.1",
+    "stoppable": "^1.1.0",
+    "winston": "^3.2.1"
+  }
+}
