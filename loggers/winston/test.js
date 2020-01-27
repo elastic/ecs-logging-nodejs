@@ -77,7 +77,7 @@ test.cb('http request and response (req, res keys)', t => {
     const body = JSON.stringify({ hello: 'world' })
     sget({
       method: 'POST',
-      url: `http://localhost:${server.address().port}`,
+      url: `http://localhost:${server.address().port}?foo=bar`,
       body,
       headers: {
         'user-agent': 'cool-agent',
@@ -92,6 +92,8 @@ test.cb('http request and response (req, res keys)', t => {
   })
 
   function handler (req, res) {
+    // test also the anchor
+    req.url += '#anchor'
     logger.info('incoming request', { req, res })
     res.end('ok')
   }
