@@ -33,8 +33,8 @@ const stringify = build({
     http: {
       type: 'object',
       properties: {
+        version: string,
         request: {
-          version: string,
           type: 'object',
           properties: {
             method: string,
