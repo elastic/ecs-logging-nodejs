@@ -34,6 +34,7 @@ const stringify = build({
       type: 'object',
       properties: {
         request: {
+          version: string,
           type: 'object',
           properties: {
             method: string,
@@ -72,7 +73,10 @@ const stringify = build({
       properties: {
         path: string,
         domain: string,
-        port: number
+        port: number,
+        query: string,
+        fragment: string,
+        full: string
       }
     },
     client: {

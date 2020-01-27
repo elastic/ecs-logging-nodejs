@@ -56,7 +56,8 @@ function ecsFormatHttpRequest (ecs, req) {
     remoteAddress,
     remotePort,
     headers,
-    hostname
+    hostname,
+    httpVersion
   } = req
 
   if (id) {
@@ -65,11 +66,27 @@ function ecsFormatHttpRequest (ecs, req) {
   }
 
   ecs.http = ecs.http || {}
+  ecs.http.version = httpVersion
   ecs.http.request = ecs.http.request || {}
-  ecs.http.request.method = method
+  ecs.http.request.method = method.toLowerCase()
 
   ecs.url = ecs.url || {}
-  ecs.url.path = url
+  ecs.url.full = url
+  var hasQuery = url.indexOf('?')
+  var hasAnchor = url.indexOf('#')
+  if (hasQuery > -1 && hasAnchor > -1) {
+    ecs.url.path = url.slice(0, hasQuery)
+    ecs.url.query = url.slice(hasQuery + 1, hasAnchor)
+    ecs.url.fragment = url.slice(hasAnchor + 1)
+  } else if (hasQuery > -1) {
+    ecs.url.path = url.slice(0, hasQuery)
+    ecs.url.query = url.slice(hasQuery + 1)
+  } else if (hasAnchor > -1) {
+    ecs.url.path = url.slice(0, hasAnchor)
+    ecs.url.fragment = url.slice(hasAnchor + 1)
+  } else {
+    ecs.url.path = url
+  }
 
   if (hostname) {
     const [host, port] = hostname.split(':')
