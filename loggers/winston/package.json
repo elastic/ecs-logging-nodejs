@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/elastic/ecs-logging-js/blob/master/loggers/winston/README.md",
   "scripts": {
-    "test": "ava"
+    "test": "standard && ava -v"
   },
   "dependencies": {},
   "devDependencies": {
