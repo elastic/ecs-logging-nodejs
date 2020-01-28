@@ -1,0 +1,27 @@
+{
+  "name": "@elastic/ecs-helper",
+  "version": "0.1.0",
+  "description": "ECS loggers helper",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elastic/ecs-logging-js.git"
+  },
+  "author": "Tomas Della Vedova",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/elastic/ecs-logging-js/issues"
+  },
+  "homepage": "https://github.com/elastic/ecs-logging-js/blob/master/helper/README.md",
+  "scripts": {
+    "test": "ava"
+  },
+  "dependencies": {
+    "fast-json-stringify": "^1.16.1"
+  },
+  "devDependencies": {
+    "ava": "^3.1.0",
+    "is-my-json-valid": "^2.20.0",
+    "standard": "^14.3.1"
+  }
+}

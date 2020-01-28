@@ -1,14 +1,15 @@
 {
-  "name": "@elastic/winston-ecs-format",
+  "name": "@elastic/morgan-ecs-format",
   "version": "0.1.0",
-  "description": "A formatter for the winston logger compatible with Elastic Common Schema.",
+  "description": "A formatter for the morgan logger compatible with Elastic Common Schema.",
   "main": "index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/elastic/ecs-logging-js.git"
   },
   "keywords": [
-    "winston",
+    "morgan",,
+    "express",
     "serializer",
     "formatter",
     "elasticsearch",
@@ -22,17 +23,19 @@
   "bugs": {
     "url": "https://github.com/elastic/ecs-logging-js/issues"
   },
-  "homepage": "https://github.com/elastic/ecs-logging-js/blob/master/loggers/winston/README.md",
+  "homepage": "https://github.com/elastic/ecs-logging-js/blob/master/loggers/morgan/README.md",
   "scripts": {
     "test": "ava"
   },
   "dependencies": {},
   "devDependencies": {
     "ava": "^3.1.0",
+    "express": "^4.17.1",
     "is-my-json-valid": "^2.20.0",
+    "morgan": "^1.9.1",
     "simple-get": "^3.1.0",
+    "split2": "^3.1.1",
     "standard": "^14.3.1",
-    "stoppable": "^1.1.0",
-    "winston": "^3.2.1"
+    "stoppable": "^1.1.0"
   }
 }
