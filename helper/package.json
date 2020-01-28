@@ -14,7 +14,7 @@
   },
   "homepage": "https://github.com/elastic/ecs-logging-js/blob/master/helper/README.md",
   "scripts": {
-    "test": "ava"
+    "test": "standard && ava -v"
   },
   "dependencies": {
     "fast-json-stringify": "^1.16.1"

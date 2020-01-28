@@ -8,7 +8,7 @@ const { writeFileSync, readFileSync, readdirSync, statSync } = require('fs')
 const { join } = require('path')
 const yaml = require('js-yaml')
 
-const properties = getAllFiles(join('..', 'ecs', 'schemas'))
+const properties = getAllFiles(join('..', '.ecs', 'schemas'))
   .filter(file => !file.includes('README.md'))
   .map(file => readFileSync(file, 'utf8'))
   .map(yaml.safeLoad)
