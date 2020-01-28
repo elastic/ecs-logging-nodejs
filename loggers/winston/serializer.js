@@ -7,8 +7,8 @@ const number = { type: 'number' }
 
 const stringify = build({
   type: 'object',
-  additionalProperties: true,
   properties: {
+    '@timestamp': string,
     log: {
       type: 'object',
       properties: {
@@ -16,14 +16,13 @@ const stringify = build({
         logger: string
       }
     },
+    message: string,
     ecs: {
       type: 'object',
       properties: {
         version: string
       }
     },
-    '@timestamp': string,
-    message: string,
     event: {
       type: 'object',
       properties: {
@@ -92,7 +91,8 @@ const stringify = build({
         original: string
       }
     }
-  }
+  },
+  additionalProperties: true
 })
 
 module.exports = stringify

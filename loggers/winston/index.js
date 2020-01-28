@@ -5,6 +5,7 @@ const { format } = require('winston')
 const stringify = require('./serializer')
 
 const reservedKeys = [
+  'level',
   'log',
   'ecs',
   '@timestamp',
@@ -17,15 +18,15 @@ const reservedKeys = [
 
 function ecsFormat (log) {
   var ecs = {
+    '@timestamp': new Date().toISOString(),
     log: {
       level: log.level,
       logger: 'winston'
     },
+    message: log.message,
     ecs: {
       version: '1.4.0'
-    },
-    '@timestamp': new Date().toISOString(),
-    message: log.message
+    }
   }
 
   if (log.req || log.request) {
