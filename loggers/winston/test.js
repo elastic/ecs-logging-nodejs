@@ -64,6 +64,67 @@ test('Bad ecs log (on purpose)', t => {
   logger.error('ecs is cool!', { hello: 'world' })
 })
 
+test('Should not change the message', t => {
+  t.plan(1)
+
+  class TestTransport extends Transport {
+    log (info, callback) {
+      const line = JSON.parse(info[MESSAGE])
+      t.is(line.message, 'ecs is cool!')
+      callback()
+    }
+  }
+
+  const logger = winston.createLogger({
+    level: 'info',
+    format: ecsFormat(),
+    transports: [new TestTransport()]
+  })
+
+  logger.info('ecs is cool!')
+})
+
+test('Should not change the log level', t => {
+  t.plan(1)
+
+  class TestTransport extends Transport {
+    log (info, callback) {
+      const line = JSON.parse(info[MESSAGE])
+      t.is(line.log.level, 'error')
+      callback()
+    }
+  }
+
+  const logger = winston.createLogger({
+    level: 'info',
+    format: ecsFormat(),
+    transports: [new TestTransport()]
+  })
+
+  logger.error('ecs is cool!')
+})
+
+test('Should append any additional property to the log message', t => {
+  t.plan(2)
+
+  class TestTransport extends Transport {
+    log (info, callback) {
+      const line = JSON.parse(info[MESSAGE])
+      t.is(line.foo, 'bar')
+      t.is(line.faz, 'baz')
+      callback()
+    }
+  }
+
+  const logger = winston.createLogger({
+    level: 'info',
+    format: ecsFormat(),
+    transports: [new TestTransport()]
+  })
+
+  logger.info('ecs is cool!', { foo: 'bar', faz: 'baz' })
+})
+
 test.cb('http request and response (req, res keys)', t => {
   t.plan(2)
 
