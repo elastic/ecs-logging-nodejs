@@ -33,16 +33,6 @@ pipeline {
         stash allowEmpty: true, name: 'source', useDefaultExcludes: false
       }
     }
-    stage('Sanity checks') {
-      options { skipDefaultCheckout() }
-      steps {
-        deleteDir()
-        unstash 'source'
-        dir("${BASE_DIR}"){
-          preCommit(commit: "${GIT_BASE_COMMIT}", junit: true)
-        }
-      }
-    }
     stage('Parallel'){
       parallel {
         stage('Test - Node.js v10') {
