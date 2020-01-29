@@ -34,6 +34,7 @@ pipeline {
       }
     }
     stage('Parallel'){
+      options { skipDefaultCheckout() }
       parallel {
         stage('Test - Node.js v10') {
           steps {
