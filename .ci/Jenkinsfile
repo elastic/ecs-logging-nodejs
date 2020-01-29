@@ -43,6 +43,7 @@ pipeline {
         }
         stage('Test - Node.js v12') {
           agent { label 'linux && immutable' }
+          options { skipDefaultCheckout() }
           steps {
             buildWithGitHubNotification('node:12-alpine')
           }
