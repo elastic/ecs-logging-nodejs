@@ -67,7 +67,7 @@ def runTest(version){
   unstash 'source'
   dir("${BASE_DIR}"){
     docker.image("${version}").inside("-e PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:${WORKSPACE}/${BASE_DIR}") {
-      sh(label: 'Run tests', script: './utils/run-test.sh')
+      sh(label: 'Run tests', script: 'sh utils/run-test.sh')
     }
   }
 }
