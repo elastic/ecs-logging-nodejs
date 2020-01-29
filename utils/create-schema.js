@@ -17,9 +17,13 @@ const properties = getAllFiles(join('..', '.ecs', 'schemas'))
     for (const prop of val.fields) {
       properties = set(properties, prop.name, getType(prop.type))
     }
-    acc[val.name] = {
-      type: 'object',
-      properties
+    if (val.name === 'base') {
+      Object.assign(acc, properties)
+    } else {
+      acc[val.name] = {
+        type: 'object',
+        properties
+      }
     }
     return acc
   }, {})
@@ -69,19 +73,22 @@ function set (object, path, value, customizer) {
 function getType (type) {
   switch (type) {
     case 'keyword':
-      return {
-        anyOf: [
-          { type: 'string' },
-          { type: 'number' }
-        ]
-      }
+      return { type: ['string', 'number'] }
     case 'boolean':
       return { type: 'boolean' }
-    case 'text':
     case 'date':
+      return { type: 'string', format: 'date-time' }
     case 'ip':
+      return {
+        anyOf: [
+          { type: 'string', format: 'ipv4' },
+          { type: 'string', format: 'ipv6' }
+        ]
+      }
+    case 'text':
       return { type: 'string' }
     case 'integer':
+      return { type: 'integer' }
     case 'long':
     case 'float':
       return { type: 'number' }
