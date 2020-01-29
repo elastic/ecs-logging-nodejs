@@ -29,9 +29,9 @@
   },
   "dependencies": {},
   "devDependencies": {
+    "ajv": "^6.11.0",
     "ava": "^3.1.0",
     "express": "^4.17.1",
-    "is-my-json-valid": "^2.20.0",
     "morgan": "^1.9.1",
     "simple-get": "^3.1.0",
     "split2": "^3.1.1",

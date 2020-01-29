@@ -6,14 +6,19 @@
 
 const test = require('ava')
 const sget = require('simple-get')
-const validator = require('is-my-json-valid')
+const Ajv = require('ajv')
 const express = require('express')
 const morgan = require('morgan')
 const stoppable = require('stoppable')
 const split = require('split2')
 const ecsFormat = require('./')
 
-const validate = validator(require('../../utils/schema.json'))
+const ajv = Ajv({
+  allErrors: true,
+  verbose: true,
+  format: 'full'
+})
+const validate = ajv.compile(require('../../utils/schema.json'))
 
 test.cb('Should produce valid ecs logs', t => {
   t.plan(2)

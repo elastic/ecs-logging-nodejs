@@ -6,7 +6,7 @@
 
 const http = require('http')
 const test = require('ava')
-const validator = require('is-my-json-valid')
+const Ajv = require('ajv')
 const sget = require('simple-get')
 const stoppable = require('stoppable')
 const {
@@ -15,7 +15,12 @@ const {
   formatHttpResponse
 } = require('./')
 
-const validate = validator(require('../utils/schema.json'))
+const ajv = Ajv({
+  allErrors: true,
+  verbose: true,
+  format: 'full'
+})
+const validate = ajv.compile(require('../utils/schema.json'))
 
 test('Stringify should return a valid ecs json', t => {
   const ecs = {
@@ -32,6 +37,23 @@ test('Stringify should return a valid ecs json', t => {
 
   const line = JSON.parse(stringify(ecs))
   t.true(validate(line))
+})
+
+test('Bad ecs json (on purpose)', t => {
+  const ecs = {
+    '@timestamp': 'not a date',
+    log: {
+      level: 'info',
+      logger: 'test'
+    },
+    message: true,
+    ecs: {
+      version: '1.4.0'
+    }
+  }
+
+  const line = JSON.parse(stringify(ecs))
+  t.false(validate(line))
 })
 
 test.cb('formatHttpRequest and formatHttpResponse should returna valid ecs object', t => {

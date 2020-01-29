@@ -11,10 +11,15 @@ const stoppable = require('stoppable')
 const winston = require('winston')
 const Transport = require('winston-transport')
 const { MESSAGE } = require('triple-beam')
-const validator = require('is-my-json-valid')
+const Ajv = require('ajv')
 const ecsFormat = require('./')
 
-const validate = validator(require('../../utils/schema.json'))
+const ajv = Ajv({
+  allErrors: true,
+  verbose: true,
+  format: 'full'
+})
+const validate = ajv.compile(require('../../utils/schema.json'))
 
 test('Should produce valid ecs logs', t => {
   t.plan(2)
