@@ -38,21 +38,21 @@ pipeline {
       parallel {
         stage('Test - Node.js v10') {
           steps {
-            buildWithGitHubNotification('node:10-alpine')
+            buildWithGitHubNotification('10')
           }
         }
         stage('Test - Node.js v12') {
           agent { label 'linux && immutable' }
           options { skipDefaultCheckout() }
           steps {
-            buildWithGitHubNotification('node:12-alpine')
+            buildWithGitHubNotification('12')
           }
         }
         stage('Test - Node.js v13') {
           agent { label 'linux && immutable' }
           options { skipDefaultCheckout() }
           steps {
-            buildWithGitHubNotification('node:13-alpine')
+            buildWithGitHubNotification('13')
           }
         }
       }
@@ -69,14 +69,14 @@ def runTest(version){
   deleteDir()
   unstash 'source'
   dir("${BASE_DIR}"){
-        docker.image("${version}").inside("-e HOME=${WORKSPACE}/${BASE_DIR}") {
+        docker.image("node:${version}-alpine").inside("-e HOME=${WORKSPACE}/${BASE_DIR}") {
       sh(label: 'Run tests', script: 'sh utils/run-test.sh')
     }
   }
 }
 
 def buildWithGitHubNotification(version){
-  withGithubNotify(context: "${version}") {
+  withGithubNotify(context: "Test - Node.js v${version}") {
     runTest(version)
   }
 }
