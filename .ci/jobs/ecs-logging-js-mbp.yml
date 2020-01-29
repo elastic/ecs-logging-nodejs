@@ -1,0 +1,5 @@
+---
+- job:
+    name: apm-agent-js/ecs-logging-js-mbp
+    display-name: ecs-logging-js
+    description: Centralized logging for Node.js applications with the Elastic stack
