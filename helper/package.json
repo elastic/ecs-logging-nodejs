@@ -17,7 +17,7 @@
     "test": "standard && ava -v"
   },
   "dependencies": {
-    "fast-json-stringify": "^1.16.1"
+    "fast-json-stringify": "^1.16.2"
   },
   "devDependencies": {
     "ava": "^3.1.0",

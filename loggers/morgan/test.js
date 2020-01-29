@@ -46,3 +46,36 @@ test.cb('Should produce valid ecs logs', t => {
     })
   }))
 })
+
+test.cb('Keys order', t => {
+  t.plan(2)
+
+  const stream = split().on('data', line => {
+    const log = JSON.parse(line)
+    t.is(line, `{"@timestamp":"${log['@timestamp']}","log":{"level":"info","logger":"morgan"},"message":"${JSON.stringify(log.message).slice(1, -1)}","ecs":{"version":"1.4.0"},"http":{"version":"1.1","request":{"method":"post","headers":{"accept-encoding":"gzip, deflate","content-type":"application/json","host":"${log.http.request.headers.host}","connection":"close"},"body":{"bytes":17}},"response":{"status_code":200}},"url":{"path":"/","domain":"localhost","query":"foo=bar","full":"/?foo=bar"},"user_agent":{"original":"cool-agent"}}`)
+  })
+
+  const app = express()
+  app.use(morgan(ecsFormat(), { stream }))
+  app.use('/', (req, res) => {
+    res.end('ok')
+  })
+
+  const server = stoppable(app.listen(0, () => {
+    const body = JSON.stringify({ hello: 'world' })
+    sget({
+      method: 'POST',
+      url: `http://localhost:${server.address().port}?foo=bar`,
+      body,
+      headers: {
+        'user-agent': 'cool-agent',
+        'content-type': 'application/json',
+        'content-length': Buffer.byteLength(body)
+      }
+    }, (err, res) => {
+      t.falsy(err)
+      server.stop()
+      t.end()
+    })
+  }))
+})

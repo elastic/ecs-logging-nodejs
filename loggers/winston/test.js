@@ -147,8 +147,7 @@ test.cb('http request and response (request, response keys)', t => {
   }
 })
 
-// waiting on https://github.com/fastify/fast-json-stringify/pull/206
-test.skip('Keys order', t => {
+test('Keys order', t => {
   t.plan(2)
 
   var count = 0
