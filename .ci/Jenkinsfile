@@ -70,7 +70,7 @@ def runTest(version){
   unstash 'source'
   dir("${BASE_DIR}"){
         docker.image("node:${version}-alpine").inside("-e HOME=${WORKSPACE}/${BASE_DIR}") {
-      sh(label: 'Run tests', script: 'sh utils/run-test.sh')
+      sh(label: 'Run tests', script: 'sh .ci/run-test.sh')
     }
   }
 }
