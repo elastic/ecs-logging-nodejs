@@ -16,6 +16,9 @@
   "scripts": {
     "test": "standard && ava -v"
   },
+  "engines": {
+    "node": ">=10"
+  },
   "dependencies": {
     "fast-json-stringify": "^1.16.2"
   },

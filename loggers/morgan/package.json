@@ -27,6 +27,9 @@
   "scripts": {
     "test": "standard && ava -v"
   },
+  "engines": {
+    "node": ">=10"
+  },
   "dependencies": {},
   "devDependencies": {
     "ajv": "^6.11.0",
