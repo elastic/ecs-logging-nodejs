@@ -1,4 +1,8 @@
+<img align="right" width="auto" height="auto" src="https://www.elastic.co/static-res/images/elastic-logo-200.png">
+
 # @elastic/ecs-helper
+
+[![Build Status](https://apm-ci.elastic.co/buildStatus/icon?job=apm-agent-nodejs%2Fecs-logging-js-mbp%2Fmaster)](https://apm-ci.elastic.co/job/apm-agent-nodejs/job/ecs-logging-js-mbp/job/master/)  [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](http://standardjs.com/)
 
 A set of helpers for the ECS logging libraries.  
 You should not directly used this package, but the ECS logging libraries instead.
@@ -75,4 +79,4 @@ console.log(ecs)
 ```
 
 ## License
-[Apache 2.0](./LICENSE)
+This software is licensed under the [Apache 2 license](./LICENSE).
