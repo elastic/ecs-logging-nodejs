@@ -44,6 +44,7 @@
         },
         "organization": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "name": {
               "type": [
@@ -128,6 +129,7 @@
         },
         "nat": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "ip": {
               "anyOf": [
@@ -171,6 +173,7 @@
         },
         "instance": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "id": {
               "type": [
@@ -188,6 +191,7 @@
         },
         "machine": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "type": {
               "type": [
@@ -199,6 +203,7 @@
         },
         "account": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "id": {
               "type": [
@@ -227,6 +232,7 @@
         },
         "image": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "name": {
               "type": [
@@ -310,6 +316,7 @@
         },
         "nat": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "ip": {
               "anyOf": [
@@ -365,6 +372,7 @@
         },
         "question": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "name": {
               "type": [
@@ -406,7 +414,7 @@
         },
         "answers": {
           "type": "object",
-          "additionalProperties": true,
+          "additionalProperties": false,
           "properties": {
             "name": {
               "type": [
@@ -899,6 +907,7 @@
       "properties": {
         "request": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "method": {
               "type": [
@@ -908,6 +917,7 @@
             },
             "body": {
               "type": "object",
+              "additionalProperties": false,
               "properties": {
                 "content": {
                   "type": [
@@ -928,17 +938,23 @@
             },
             "bytes": {
               "type": "number"
+            },
+            "headers": {
+              "type": "object",
+              "additionalProperties": true
             }
           }
         },
         "response": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "status_code": {
               "type": "number"
             },
             "body": {
               "type": "object",
+              "additionalProperties": false,
               "properties": {
                 "content": {
                   "type": [
@@ -953,6 +969,10 @@
             },
             "bytes": {
               "type": "number"
+            },
+            "headers": {
+              "type": "object",
+              "additionalProperties": true
             }
           }
         },
@@ -987,9 +1007,11 @@
         },
         "origin": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "file": {
               "type": "object",
+              "additionalProperties": false,
               "properties": {
                 "name": {
                   "type": [
@@ -1012,10 +1034,11 @@
         },
         "syslog": {
           "type": "object",
-          "additionalProperties": true,
+          "additionalProperties": false,
           "properties": {
             "severity": {
               "type": "object",
+              "additionalProperties": false,
               "properties": {
                 "code": {
                   "type": "number"
@@ -1030,6 +1053,7 @@
             },
             "facility": {
               "type": "object",
+              "additionalProperties": false,
               "properties": {
                 "code": {
                   "type": "number"
@@ -1329,6 +1353,7 @@
         },
         "parent": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "pid": {
               "type": "number"
@@ -1374,6 +1399,7 @@
             },
             "thread": {
               "type": "object",
+              "additionalProperties": false,
               "properties": {
                 "id": {
                   "type": "number"
@@ -1445,6 +1471,7 @@
         },
         "thread": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "id": {
               "type": "number"
@@ -1504,6 +1531,7 @@
         },
         "data": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "type": {
               "type": [
@@ -1665,6 +1693,7 @@
         },
         "nat": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "ip": {
               "anyOf": [
@@ -1702,6 +1731,7 @@
         },
         "node": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "name": {
               "type": [
@@ -1793,6 +1823,7 @@
         },
         "nat": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "ip": {
               "anyOf": [
@@ -1824,6 +1855,7 @@
         },
         "tactic": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "name": {
               "type": [
@@ -1847,6 +1879,7 @@
         },
         "technique": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "name": {
               "type": [
@@ -1911,6 +1944,7 @@
         },
         "client": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "ja3": {
               "type": [
@@ -1964,6 +1998,7 @@
             },
             "hash": {
               "type": "object",
+              "additionalProperties": false,
               "properties": {
                 "md5": {
                   "type": [
@@ -1989,6 +2024,7 @@
         },
         "server": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "ja3s": {
               "type": [
@@ -2030,6 +2066,7 @@
             },
             "hash": {
               "type": "object",
+              "additionalProperties": false,
               "properties": {
                 "md5": {
                   "type": [
@@ -2060,6 +2097,7 @@
       "properties": {
         "trace": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "id": {
               "type": [
@@ -2071,6 +2109,7 @@
         },
         "transaction": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "id": {
               "type": [
@@ -2226,6 +2265,7 @@
         },
         "device": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "name": {
               "type": [
@@ -2260,6 +2300,7 @@
         },
         "score": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "base": {
               "type": "number"
@@ -2298,6 +2339,7 @@
         },
         "scanner": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "vendor": {
               "type": [

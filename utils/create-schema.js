@@ -14,6 +14,10 @@ const properties = getAllFiles(join('..', '.ecs', 'schemas'))
   .map(yaml.safeLoad)
   .reduce((acc, [val]) => {
     var properties = {}
+    if (val.name === 'http') {
+      val.fields.push({ name: 'request.headers', type: 'object' })
+      val.fields.push({ name: 'response.headers', type: 'object' })
+    }
     for (const prop of val.fields) {
       properties = set(properties, prop.name, getType(prop.type))
     }
@@ -63,6 +67,7 @@ function set (object, path, value, customizer) {
     }
     if (key === 'properties') {
       nested.type = 'object'
+      nested.additionalProperties = false
     }
     nested[key] = newValue
     nested = nested[key]
