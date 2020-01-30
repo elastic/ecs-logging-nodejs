@@ -89,11 +89,43 @@ test.cb('formatHttpRequest and formatHttpResponse should returna valid ecs objec
       }
     }
 
+    res.setHeader('content-type', 'application/json')
+    res.setHeader('content-length', '42')
+
+    // add anchor
+    req.url += '#anchor'
+
     formatHttpRequest(ecs, req)
     formatHttpResponse(ecs, res)
 
     const line = JSON.parse(stringify(ecs))
     t.true(validate(line))
+
+    t.deepEqual(line.user_agent, { original: 'cool-agent' })
+    t.deepEqual(line.url, {
+      path: '/',
+      query: 'foo=bar',
+      full: '/?foo=bar#anchor',
+      fragment: 'anchor'
+    })
+    t.deepEqual(line.http, {
+      version: '1.1',
+      request: {
+        method: 'post',
+        headers: {
+          'accept-encoding': 'gzip, deflate',
+          'content-type': 'application/json',
+          host: `localhost:${server.address().port}`,
+          connection: 'close'
+        },
+        body: { bytes: 17 }
+      },
+      response: {
+        status_code: 200,
+        headers: { 'content-type': 'application/json' },
+        body: { bytes: 42 }
+      }
+    })
 
     res.end('ok')
   }
