@@ -69,8 +69,9 @@ def runTest(version){
   deleteDir()
   unstash 'source'
   dir("${BASE_DIR}"){
-        docker.image("node:${version}-alpine").inside("-e HOME=${WORKSPACE}/${BASE_DIR}") {
-      sh(label: 'Run tests', script: 'sh utils/run-test.sh')
+        docker.image("node:${version}").inside("-e HOME=${WORKSPACE}/${BASE_DIR}") {
+      sh(label: 'Install dependencies', script: '.ci/run-install.sh')
+      sh(label: 'Run tests', script: '.ci/run-test.sh')
     }
   }
 }

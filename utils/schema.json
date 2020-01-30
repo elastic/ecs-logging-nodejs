@@ -5,53 +5,33 @@
       "type": "object",
       "properties": {
         "version": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "name": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "type": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "id": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "ephemeral_id": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         }
       }
@@ -64,103 +44,81 @@
         },
         "organization": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "name": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             }
           }
         }
       }
     },
-    "base": {
+    "@timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "tags": {
+      "type": [
+        "string",
+        "number"
+      ]
+    },
+    "labels": {
       "type": "object",
-      "properties": {
-        "@timestamp": {
-          "type": "string"
-        },
-        "tags": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
-          ]
-        },
-        "labels": {
-          "type": "object",
-          "additionalProperties": true
-        },
-        "message": {
-          "type": "string"
-        }
-      }
+      "additionalProperties": true
+    },
+    "message": {
+      "type": "string"
     },
     "client": {
       "type": "object",
       "properties": {
         "address": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "ip": {
-          "type": "string"
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "ipv4"
+            },
+            {
+              "type": "string",
+              "format": "ipv6"
+            }
+          ]
         },
         "port": {
           "type": "number"
         },
         "mac": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "domain": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "registered_domain": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "top_level_domain": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "bytes": {
@@ -171,9 +129,19 @@
         },
         "nat": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "ip": {
-              "type": "string"
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "ipv4"
+                },
+                {
+                  "type": "string",
+                  "format": "ipv6"
+                }
+              ]
             },
             "port": {
               "type": "number"
@@ -186,86 +154,61 @@
       "type": "object",
       "properties": {
         "provider": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "availability_zone": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "region": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "instance": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "id": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             },
             "name": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             }
           }
         },
         "machine": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "type": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             }
           }
         },
         "account": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "id": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             }
           }
@@ -276,58 +219,39 @@
       "type": "object",
       "properties": {
         "runtime": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "id": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "image": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "name": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             },
             "tag": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             }
           }
         },
         "name": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "labels": {
@@ -340,59 +264,48 @@
       "type": "object",
       "properties": {
         "address": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "ip": {
-          "type": "string"
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "ipv4"
+            },
+            {
+              "type": "string",
+              "format": "ipv6"
+            }
+          ]
         },
         "port": {
           "type": "number"
         },
         "mac": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "domain": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "registered_domain": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "top_level_domain": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "bytes": {
@@ -403,9 +316,19 @@
         },
         "nat": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "ip": {
-              "type": "string"
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "ipv4"
+                },
+                {
+                  "type": "string",
+                  "format": "ipv6"
+                }
+              ]
             },
             "port": {
               "type": "number"
@@ -418,171 +341,121 @@
       "type": "object",
       "properties": {
         "type": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "id": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "op_code": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "header_flags": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "response_code": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "question": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "name": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             },
             "type": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             },
             "class": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             },
             "registered_domain": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             },
             "top_level_domain": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             },
             "subdomain": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             }
           }
         },
         "answers": {
           "type": "object",
-          "additionalProperties": true,
+          "additionalProperties": false,
           "properties": {
             "name": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             },
             "type": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             },
             "class": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             },
             "ttl": {
               "type": "number"
             },
             "data": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             }
           }
         },
         "resolved_ip": {
-          "type": "string"
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "ipv4"
+            },
+            {
+              "type": "string",
+              "format": "ipv6"
+            }
+          ]
         }
       }
     },
@@ -590,13 +463,9 @@
       "type": "object",
       "properties": {
         "version": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         }
       }
@@ -605,46 +474,30 @@
       "type": "object",
       "properties": {
         "id": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "message": {
           "type": "string"
         },
         "code": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "type": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "stack_trace": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         }
       }
@@ -653,126 +506,78 @@
       "type": "object",
       "properties": {
         "id": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "code": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "kind": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "category": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "action": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "outcome": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "type": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "module": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "dataset": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "provider": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "severity": {
           "type": "number"
         },
         "original": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "hash": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "duration": {
@@ -782,23 +587,22 @@
           "type": "number"
         },
         "timezone": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "created": {
-          "type": "string"
+          "type": "string",
+          "format": "date-time"
         },
         "start": {
-          "type": "string"
+          "type": "string",
+          "format": "date-time"
         },
         "end": {
-          "type": "string"
+          "type": "string",
+          "format": "date-time"
         },
         "risk_score": {
           "type": "number"
@@ -807,7 +611,8 @@
           "type": "number"
         },
         "ingested": {
-          "type": "string"
+          "type": "string",
+          "format": "date-time"
         }
       }
     },
@@ -815,169 +620,113 @@
       "type": "object",
       "properties": {
         "name": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "attributes": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "directory": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "drive_letter": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "path": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "target_path": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "extension": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "type": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "device": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "inode": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "uid": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "owner": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "gid": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "group": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "mode": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "size": {
           "type": "number"
         },
         "mtime": {
-          "type": "string"
+          "type": "string",
+          "format": "date-time"
         },
         "ctime": {
-          "type": "string"
+          "type": "string",
+          "format": "date-time"
         },
         "created": {
-          "type": "string"
+          "type": "string",
+          "format": "date-time"
         },
         "accessed": {
-          "type": "string"
+          "type": "string",
+          "format": "date-time"
         }
       }
     },
@@ -996,73 +745,45 @@
           }
         },
         "continent_name": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "country_name": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "region_name": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "city_name": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "country_iso_code": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "region_iso_code": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "name": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         }
       }
@@ -1071,33 +792,21 @@
       "type": "object",
       "properties": {
         "id": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "name": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "domain": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         }
       }
@@ -1106,43 +815,27 @@
       "type": "object",
       "properties": {
         "md5": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "sha1": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "sha256": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "sha512": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         }
       }
@@ -1151,79 +844,60 @@
       "type": "object",
       "properties": {
         "hostname": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "name": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "id": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "ip": {
-          "type": "string"
-        },
-        "mac": {
           "anyOf": [
             {
-              "type": "string"
+              "type": "string",
+              "format": "ipv4"
             },
             {
-              "type": "number"
+              "type": "string",
+              "format": "ipv6"
             }
           ]
         },
+        "mac": {
+          "type": [
+            "string",
+            "number"
+          ]
+        },
         "type": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "uptime": {
           "type": "number"
         },
         "architecture": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "domain": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         }
       }
@@ -1233,28 +907,22 @@
       "properties": {
         "request": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "method": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             },
             "body": {
               "type": "object",
+              "additionalProperties": false,
               "properties": {
                 "content": {
-                  "anyOf": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "number"
-                    }
+                  "type": [
+                    "string",
+                    "number"
                   ]
                 },
                 "bytes": {
@@ -1263,37 +931,35 @@
               }
             },
             "referrer": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             },
             "bytes": {
               "type": "number"
+            },
+            "headers": {
+              "type": "object",
+              "additionalProperties": true
             }
           }
         },
         "response": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "status_code": {
               "type": "number"
             },
             "body": {
               "type": "object",
+              "additionalProperties": false,
               "properties": {
                 "content": {
-                  "anyOf": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "number"
-                    }
+                  "type": [
+                    "string",
+                    "number"
                   ]
                 },
                 "bytes": {
@@ -1303,17 +969,17 @@
             },
             "bytes": {
               "type": "number"
+            },
+            "headers": {
+              "type": "object",
+              "additionalProperties": true
             }
           }
         },
         "version": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         }
       }
@@ -1322,104 +988,80 @@
       "type": "object",
       "properties": {
         "level": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "original": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "logger": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "origin": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "file": {
               "type": "object",
+              "additionalProperties": false,
               "properties": {
                 "name": {
-                  "anyOf": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "number"
-                    }
+                  "type": [
+                    "string",
+                    "number"
                   ]
                 },
                 "line": {
-                  "type": "number"
+                  "type": "integer"
                 }
               }
             },
             "function": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             }
           }
         },
         "syslog": {
           "type": "object",
-          "additionalProperties": true,
+          "additionalProperties": false,
           "properties": {
             "severity": {
               "type": "object",
+              "additionalProperties": false,
               "properties": {
                 "code": {
                   "type": "number"
                 },
                 "name": {
-                  "anyOf": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "number"
-                    }
+                  "type": [
+                    "string",
+                    "number"
                   ]
                 }
               }
             },
             "facility": {
               "type": "object",
+              "additionalProperties": false,
               "properties": {
                 "code": {
                   "type": "number"
                 },
                 "name": {
-                  "anyOf": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "number"
-                    }
+                  "type": [
+                    "string",
+                    "number"
                   ]
                 }
               }
@@ -1435,86 +1077,63 @@
       "type": "object",
       "properties": {
         "name": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "type": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "iana_number": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "transport": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "application": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "protocol": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "direction": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "forwarded_ip": {
-          "type": "string"
-        },
-        "community_id": {
           "anyOf": [
             {
-              "type": "string"
+              "type": "string",
+              "format": "ipv4"
             },
             {
-              "type": "number"
+              "type": "string",
+              "format": "ipv6"
             }
+          ]
+        },
+        "community_id": {
+          "type": [
+            "string",
+            "number"
           ]
         },
         "bytes": {
@@ -1529,86 +1148,63 @@
       "type": "object",
       "properties": {
         "mac": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "ip": {
-          "type": "string"
-        },
-        "hostname": {
           "anyOf": [
             {
-              "type": "string"
+              "type": "string",
+              "format": "ipv4"
             },
             {
-              "type": "number"
+              "type": "string",
+              "format": "ipv6"
             }
+          ]
+        },
+        "hostname": {
+          "type": [
+            "string",
+            "number"
           ]
         },
         "name": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "product": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "vendor": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "version": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "serial_number": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "type": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         }
       }
@@ -1617,23 +1213,15 @@
       "type": "object",
       "properties": {
         "name": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "id": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         }
       }
@@ -1642,63 +1230,39 @@
       "type": "object",
       "properties": {
         "platform": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "name": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "full": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "family": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "version": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "kernel": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         }
       }
@@ -1707,119 +1271,76 @@
       "type": "object",
       "properties": {
         "name": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "version": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "build_version": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "description": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "size": {
           "type": "number"
         },
         "installed": {
-          "type": "string"
+          "type": "string",
+          "format": "date-time"
         },
         "path": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "architecture": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "checksum": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "install_scope": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "license": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "reference": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "type": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         }
       }
@@ -1832,18 +1353,15 @@
         },
         "parent": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "pid": {
               "type": "number"
             },
             "name": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             },
             "ppid": {
@@ -1853,80 +1371,58 @@
               "type": "number"
             },
             "command_line": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             },
             "args": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             },
             "args_count": {
               "type": "number"
             },
             "executable": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             },
             "title": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             },
             "thread": {
               "type": "object",
+              "additionalProperties": false,
               "properties": {
                 "id": {
                   "type": "number"
                 },
                 "name": {
-                  "anyOf": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "number"
-                    }
+                  "type": [
+                    "string",
+                    "number"
                   ]
                 }
               }
             },
             "start": {
-              "type": "string"
+              "type": "string",
+              "format": "date-time"
             },
             "uptime": {
               "type": "number"
             },
             "working_directory": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             },
             "exit_code": {
@@ -1935,13 +1431,9 @@
           }
         },
         "name": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "ppid": {
@@ -1951,80 +1443,58 @@
           "type": "number"
         },
         "command_line": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "args": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "args_count": {
           "type": "number"
         },
         "executable": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "title": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "thread": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "id": {
               "type": "number"
             },
             "name": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             }
           }
         },
         "start": {
-          "type": "string"
+          "type": "string",
+          "format": "date-time"
         },
         "uptime": {
           "type": "number"
         },
         "working_directory": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "exit_code": {
@@ -2036,76 +1506,49 @@
       "type": "object",
       "properties": {
         "hive": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "key": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "value": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "path": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "data": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "type": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             },
             "strings": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             },
             "bytes": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             }
           }
@@ -2116,26 +1559,27 @@
       "type": "object",
       "properties": {
         "ip": {
-          "type": "string"
-        },
-        "user": {
           "anyOf": [
             {
-              "type": "string"
+              "type": "string",
+              "format": "ipv4"
             },
             {
-              "type": "number"
+              "type": "string",
+              "format": "ipv6"
             }
           ]
         },
+        "user": {
+          "type": [
+            "string",
+            "number"
+          ]
+        },
         "hash": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         }
       }
@@ -2144,83 +1588,51 @@
       "type": "object",
       "properties": {
         "id": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "uuid": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "version": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "name": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "description": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "category": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "ruleset": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "reference": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         }
       }
@@ -2229,59 +1641,48 @@
       "type": "object",
       "properties": {
         "address": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "ip": {
-          "type": "string"
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "ipv4"
+            },
+            {
+              "type": "string",
+              "format": "ipv6"
+            }
+          ]
         },
         "port": {
           "type": "number"
         },
         "mac": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "domain": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "registered_domain": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "top_level_domain": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "bytes": {
@@ -2292,9 +1693,19 @@
         },
         "nat": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "ip": {
-              "type": "string"
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "ipv4"
+                },
+                {
+                  "type": "string",
+                  "format": "ipv6"
+                }
+              ]
             },
             "port": {
               "type": "number"
@@ -2307,78 +1718,51 @@
       "type": "object",
       "properties": {
         "id": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "name": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "node": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "name": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             }
           }
         },
         "type": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "state": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "version": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "ephemeral_id": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         }
       }
@@ -2387,59 +1771,48 @@
       "type": "object",
       "properties": {
         "address": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "ip": {
-          "type": "string"
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "ipv4"
+            },
+            {
+              "type": "string",
+              "format": "ipv6"
+            }
+          ]
         },
         "port": {
           "type": "number"
         },
         "mac": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "domain": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "registered_domain": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "top_level_domain": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "bytes": {
@@ -2450,9 +1823,19 @@
         },
         "nat": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "ip": {
-              "type": "string"
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "ipv4"
+                },
+                {
+                  "type": "string",
+                  "format": "ipv6"
+                }
+              ]
             },
             "port": {
               "type": "number"
@@ -2465,81 +1848,55 @@
       "type": "object",
       "properties": {
         "framework": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "tactic": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "name": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             },
             "id": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             },
             "reference": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             }
           }
         },
         "technique": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "name": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             },
             "id": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             },
             "reference": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             }
           }
@@ -2550,43 +1907,27 @@
       "type": "object",
       "properties": {
         "version": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "version_protocol": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "cipher": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "curve": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "resumed": {
@@ -2596,125 +1937,85 @@
           "type": "boolean"
         },
         "next_protocol": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "client": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "ja3": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             },
             "server_name": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             },
             "supported_ciphers": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             },
             "subject": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             },
             "issuer": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             },
             "not_before": {
-              "type": "string"
+              "type": "string",
+              "format": "date-time"
             },
             "not_after": {
-              "type": "string"
+              "type": "string",
+              "format": "date-time"
             },
             "certificate_chain": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             },
             "certificate": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             },
             "hash": {
               "type": "object",
+              "additionalProperties": false,
               "properties": {
                 "md5": {
-                  "anyOf": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "number"
-                    }
+                  "type": [
+                    "string",
+                    "number"
                   ]
                 },
                 "sha1": {
-                  "anyOf": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "number"
-                    }
+                  "type": [
+                    "string",
+                    "number"
                   ]
                 },
                 "sha256": {
-                  "anyOf": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "number"
-                    }
+                  "type": [
+                    "string",
+                    "number"
                   ]
                 }
               }
@@ -2723,94 +2024,66 @@
         },
         "server": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "ja3s": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             },
             "subject": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             },
             "issuer": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             },
             "not_before": {
-              "type": "string"
+              "type": "string",
+              "format": "date-time"
             },
             "not_after": {
-              "type": "string"
+              "type": "string",
+              "format": "date-time"
             },
             "certificate_chain": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             },
             "certificate": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             },
             "hash": {
               "type": "object",
+              "additionalProperties": false,
               "properties": {
                 "md5": {
-                  "anyOf": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "number"
-                    }
+                  "type": [
+                    "string",
+                    "number"
                   ]
                 },
                 "sha1": {
-                  "anyOf": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "number"
-                    }
+                  "type": [
+                    "string",
+                    "number"
                   ]
                 },
                 "sha256": {
-                  "anyOf": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "number"
-                    }
+                  "type": [
+                    "string",
+                    "number"
                   ]
                 }
               }
@@ -2824,30 +2097,24 @@
       "properties": {
         "trace": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "id": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             }
           }
         },
         "transaction": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "id": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             }
           }
@@ -2858,126 +2125,78 @@
       "type": "object",
       "properties": {
         "original": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "full": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "scheme": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "domain": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "registered_domain": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "top_level_domain": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "port": {
           "type": "number"
         },
         "path": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "query": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "extension": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "fragment": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "username": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "password": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         }
       }
@@ -2986,63 +2205,39 @@
       "type": "object",
       "properties": {
         "id": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "name": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "full_name": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "email": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "hash": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "domain": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         }
       }
@@ -3051,46 +2246,31 @@
       "type": "object",
       "properties": {
         "original": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "name": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "version": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "device": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "name": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             }
           }
@@ -3101,37 +2281,26 @@
       "type": "object",
       "properties": {
         "classification": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "enumeration": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "reference": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "score": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "base": {
               "type": "number"
@@ -3143,80 +2312,53 @@
               "type": "number"
             },
             "version": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             }
           }
         },
         "category": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "description": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "id": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "scanner": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "vendor": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
+              "type": [
+                "string",
+                "number"
               ]
             }
           }
         },
         "severity": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         },
         "report_id": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
+          "type": [
+            "string",
+            "number"
           ]
         }
       }

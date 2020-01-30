@@ -6,7 +6,7 @@
 
 const http = require('http')
 const test = require('ava')
-const validator = require('is-my-json-valid')
+const Ajv = require('ajv')
 const sget = require('simple-get')
 const stoppable = require('stoppable')
 const {
@@ -15,7 +15,12 @@ const {
   formatHttpResponse
 } = require('./')
 
-const validate = validator(require('../utils/schema.json'))
+const ajv = Ajv({
+  allErrors: true,
+  verbose: true,
+  format: 'full'
+})
+const validate = ajv.compile(require('../utils/schema.json'))
 
 test('Stringify should return a valid ecs json', t => {
   const ecs = {
@@ -32,6 +37,23 @@ test('Stringify should return a valid ecs json', t => {
 
   const line = JSON.parse(stringify(ecs))
   t.true(validate(line))
+})
+
+test('Bad ecs json (on purpose)', t => {
+  const ecs = {
+    '@timestamp': 'not a date',
+    log: {
+      level: 'info',
+      logger: 'test'
+    },
+    message: true,
+    ecs: {
+      version: '1.4.0'
+    }
+  }
+
+  const line = JSON.parse(stringify(ecs))
+  t.false(validate(line))
 })
 
 test.cb('formatHttpRequest and formatHttpResponse should returna valid ecs object', t => {
@@ -67,11 +89,43 @@ test.cb('formatHttpRequest and formatHttpResponse should returna valid ecs objec
       }
     }
 
+    res.setHeader('content-type', 'application/json')
+    res.setHeader('content-length', '42')
+
+    // add anchor
+    req.url += '#anchor'
+
     formatHttpRequest(ecs, req)
     formatHttpResponse(ecs, res)
 
     const line = JSON.parse(stringify(ecs))
     t.true(validate(line))
+
+    t.deepEqual(line.user_agent, { original: 'cool-agent' })
+    t.deepEqual(line.url, {
+      path: '/',
+      query: 'foo=bar',
+      full: '/?foo=bar#anchor',
+      fragment: 'anchor'
+    })
+    t.deepEqual(line.http, {
+      version: '1.1',
+      request: {
+        method: 'post',
+        headers: {
+          'accept-encoding': 'gzip, deflate',
+          'content-type': 'application/json',
+          host: `localhost:${server.address().port}`,
+          connection: 'close'
+        },
+        body: { bytes: 17 }
+      },
+      response: {
+        status_code: 200,
+        headers: { 'content-type': 'application/json' },
+        body: { bytes: 42 }
+      }
+    })
 
     res.end('ok')
   }

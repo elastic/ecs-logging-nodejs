@@ -11,10 +11,15 @@ const stoppable = require('stoppable')
 const winston = require('winston')
 const Transport = require('winston-transport')
 const { MESSAGE } = require('triple-beam')
-const validator = require('is-my-json-valid')
+const Ajv = require('ajv')
 const ecsFormat = require('./')
 
-const validate = validator(require('../../utils/schema.json'))
+const ajv = Ajv({
+  allErrors: true,
+  verbose: true,
+  format: 'full'
+})
+const validate = ajv.compile(require('../../utils/schema.json'))
 
 test('Should produce valid ecs logs', t => {
   t.plan(2)
@@ -57,6 +62,67 @@ test('Bad ecs log (on purpose)', t => {
 
   logger.info('ecs is cool!')
   logger.error('ecs is cool!', { hello: 'world' })
+})
+
+test('Should not change the message', t => {
+  t.plan(1)
+
+  class TestTransport extends Transport {
+    log (info, callback) {
+      const line = JSON.parse(info[MESSAGE])
+      t.is(line.message, 'ecs is cool!')
+      callback()
+    }
+  }
+
+  const logger = winston.createLogger({
+    level: 'info',
+    format: ecsFormat(),
+    transports: [new TestTransport()]
+  })
+
+  logger.info('ecs is cool!')
+})
+
+test('Should not change the log level', t => {
+  t.plan(1)
+
+  class TestTransport extends Transport {
+    log (info, callback) {
+      const line = JSON.parse(info[MESSAGE])
+      t.is(line.log.level, 'error')
+      callback()
+    }
+  }
+
+  const logger = winston.createLogger({
+    level: 'info',
+    format: ecsFormat(),
+    transports: [new TestTransport()]
+  })
+
+  logger.error('ecs is cool!')
+})
+
+test('Should append any additional property to the log message', t => {
+  t.plan(2)
+
+  class TestTransport extends Transport {
+    log (info, callback) {
+      const line = JSON.parse(info[MESSAGE])
+      t.is(line.foo, 'bar')
+      t.is(line.faz, 'baz')
+      callback()
+    }
+  }
+
+  const logger = winston.createLogger({
+    level: 'info',
+    format: ecsFormat(),
+    transports: [new TestTransport()]
+  })
+
+  logger.info('ecs is cool!', { foo: 'bar', faz: 'baz' })
 })
 
 test.cb('http request and response (req, res keys)', t => {
@@ -147,8 +213,7 @@ test.cb('http request and response (request, response keys)', t => {
   }
 })
 
-// waiting on https://github.com/fastify/fast-json-stringify/pull/206
-test.skip('Keys order', t => {
+test('Keys order', t => {
   t.plan(2)
 
   var count = 0

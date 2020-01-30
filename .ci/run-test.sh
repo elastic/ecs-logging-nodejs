@@ -1,10 +1,11 @@
+#!/usr/bin/env bash
+
 set -euxo pipefail
 ROOT=$PWD
 
 function run_test {
   echo "=== Running $1 test ==="
   cd $1
-  npm install
   npm test
   cd $ROOT
 }
