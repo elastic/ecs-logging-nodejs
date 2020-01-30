@@ -56,41 +56,42 @@ function formatHttpRequest (ecs, req) {
     ecs.client.port = remotePort
   }
 
-  if (headers) {
-    if (headers['user-agent']) {
-      ecs.user_agent = ecs.user_agent || {}
-      ecs.user_agent.original = headers['user-agent']
-      delete headers['user-agent']
-    }
-    if (headers['content-length']) {
-      ecs.http.request.body = ecs.http.request.body || {}
-      ecs.http.request.body.bytes = Number(headers['content-length'])
-      delete headers['content-length']
-    }
-
-    if (Object.keys(headers).length) {
-      // `http.request.headers` is not standardized
-      ecs.http.request.headers = headers
+  var hasHeaders = Object.keys(headers).length > 0
+  if (hasHeaders === true) {
+    ecs.http.request.headers = ecs.http.request.headers || {}
+    for (var header in headers) {
+      if (header === 'content-length') {
+        ecs.http.request.body = ecs.http.request.body || {}
+        ecs.http.request.body.bytes = Number(headers[header])
+      } else if (header === 'user-agent') {
+        ecs.user_agent = ecs.user_agent || {}
+        ecs.user_agent.original = headers[header]
+      } else {
+        // `http.response.headers` is not standardized
+        ecs.http.request.headers[header] = headers[header]
+      }
     }
   }
 }
 
 function formatHttpResponse (ecs, res) {
-  const { statusCode, headers } = res
+  var { statusCode } = res
   ecs.http = ecs.http || {}
   ecs.http.response = ecs.http.response || {}
   ecs.http.response.status_code = statusCode
 
-  if (headers) {
-    if (headers['content-length']) {
-      ecs.http.response.body = ecs.http.response.body || {}
-      ecs.http.response.body.bytes = Number(headers['content-length'])
-      delete headers['content-length']
-    }
-
-    if (Object.keys(headers).length) {
-      // `http.response.headers` is not standardized
-      ecs.http.response.headers = headers
+  var headers = res.getHeaders()
+  var hasHeaders = Object.keys(headers).length > 0
+  if (hasHeaders === true) {
+    ecs.http.response.headers = ecs.http.response.headers || {}
+    for (var header in headers) {
+      if (header === 'content-length') {
+        ecs.http.response.body = ecs.http.response.body || {}
+        ecs.http.response.body.bytes = Number(headers[header])
+      } else {
+        // `http.response.headers` is not standardized
+        ecs.http.response.headers[header] = headers[header]
+      }
     }
   }
 }
