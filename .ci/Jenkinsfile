@@ -70,6 +70,7 @@ def runTest(version){
   unstash 'source'
   dir("${BASE_DIR}"){
         docker.image("node:${version}").inside("-e HOME=${WORKSPACE}/${BASE_DIR}") {
+      sh(label: 'Install dependencies', script: '.ci/run-install.sh')
       sh(label: 'Run tests', script: '.ci/run-test.sh')
     }
   }
