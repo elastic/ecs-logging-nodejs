@@ -1,7 +1,7 @@
 {
-  "name": "@elastic/ecs-helper",
+  "name": "@elastic/ecs-helpers",
   "version": "0.1.0",
-  "description": "ECS loggers helper",
+  "description": "ECS loggers helpers",
   "main": "index.js",
   "repository": {
     "type": "git",
@@ -12,7 +12,7 @@
   "bugs": {
     "url": "https://github.com/elastic/ecs-logging-js/issues"
   },
-  "homepage": "https://github.com/elastic/ecs-logging-js/blob/master/helper/README.md",
+  "homepage": "https://github.com/elastic/ecs-logging-js/blob/master/helpers/README.md",
   "scripts": {
     "test": "standard && ava -v"
   },
