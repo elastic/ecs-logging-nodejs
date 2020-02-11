@@ -9,7 +9,7 @@ const {
   stringify,
   formatHttpRequest,
   formatHttpResponse
-} = require('../../helper')
+} = require('@elastic/ecs-helpers')
 
 function ecsFormat (format = morgan.combined) {
   const messageFormat = morgan.compile(format)

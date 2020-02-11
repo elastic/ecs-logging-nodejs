@@ -10,7 +10,7 @@ const {
   stringify,
   formatHttpRequest,
   formatHttpResponse
-} = require('../../helper')
+} = require('@elastic/ecs-helpers')
 
 const reservedKeys = [
   'level',

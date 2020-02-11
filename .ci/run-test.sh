@@ -5,11 +5,9 @@ ROOT=$PWD
 
 function run_test {
   echo "=== Running $1 test ==="
-  cd $1
-  npm test
-  cd $ROOT
+  npm --prefix $ROOT/$1 test
 }
 
-run_test "helper"
+run_test "helpers"
 run_test "loggers/winston"
 run_test "loggers/morgan"
