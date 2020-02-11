@@ -5,11 +5,9 @@ ROOT=$PWD
 
 function run_install {
   echo "=== Installing dependencies in $1 ==="
-  cd $1
-  npm install
-  cd $ROOT
+  npm --prefix $ROOT/$1 install
 }
 
-run_install "helper"
+run_install "helpers"
 run_install "loggers/winston"
 run_install "loggers/morgan"
