@@ -1,6 +1,6 @@
 <img align="right" width="auto" height="auto" src="https://www.elastic.co/static-res/images/elastic-logo-200.png">
 
-# @elastic/winston-ecs-format
+# @elastic/ecs-winston-format
 
 [![Build Status](https://apm-ci.elastic.co/buildStatus/icon?job=apm-agent-nodejs%2Fecs-logging-js-mbp%2Fmaster)](https://apm-ci.elastic.co/job/apm-agent-nodejs/job/ecs-logging-js-mbp/job/master/)  [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](http://standardjs.com/)
 
@@ -9,13 +9,13 @@ In combination with [filebeat](https://www.elastic.co/products/beats/filebeat) y
 
 ## Install
 ```sh
-npm i @elastic/winston-ecs-format
+npm i @elastic/ecs-winston-format
 ```
 
 ## Usage
 ```js
 const winston = require('winston')
-const ecsFormat = require('@elastic/winston-ecs-format')
+const ecsFormat = require('@elastic/ecs-winston-format')
 
 const logger = winston.createLogger({
   level: 'info',
@@ -29,7 +29,7 @@ logger.info('ecs is cool!')
 logger.error('ecs is cool!', { hello: 'world' })
 ```
 
-### Serializaton
+### Serialization
 
 The log will be serialized automatically by the formatter, you don't need to add the [JSON](https://github.com/winstonjs/logform#json) formatter.
 
@@ -44,7 +44,7 @@ while if you pass an object that contains the key `res` or `response`, it will h
 ```js
 const http = require('http')
 const winston = require('winston')
-const ecsFormat = require('@elastic/winston-ecs-format')
+const ecsFormat = require('@elastic/ecs-winston-format')
 
 const logger = winston.createLogger({
   level: 'info',

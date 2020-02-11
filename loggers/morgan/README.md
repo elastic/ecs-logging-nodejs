@@ -1,6 +1,6 @@
 <img align="right" width="auto" height="auto" src="https://www.elastic.co/static-res/images/elastic-logo-200.png">
 
-# @elastic/morgan-ecs-format
+# @elastic/ecs-morgan-format
 
 [![Build Status](https://apm-ci.elastic.co/buildStatus/icon?job=apm-agent-nodejs%2Fecs-logging-js-mbp%2Fmaster)](https://apm-ci.elastic.co/job/apm-agent-nodejs/job/ecs-logging-js-mbp/job/master/)  [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](http://standardjs.com/)
 
@@ -9,14 +9,14 @@ In combination with [filebeat](https://www.elastic.co/products/beats/filebeat) y
 
 ## Install
 ```sh
-npm i @elastic/morgan-ecs-format
+npm i @elastic/ecs-morgan-format
 ```
 
 ## Usage
 ```js
 const app = require('express')()
 const morgan = require('morgan')
-const ecsFormat = require('@elastic/morgan-ecs-format')()
+const ecsFormat = require('@elastic/ecs-morgan-format')()
 
 app.use(morgan(ecsFormat))
 
@@ -34,7 +34,7 @@ You can pass any [format option](https://github.com/expressjs/morgan#options) yo
 ```js
 const app = require('express')()
 const morgan = require('morgan')
-const ecsFormat = require('@elastic/morgan-ecs-format')('tiny')
+const ecsFormat = require('@elastic/ecs-morgan-format')('tiny')
 app.use(morgan(ecsFormat))
 ```
 
