@@ -8,6 +8,7 @@ const stringify = require('./serializer')
 const httpFormatters = require('./http-formatters')
 
 module.exports = {
+  version: '1.5.0',
   stringify,
   ...httpFormatters
 }

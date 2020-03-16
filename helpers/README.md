@@ -14,6 +14,9 @@ npm i @elastic/ecs-helpers
 
 ## API
 
+### `version`
+The currently supported version of [Elastic Common Schema](https://www.elastic.co/guide/en/ecs/current/index.html),
+
 ### `stringify`
 Function that serializes (very quickly!) an ECS object.
 
