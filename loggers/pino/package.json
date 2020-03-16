@@ -1,0 +1,44 @@
+{
+  "name": "@elastic/ecs-pino-format",
+  "version": "0.1.0",
+  "description": "A formatter for the pino logger compatible with Elastic Common Schema.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elastic/ecs-logging-js.git"
+  },
+  "keywords": [
+    "pino",
+    "serializer",
+    "formatter",
+    "elasticsearch",
+    "ecs",
+    "elastic",
+    "common",
+    "schema"
+  ],
+  "author": "Tomas Della Vedova",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/elastic/ecs-logging-js/issues"
+  },
+  "homepage": "https://github.com/elastic/ecs-logging-js/blob/master/loggers/pino/README.md",
+  "scripts": {
+    "test": "standard && ava -v"
+  },
+  "engines": {
+    "node": ">=10"
+  },
+  "dependencies": {
+    "@elastic/ecs-helpers": "^0.1.0"
+  },
+  "devDependencies": {
+    "ajv": "^6.11.0",
+    "ava": "^3.1.0",
+    "pino": "github:delvedor/pino#new-serializers",
+    "simple-get": "^3.1.0",
+    "split2": "^3.1.1",
+    "standard": "^14.3.1",
+    "stoppable": "^1.1.0"
+  }
+}
