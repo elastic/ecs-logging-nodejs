@@ -6,6 +6,7 @@
 
 const morgan = require('morgan')
 const {
+  version,
   stringify,
   formatHttpRequest,
   formatHttpResponse
@@ -23,9 +24,7 @@ function ecsFormat (format = morgan.combined) {
         logger: 'morgan'
       },
       message: messageFormat(token, req, res),
-      ecs: {
-        version: '1.4.0'
-      }
+      ecs: { version }
     }
 
     formatHttpRequest(ecs, req)
