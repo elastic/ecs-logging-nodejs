@@ -12,6 +12,8 @@ const winston = require('winston')
 const Transport = require('winston-transport')
 const { MESSAGE } = require('triple-beam')
 const Ajv = require('ajv')
+const { version } = require('@elastic/ecs-helpers')
+
 const ecsFormat = require('./')
 
 const ajv = Ajv({
@@ -223,12 +225,12 @@ test('Keys order', t => {
       if (count++ === 0) {
         t.is(
           info[MESSAGE],
-          `{"@timestamp":"${line['@timestamp']}","log":{"level":"info","logger":"winston"},"message":"ecs is cool!","ecs":{"version":"1.4.0"}}`
+          `{"@timestamp":"${line['@timestamp']}","log":{"level":"info","logger":"winston"},"message":"ecs is cool!","ecs":{"version":"${version}"}}`
         )
       } else {
         t.is(
           info[MESSAGE],
-          `{"@timestamp":"${line['@timestamp']}","log":{"level":"error","logger":"winston"},"message":"ecs is cool!","ecs":{"version":"1.4.0"},"hello":"world"}`
+          `{"@timestamp":"${line['@timestamp']}","log":{"level":"error","logger":"winston"},"message":"ecs is cool!","ecs":{"version":"${version}"},"hello":"world"}`
         )
       }
       callback()

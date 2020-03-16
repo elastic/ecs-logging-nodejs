@@ -7,6 +7,7 @@
 const { MESSAGE } = require('triple-beam')
 const { format } = require('winston')
 const {
+  version,
   stringify,
   formatHttpRequest,
   formatHttpResponse
@@ -32,9 +33,7 @@ function ecsFormat (log) {
       logger: 'winston'
     },
     message: log.message,
-    ecs: {
-      version: '1.4.0'
-    }
+    ecs: { version }
   }
 
   if (log.req || log.request) {
