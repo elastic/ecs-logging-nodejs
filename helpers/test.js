@@ -9,7 +9,9 @@ const test = require('ava')
 const Ajv = require('ajv')
 const sget = require('simple-get')
 const stoppable = require('stoppable')
+const semver = require('semver')
 const {
+  version,
   stringify,
   formatHttpRequest,
   formatHttpResponse
@@ -129,4 +131,8 @@ test.cb('formatHttpRequest and formatHttpResponse should returna valid ecs objec
 
     res.end('ok')
   }
+})
+
+test('Should export a valid version', t => {
+  t.truthy(semver.valid(version))
 })
