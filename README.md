@@ -9,6 +9,7 @@ In combination with [filebeat](https://www.elastic.co/products/beats/filebeat) y
 See [ecs-logging](https://github.com/elastic/ecs-logging) for other ECS logging libraries and more resources about ECS & logging.
 
 ### Supported loggers
+- [pino](https://github.com/elastic/ecs-logging-js/tree/master/loggers/pino)
 - [winston](https://github.com/elastic/ecs-logging-js/tree/master/loggers/winston)
 - [morgan](https://github.com/elastic/ecs-logging-js/tree/master/loggers/morgan)
 
