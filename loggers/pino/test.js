@@ -28,7 +28,7 @@ test('Should produce valid ecs logs', t => {
     t.true(validate(line))
   })
 
-  const pino = Pino({ ...ecsFormat }, stream)
+  const pino = Pino({ ...ecsFormat() }, stream)
   pino.info('Hello world')
 })
 
@@ -40,7 +40,7 @@ test('Should append any additional property to the log message', t => {
     t.true(validate(line))
   })
 
-  const pino = Pino({ ...ecsFormat }, stream)
+  const pino = Pino({ ...ecsFormat() }, stream)
   pino.info({ foo: 'bar' }, 'Hello world')
 })
 
@@ -51,7 +51,7 @@ test.cb('http request and response (req, res keys)', t => {
     t.true(validate(line))
   })
 
-  const pino = Pino({ ...ecsFormat }, stream)
+  const pino = Pino({ ...ecsFormat() }, stream)
 
   const server = stoppable(http.createServer(handler))
   server.listen(0, () => {
@@ -87,7 +87,7 @@ test.cb('http request and response (request, response keys)', t => {
     t.true(validate(line))
   })
 
-  const pino = Pino({ ...ecsFormat }, stream)
+  const pino = Pino({ ...ecsFormat() }, stream)
 
   const server = stoppable(http.createServer(handler))
   server.listen(0, () => {
