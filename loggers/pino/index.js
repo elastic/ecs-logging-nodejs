@@ -5,6 +5,7 @@
 'use strict'
 
 const {
+  version,
   formatHttpRequest,
   formatHttpResponse
 } = require('@elastic/ecs-helpers')
@@ -41,7 +42,7 @@ function build () {
           ...ecs
         } = obj
 
-        ecs.ecs = { version: '1.5.0' }
+        ecs.ecs = { version }
 
         if (req || request) {
           formatHttpRequest(ecs, req || request)

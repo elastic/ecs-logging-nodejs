@@ -30,7 +30,7 @@
     "node": ">=10"
   },
   "dependencies": {
-    "@elastic/ecs-helpers": "^0.1.0"
+    "@elastic/ecs-helpers": "^0.2.0"
   },
   "devDependencies": {
     "ajv": "^6.11.0",
