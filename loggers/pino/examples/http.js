@@ -5,7 +5,8 @@
 'use strict'
 
 const http = require('http')
-const pino = require('pino')({ ...require('../') })
+const ecsFormat = require('../')()
+const pino = require('pino')({ ...ecsFormat })
 
 const server = http.createServer(handler)
 server.listen(3000, () => {

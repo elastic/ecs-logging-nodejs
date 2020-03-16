@@ -19,7 +19,7 @@ This package will configure the Pino's `formatters`, `messageKey` and `timestamp
 'use strict'
 
 const http = require('http')
-const ecsFormat = require('@elastic/ecs-pino-format')
+const ecsFormat = require('@elastic/ecs-pino-format')()
 const pino = require('pino')({ ...ecsFormat })
 
 const server = http.createServer(handler)

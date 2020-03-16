@@ -4,7 +4,8 @@
 
 'use strict'
 
-const pino = require('pino')({ ...require('../') })
+const ecsFormat = require('../')()
+const pino = require('pino')({ ...ecsFormat })
 
 pino.info('Hello world')
 
