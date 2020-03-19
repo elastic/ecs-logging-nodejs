@@ -8,6 +8,12 @@ This set of libraries allows you to transform your application logs to structure
 In combination with [filebeat](https://www.elastic.co/products/beats/filebeat) you can send your logs directly to Elasticsearch and leverage [Kibana's Logs UI](https://www.elastic.co/guide/en/infrastructure/guide/current/logs-ui-overview.html) to inspect all logs in one single place.
 See [ecs-logging](https://github.com/elastic/ecs-logging) for other ECS logging libraries and more resources about ECS & logging.
 
+---
+
+**Please note** that this library is in a **beta** version and backwards-incompatible changes might be introduced in future releases. While we strive to comply to [semver](https://semver.org/), we can not guarantee to avoid breaking changes in minor releases.
+
+---
+
 ### Supported loggers
 - [winston](https://github.com/elastic/ecs-logging-js/tree/master/loggers/winston)
 - [morgan](https://github.com/elastic/ecs-logging-js/tree/master/loggers/morgan)
