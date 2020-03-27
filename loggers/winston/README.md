@@ -7,6 +7,12 @@
 A formatter for the [winston](https://www.npmjs.com/package/winston) logger compatible with [Elastic Common Schema](https://www.elastic.co/guide/en/ecs/current/index.html).<br/>
 In combination with [filebeat](https://www.elastic.co/products/beats/filebeat) you can send your logs directly to Elasticsearch and leverage [Kibana's Logs UI](https://www.elastic.co/guide/en/infrastructure/guide/current/logs-ui-overview.html) to inspect all logs in one single place.
 
+---
+
+**Please note** that this library is in a **beta** version and backwards-incompatible changes might be introduced in future releases. While we strive to comply to [semver](https://semver.org/), we can not guarantee to avoid breaking changes in minor releases.
+
+---
+
 ## Install
 ```sh
 npm i @elastic/ecs-winston-format
