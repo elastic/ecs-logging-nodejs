@@ -11,3 +11,4 @@ function run_install {
 run_install "helpers"
 run_install "loggers/winston"
 run_install "loggers/morgan"
+run_install "loggers/pino"

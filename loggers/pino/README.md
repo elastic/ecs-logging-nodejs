@@ -1,12 +1,11 @@
 <img align="right" width="auto" height="auto" src="https://www.elastic.co/static-res/images/elastic-logo-200.png">
 
-# ecs-logging-js
+# @elastic/ecs-pino-format
 
 [![Build Status](https://apm-ci.elastic.co/buildStatus/icon?job=apm-agent-nodejs%2Fecs-logging-js-mbp%2Fmaster)](https://apm-ci.elastic.co/job/apm-agent-nodejs/job/ecs-logging-js-mbp/job/master/)  [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](http://standardjs.com/)
 
-This set of libraries allows you to transform your application logs to structured logs that comply with the [Elastic Common Schema (ECS)](https://www.elastic.co/guide/en/ecs/current/ecs-reference.html).
+A formatter for the [pino](https://www.npmjs.com/package/pino) logger compatible with [Elastic Common Schema](https://www.elastic.co/guide/en/ecs/current/index.html).<br/>
 In combination with [filebeat](https://www.elastic.co/products/beats/filebeat) you can send your logs directly to Elasticsearch and leverage [Kibana's Logs UI](https://www.elastic.co/guide/en/infrastructure/guide/current/logs-ui-overview.html) to inspect all logs in one single place.
-See [ecs-logging](https://github.com/elastic/ecs-logging) for other ECS logging libraries and more resources about ECS & logging.
 
 ---
 
@@ -14,14 +13,31 @@ See [ecs-logging](https://github.com/elastic/ecs-logging) for other ECS logging 
 
 ---
 
-### Supported loggers
-- [pino](https://github.com/elastic/ecs-logging-js/tree/master/loggers/pino)
-- [winston](https://github.com/elastic/ecs-logging-js/tree/master/loggers/winston)
-- [morgan](https://github.com/elastic/ecs-logging-js/tree/master/loggers/morgan)
+## Install
+```sh
+npm i @elastic/ecs-pino-format
+```
 
-### References
-* Introduction to ECS [blog post](https://www.elastic.co/blog/introducing-the-elastic-common-schema).
-* Logs UI [blog post](https://www.elastic.co/blog/infrastructure-and-logs-ui-new-ways-for-ops-to-interact-with-elasticsearch).
+## Usage
+This package will configure the Pino's `formatters`, `messageKey` and `timestamp` options.
+
+```js
+'use strict'
+
+const http = require('http')
+const ecsFormat = require('@elastic/ecs-pino-format')()
+const pino = require('pino')({ ...ecsFormat })
+
+const server = http.createServer(handler)
+server.listen(3000, () => {
+  console.log('Listening')
+})
+
+function handler (req, res) {
+  pino.info({ req, res }, 'incoming request')
+  res.end('ok')
+}
+```
 
 ## License
 This software is licensed under the [Apache 2 license](./LICENSE).

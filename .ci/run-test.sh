@@ -11,3 +11,4 @@ function run_test {
 run_test "helpers"
 run_test "loggers/winston"
 run_test "loggers/morgan"
+run_test "loggers/pino"
