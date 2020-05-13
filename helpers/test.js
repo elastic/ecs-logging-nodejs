@@ -64,7 +64,7 @@ test.cb('formatHttpRequest and formatHttpResponse should returna valid ecs objec
     const body = JSON.stringify({ hello: 'world' })
     sget({
       method: 'POST',
-      url: `http://localhost:${server.address().port}?foo=bar`,
+      url: `http://localhost:${server.address().port}/hello/world?foo=bar`,
       body,
       headers: {
         'user-agent': 'cool-agent',
@@ -105,9 +105,9 @@ test.cb('formatHttpRequest and formatHttpResponse should returna valid ecs objec
 
     t.deepEqual(line.user_agent, { original: 'cool-agent' })
     t.deepEqual(line.url, {
-      path: '/',
+      path: '/hello/world',
       query: 'foo=bar',
-      full: '/?foo=bar#anchor',
+      full: `http://localhost:${server.address().port}/hello/world?foo=bar#anchor`,
       fragment: 'anchor'
     })
     t.deepEqual(line.http, {
