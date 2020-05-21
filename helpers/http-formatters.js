@@ -13,7 +13,8 @@ function formatHttpRequest (ecs, req) {
     remotePort,
     headers,
     hostname,
-    httpVersion
+    httpVersion,
+    socket
   } = req
 
   if (id) {
@@ -27,7 +28,7 @@ function formatHttpRequest (ecs, req) {
   ecs.http.request.method = method.toLowerCase()
 
   ecs.url = ecs.url || {}
-  ecs.url.full = url
+  ecs.url.full = (socket.encrypted ? 'https://' : 'http://') + headers.host + url
   var hasQuery = url.indexOf('?')
   var hasAnchor = url.indexOf('#')
   if (hasQuery > -1 && hasAnchor > -1) {
