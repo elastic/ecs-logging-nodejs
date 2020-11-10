@@ -51,18 +51,10 @@ function formatHttpRequest (ecs, req) {
     if (port) ecs.url.port = Number(port)
   }
 
-  if (remoteAddress || remotePort) {
-    ecs.client = ecs.client || {}
-    ecs.client.address = remoteAddress
-    ecs.client.port = remotePort
-  }
-
   ecs.client = ecs.client || {}
   // if req.ip exists from framework (Express, etc.), defer to that i.e. http://expressjs.com/en/4x/api.html
   if (req.ip) {
     ecs.client.address = req.ip
-  } else if (headers['x-forwarded-for']) {
-    ecs.client.address = req.headers['x-forwarded-for'].split(',')[0]
   } else if (socket && socket.remoteAddress) {
     ecs.client.address = socket.remoteAddress
     ecs.client.address = socket.remotePort
