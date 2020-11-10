@@ -9,8 +9,6 @@ function formatHttpRequest (ecs, req) {
     id,
     method,
     url,
-    remoteAddress,
-    remotePort,
     headers,
     hostname,
     httpVersion,
