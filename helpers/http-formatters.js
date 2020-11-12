@@ -55,7 +55,7 @@ function formatHttpRequest (ecs, req) {
     ecs.client.address = req.ip
   } else if (socket && socket.remoteAddress) {
     ecs.client.address = socket.remoteAddress
-    ecs.client.address = socket.remotePort
+    ecs.client.port = socket.remotePort
   }
 
   var hasHeaders = Object.keys(headers).length > 0
