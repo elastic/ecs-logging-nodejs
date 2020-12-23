@@ -4,6 +4,12 @@
 
 'use strict'
 
+// Create a schema (in https://json-schema.org/ format) from the YAML schema
+// files at https://github.com/elastic/ecs/tree/master/schemas for use in
+// validation tests.
+//
+// Prerequisite: This depends on having a local clone of ecs.git at "../.ecs".
+
 const { writeFileSync, readFileSync, readdirSync, statSync } = require('fs')
 const { join } = require('path')
 const yaml = require('js-yaml')

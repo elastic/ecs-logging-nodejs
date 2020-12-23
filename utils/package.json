@@ -1,14 +1,11 @@
 {
   "name": "utils",
   "version": "1.0.0",
-  "description": "",
+  "description": "local development utilities for this repo",
+  "private": true,
   "main": "create-schema.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
   "author": "Tomas Della Vedova",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "devDependencies": {
     "js-yaml": "^3.13.1"
   }
