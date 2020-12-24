@@ -50,7 +50,7 @@ test('Bad ecs log (on purpose)', t => {
   class TestTransport extends Transport {
     log (info, callback) {
       const line = JSON.parse(info[MESSAGE])
-      line.log.level = true
+      line['@timestamp'] = true
       t.false(validate(line))
       callback()
     }
@@ -92,7 +92,7 @@ test('Should not change the log level', t => {
   class TestTransport extends Transport {
     log (info, callback) {
       const line = JSON.parse(info[MESSAGE])
-      t.is(line.log.level, 'error')
+      t.is(line['log.level'], 'error')
       callback()
     }
   }
@@ -225,12 +225,12 @@ test('Keys order', t => {
       if (count++ === 0) {
         t.is(
           info[MESSAGE],
-          `{"@timestamp":"${line['@timestamp']}","log":{"level":"info","logger":"winston"},"message":"ecs is cool!","ecs":{"version":"${version}"}}`
+          `{"@timestamp":"${line['@timestamp']}","log.level":"info","message":"ecs is cool!","ecs":{"version":"${version}"}}`
         )
       } else {
         t.is(
           info[MESSAGE],
-          `{"@timestamp":"${line['@timestamp']}","log":{"level":"error","logger":"winston"},"message":"ecs is cool!","ecs":{"version":"${version}"},"hello":"world"}`
+          `{"@timestamp":"${line['@timestamp']}","log.level":"error","message":"ecs is cool!","ecs":{"version":"${version}"},"hello":"world"}`
         )
       }
       callback()

@@ -28,10 +28,7 @@ const reservedKeys = [
 function ecsFormat (log) {
   var ecs = {
     '@timestamp': new Date().toISOString(),
-    log: {
-      level: log.level,
-      logger: 'winston'
-    },
+    'log.level': log.level,
     message: log.message,
     ecs: { version }
   }
