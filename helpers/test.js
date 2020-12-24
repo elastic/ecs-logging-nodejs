@@ -27,10 +27,7 @@ const validate = ajv.compile(require('../utils/schema.json'))
 test('Stringify should return a valid ecs json', t => {
   const ecs = {
     '@timestamp': new Date().toISOString(),
-    log: {
-      level: 'info',
-      logger: 'test'
-    },
+    'log.level': 'info',
     message: 'hello world',
     ecs: {
       version: '1.4.0'
@@ -44,10 +41,7 @@ test('Stringify should return a valid ecs json', t => {
 test('Bad ecs json (on purpose)', t => {
   const ecs = {
     '@timestamp': 'not a date',
-    log: {
-      level: 'info',
-      logger: 'test'
-    },
+    'log.level': 'info',
     message: true,
     ecs: {
       version: '1.4.0'
@@ -81,10 +75,7 @@ test.cb('formatHttpRequest and formatHttpResponse should returna valid ecs objec
   function handler (req, res) {
     const ecs = {
       '@timestamp': new Date().toISOString(),
-      log: {
-        level: 'info',
-        logger: 'test'
-      },
+      'log.level': 'info',
       message: 'hello world',
       ecs: {
         version: '1.4.0'
