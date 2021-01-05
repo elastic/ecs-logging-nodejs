@@ -13,10 +13,10 @@ const stringify = build({
   type: 'object',
   properties: {
     '@timestamp': string,
+    'log.level': string,
     log: {
       type: 'object',
       properties: {
-        level: string,
         logger: string
       }
     },
