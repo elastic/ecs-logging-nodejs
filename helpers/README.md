@@ -4,7 +4,7 @@
 
 [![Build Status](https://apm-ci.elastic.co/buildStatus/icon?job=apm-agent-nodejs%2Fecs-logging-js-mbp%2Fmaster)](https://apm-ci.elastic.co/job/apm-agent-nodejs/job/ecs-logging-js-mbp/job/master/)  [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](http://standardjs.com/)
 
-A set of helpers for the ECS logging libraries.  
+A set of helpers for the ECS logging libraries.
 You should not directly used this package, but the ECS logging libraries instead.
 
 ## Install
@@ -15,20 +15,20 @@ npm i @elastic/ecs-helpers
 ## API
 
 ### `version`
-The currently supported version of [Elastic Common Schema](https://www.elastic.co/guide/en/ecs/current/index.html),
+The currently supported version of [Elastic Common Schema](https://www.elastic.co/guide/en/ecs/current/index.html).
 
 ### `stringify`
-Function that serializes (very quickly!) an ECS object.
+Function that serializes (very quickly!) an ECS-format log record object.
 
 ```js
 const { stringify } = require('@elastic/ecs-helpers')
 const ecs = {
   '@timestamp': new Date().toISOString(),
+  'log.level': 'info',
+  message: 'hello world',
   log: {
-    level: 'info',
     logger: 'test'
   },
-  message: 'hello world',
   ecs: {
     version: '1.4.0'
   }
@@ -45,11 +45,11 @@ The request object should be Node.js's core request object.
 const { formatHttpRequest } = require('@elastic/ecs-helpers')
 const ecs = {
   '@timestamp': new Date().toISOString(),
+  'log.level': 'info',
+  message: 'hello world',
   log: {
-    level: 'info',
     logger: 'test'
   },
-  message: 'hello world',
   ecs: {
     version: '1.4.0'
   }
@@ -67,11 +67,11 @@ The response object should be Node.js's core response object.
 const { formatHttpResponse } = require('@elastic/ecs-helpers')
 const ecs = {
   '@timestamp': new Date().toISOString(),
+  'log.level': 'info',
+  message: 'hello world',
   log: {
-    level: 'info',
     logger: 'test'
   },
-  message: 'hello world',
   ecs: {
     version: '1.4.0'
   }

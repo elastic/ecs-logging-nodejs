@@ -4,7 +4,7 @@
 
 - Change `stringify()` to serialize "log.level" as a top-level dotted field
   per <https://github.com/elastic/ecs-logging/pull/33>.
-  ([#25](https://github.com/elastic/ecs-logging-js/pull/25))
+  ([#27](https://github.com/elastic/ecs-logging-js/pull/27))
 
 ## v0.2.1
 
