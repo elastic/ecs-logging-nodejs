@@ -59,7 +59,7 @@ test.cb('Keys order', t => {
 
   const stream = split().on('data', line => {
     const log = JSON.parse(line)
-    t.is(line, `{"@timestamp":"${log['@timestamp']}","log":{"level":"info","logger":"morgan"},"message":"${JSON.stringify(log.message).slice(1, -1)}","ecs":{"version":"${version}"},"http":{"version":"1.1","request":{"method":"post","headers":{"accept-encoding":"gzip, deflate","content-type":"application/json","host":"${log.http.request.headers.host}","connection":"close"},"body":{"bytes":17}},"response":{"status_code":200,"headers":{"x-powered-by":"Express"}}},"url":{"path":"/","domain":"localhost","query":"foo=bar","full":"http://localhost:${server.address().port}/?foo=bar"},"user_agent":{"original":"cool-agent"}}`)
+    t.is(line, `{"@timestamp":"${log['@timestamp']}","log.level":"info","message":"${JSON.stringify(log.message).slice(1, -1)}","ecs":{"version":"${version}"},"http":{"version":"1.1","request":{"method":"post","headers":{"accept-encoding":"gzip, deflate","content-type":"application/json","host":"${log.http.request.headers.host}","connection":"close"},"body":{"bytes":17}},"response":{"status_code":200,"headers":{"x-powered-by":"Express"}}},"url":{"path":"/","domain":"localhost","query":"foo=bar","full":"http://localhost:${server.address().port}/?foo=bar"},"user_agent":{"original":"cool-agent"}}`)
   })
 
   const app = express()

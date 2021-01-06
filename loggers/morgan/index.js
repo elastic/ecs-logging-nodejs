@@ -19,10 +19,7 @@ function ecsFormat (format = morgan.combined) {
   function formatter (token, req, res) {
     var ecs = {
       '@timestamp': new Date().toISOString(),
-      log: {
-        level: res.statusCode < 500 ? 'info' : 'error',
-        logger: 'morgan'
-      },
+      'log.level': res.statusCode < 500 ? 'info' : 'error',
       message: messageFormat(token, req, res),
       ecs: { version }
     }

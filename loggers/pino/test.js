@@ -24,11 +24,23 @@ test('Should produce valid ecs logs', t => {
   t.plan(2)
 
   const stream = split(JSON.parse).on('data', line => {
-    t.deepEqual(line.log, { level: 'info', logger: 'pino' })
+    t.deepEqual(line['log.level'], 'info')
     t.true(validate(line))
   })
 
   const pino = Pino({ ...ecsFormat() }, stream)
+  pino.info('Hello world')
+})
+
+test('Should map "name" to "log.logger"', t => {
+  t.plan(2)
+
+  const stream = split(JSON.parse).on('data', line => {
+    t.deepEqual(line.log, { logger: 'myName' })
+    t.true(validate(line))
+  })
+
+  const pino = Pino({ name: 'myName', ...ecsFormat() }, stream)
   pino.info('Hello world')
 })
 

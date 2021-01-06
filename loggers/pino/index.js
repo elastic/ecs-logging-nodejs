@@ -14,23 +14,40 @@ function build () {
   return {
     formatters: {
       level (label, number) {
-        return {
-          log: {
-            level: label,
-            logger: 'pino'
-          }
-        }
+        return { 'log.level': label }
       },
 
+      // Add the following ECS fields:
+      // - https://www.elastic.co/guide/en/ecs/current/ecs-process.html#field-process-pid
+      // - https://www.elastic.co/guide/en/ecs/current/ecs-host.html#field-host-hostname
+      // - https://www.elastic.co/guide/en/ecs/current/ecs-log.html#field-log-logger
+      //
+      // This is called once at logger creation, and for each child logger creation.
       bindings (bindings) {
-        return {
+        const {
+          // We assume the default `pid` and `hostname` bindings
+          // (https://getpino.io/#/docs/api?id=bindings) will be always be
+          // defined because currently one cannot use this package *and*
+          // pass a custom `formatters` to a pino logger.
+          pid,
+          hostname,
+          // name is defined if `log = pino({name: 'my name', ...})`
+          name
+        } = bindings
+
+        const ecsBindings = {
           process: {
-            pid: bindings.pid
+            pid: pid
           },
           host: {
-            hostname: bindings.hostname
+            hostname: hostname
           }
         }
+        if (name !== undefined) {
+          ecsBindings.log = { logger: name }
+        }
+
+        return ecsBindings
       },
 
       log (obj) {
