@@ -11,11 +11,9 @@ submitting bug reports and feature requests or writing code.
 ## Repository structure
 
 This repository contains multiple packages, that you can find inside the `loggers/*`
-folder and inside the `helper` folder.  
+folder and inside the `helper` folder.
 Every package has its own `package.json` and `node_modules` folder, same for test
-and documentation.  
-You can run the test of a specific package by going inside its directory and run `npm test`, or you can run all the test by using the script present in `.ci/run_test.sh`.
-You can also install all the dependencies with `.ci/run_install.sh`.
+and documentation.
 
 ## Code contributions
 
@@ -32,9 +30,15 @@ Once your changes are ready to submit for review:
 
 1. Test your changes
 
-    Run the test suite to make sure that nothing is broken.
-    You can either run the test of a single package with `npm test`
-    or run the script in `.ci/run_test.sh`, which will run the test for all the packages.
+    Run the test suite to make sure that nothing is broken. For a single
+    package:
+
+        npm test
+
+    Or for all packages:
+
+        .ci/run_install.sh   # to install dependencies
+        .ci/run_test.sh
 
 2. Submit a pull request
 
@@ -63,8 +67,12 @@ Once your changes are ready to submit for review:
 
 If you have access to make releases, the process is as follows:
 
-1. Update the version in `package.json` according to the scale of the change. (major, minor or patch)
-1. Commit changes with message `Bumped vx.y.z` where `x.y.z` is the version in `package.json`
-1. Update the corresponding CHANGELOG.md`
+1. Update the version in `package.json` according to the scale of the change
+   (major, minor or patch).
+1. Update the corresponding "CHANGELOG.md".
+1. Commit changes with message `Bumped vx.y.z` where `x.y.z` is the version in
+   "package.json".
 1. Wait for CI to finish running the test.
-1. Publish to npm with `npm publish` *(see [publish](https://docs.npmjs.com/cli/publish) and [dist-tag](https://docs.npmjs.com/cli/dist-tag) docs)*
+1. Publish to npm with `npm publish` *(see
+   [publish](https://docs.npmjs.com/cli/publish) and
+   [dist-tag](https://docs.npmjs.com/cli/dist-tag) docs)*
