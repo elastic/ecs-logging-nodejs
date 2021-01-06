@@ -3,6 +3,9 @@
   "version": "0.2.0",
   "description": "A formatter for the pino logger compatible with Elastic Common Schema.",
   "main": "index.js",
+  "files": [
+      "index.js"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/elastic/ecs-logging-js.git"
