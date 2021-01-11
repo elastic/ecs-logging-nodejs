@@ -36,6 +36,9 @@ function build () {
         } = bindings
 
         const ecsBindings = {
+          ecs: {
+            version
+          },
           process: {
             pid: pid
           },
@@ -58,8 +61,6 @@ function build () {
           response,
           ...ecs
         } = obj
-
-        ecs.ecs = { version }
 
         if (req || request) {
           formatHttpRequest(ecs, req || request)

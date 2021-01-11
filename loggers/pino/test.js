@@ -20,12 +20,13 @@ const ajv = Ajv({
 })
 const validate = ajv.compile(require('../../utils/schema.json'))
 
-test('Should produce valid ecs logs', t => {
-  t.plan(2)
-
+test.cb('Should produce valid ecs logs', t => {
   const stream = split(JSON.parse).on('data', line => {
     t.deepEqual(line['log.level'], 'info')
+    t.assert(line.ecs, 'has "ecs" field')
+    t.assert(line.ecs.version, 'has "ecs.version" field')
     t.true(validate(line))
+    t.end()
   })
 
   const pino = Pino({ ...ecsFormat() }, stream)
