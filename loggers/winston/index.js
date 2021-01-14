@@ -25,32 +25,32 @@ const reservedKeys = [
   'response'
 ]
 
-function ecsFormat (log) {
-  var ecs = {
+function ecsTransform (info) {
+  var ecsFields = {
     '@timestamp': new Date().toISOString(),
-    'log.level': log.level,
-    message: log.message,
+    'log.level': info.level,
+    message: info.message,
     ecs: { version }
   }
 
-  if (log.req || log.request) {
-    formatHttpRequest(ecs, log.req || log.request)
+  if (info.req || info.request) {
+    formatHttpRequest(ecsFields, info.req || info.request)
   }
 
-  if (log.res || log.response) {
-    formatHttpResponse(ecs, log.res || log.response)
+  if (info.res || info.response) {
+    formatHttpResponse(ecsFields, info.res || info.response)
   }
 
-  var keys = Object.keys(log)
+  var keys = Object.keys(info)
   for (var i = 0, len = keys.length; i < len; i++) {
     var key = keys[i]
     if (reservedKeys.indexOf(key) === -1) {
-      ecs[key] = log[key]
+      ecsFields[key] = info[key]
     }
   }
 
-  log[MESSAGE] = stringify(ecs)
-  return log
+  info[MESSAGE] = stringify(ecsFields)
+  return info
 }
 
-module.exports = format(ecsFormat)
+module.exports = format(ecsTransform)
