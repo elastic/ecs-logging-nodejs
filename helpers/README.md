@@ -18,6 +18,7 @@ npm i @elastic/ecs-helpers
 The currently supported version of [Elastic Common Schema](https://www.elastic.co/guide/en/ecs/current/index.html).
 
 ### `stringify`
+
 Function that serializes (very quickly!) an ECS-format log record object.
 
 ```js
@@ -36,6 +37,12 @@ const ecs = {
 
 console.log(stringify(ecs))
 ```
+
+Note: This uses [fast-json-stringify](https://github.com/fastify/fast-json-stringify)
+for serialization. By design this chooses speed over supporting serialization
+of objects with circular references. This generally means that ecs-logging-js
+libraries will throw a "Converting circular structure to JSON" exception if an
+attempt is made to log an object with circular references.
 
 ### `formatHttpRequest`
 Function that enhances an ECS object with http request data.
