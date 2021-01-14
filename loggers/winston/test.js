@@ -127,7 +127,7 @@ test('Should append any additional property to the log message', t => {
 test('http request and response (req, res keys)', t => {
   const cap = new CaptureTransport()
   const logger = winston.createLogger({
-    format: ecsFormat(),
+    format: ecsFormat({ convertReqRes: true }),
     transports: [cap]
   })
 
@@ -136,42 +136,6 @@ test('http request and response (req, res keys)', t => {
     req.url += '#anchor'
     logger.info('incoming request', { req, res })
     res.end('ok')
-  }))
-
-  server.listen(0, () => {
-    const body = JSON.stringify({ hello: 'world' })
-    sget({
-      method: 'POST',
-      url: `http://localhost:${server.address().port}?foo=bar`,
-      body,
-      headers: {
-        'user-agent': 'cool-agent',
-        'content-type': 'application/json',
-        'content-length': Buffer.byteLength(body)
-      }
-    }, (err, _res) => {
-      t.error(err)
-      cap.records.forEach((rec) => {
-        t.ok(validate(rec), 'record is ECS valid')
-      })
-      server.stop()
-      t.end()
-    })
-  })
-})
-
-test('http request and response (request, response keys)', t => {
-  const cap = new CaptureTransport()
-  const logger = winston.createLogger({
-    format: ecsFormat(),
-    transports: [cap]
-  })
-
-  const server = stoppable(http.createServer(function handler (request, response) {
-    // test also the anchor
-    request.url += '#anchor'
-    logger.info('incoming request', { request, response })
-    response.end('ok')
   }))
 
   server.listen(0, () => {
