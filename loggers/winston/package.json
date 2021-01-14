@@ -4,7 +4,7 @@
   "description": "A formatter for the winston logger compatible with Elastic Common Schema.",
   "main": "index.js",
   "files": [
-      "index.js"
+    "index.js"
   ],
   "repository": {
     "type": "git",
@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/elastic/ecs-logging-js/blob/master/loggers/winston/README.md",
   "scripts": {
-    "test": "standard && ava -v"
+    "test": "standard && tap --100"
   },
   "engines": {
     "node": ">=10"
@@ -37,10 +37,10 @@
   },
   "devDependencies": {
     "ajv": "^6.11.0",
-    "ava": "^3.1.0",
     "simple-get": "^3.1.0",
     "standard": "^14.3.1",
     "stoppable": "^1.1.0",
+    "tap": "^14.x",
     "winston": "^3.2.1"
   }
 }

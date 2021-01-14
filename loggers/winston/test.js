@@ -5,7 +5,7 @@
 'use strict'
 
 const http = require('http')
-const test = require('ava')
+const test = require('tap').test
 const sget = require('simple-get')
 const stoppable = require('stoppable')
 const winston = require('winston')
@@ -23,172 +23,121 @@ const ajv = Ajv({
 })
 const validate = ajv.compile(require('../../utils/schema.json'))
 
+// Winston transport to capture logged records. Parsed JSON records are on
+// `.records`. Raw records (what Winston calls `info` objects) are on `.infos`.
+class CaptureTransport extends Transport {
+  constructor () {
+    super()
+    this.records = []
+    this.infos = []
+  }
+
+  log (info, callback) {
+    this.infos.push(info)
+    const record = JSON.parse(info[MESSAGE])
+    this.records.push(record)
+    callback()
+  }
+}
+
 test('Should produce valid ecs logs', t => {
   t.plan(2)
 
-  class TestTransport extends Transport {
-    log (info, callback) {
-      const line = JSON.parse(info[MESSAGE])
-      t.true(validate(line))
-      callback()
-    }
-  }
-
+  const cap = new CaptureTransport()
   const logger = winston.createLogger({
-    level: 'info',
     format: ecsFormat(),
-    transports: [new TestTransport()]
+    transports: [cap]
   })
-
   logger.info('ecs is cool!')
   logger.error('ecs is cool!', { hello: 'world' })
+
+  cap.records.forEach((rec) => {
+    t.true(validate(rec))
+  })
+  t.end()
 })
 
 test('Bad ecs log (on purpose)', t => {
-  t.plan(2)
+  t.plan(1)
 
-  class TestTransport extends Transport {
-    log (info, callback) {
-      const line = JSON.parse(info[MESSAGE])
-      line['@timestamp'] = true
-      t.false(validate(line))
-      callback()
-    }
-  }
-
+  const cap = new CaptureTransport()
   const logger = winston.createLogger({
-    level: 'info',
     format: ecsFormat(),
-    transports: [new TestTransport()]
+    transports: [cap]
   })
+  logger.info('hi', { hello: 'world' })
 
-  logger.info('ecs is cool!')
-  logger.error('ecs is cool!', { hello: 'world' })
+  cap.records.forEach((rec) => {
+    rec['@timestamp'] = true
+    t.false(validate(rec))
+  })
+  t.end()
 })
 
 test('Should not change the message', t => {
   t.plan(1)
 
-  class TestTransport extends Transport {
-    log (info, callback) {
-      const line = JSON.parse(info[MESSAGE])
-      t.is(line.message, 'ecs is cool!')
-      callback()
-    }
-  }
-
+  const cap = new CaptureTransport()
   const logger = winston.createLogger({
-    level: 'info',
     format: ecsFormat(),
-    transports: [new TestTransport()]
+    transports: [cap]
   })
+  logger.info('hi')
 
-  logger.info('ecs is cool!')
+  cap.records.forEach((rec) => {
+    t.equal(rec.message, 'hi')
+  })
+  t.end()
 })
 
 test('Should not change the log level', t => {
   t.plan(1)
 
-  class TestTransport extends Transport {
-    log (info, callback) {
-      const line = JSON.parse(info[MESSAGE])
-      t.is(line['log.level'], 'error')
-      callback()
-    }
-  }
-
+  const cap = new CaptureTransport()
   const logger = winston.createLogger({
-    level: 'info',
     format: ecsFormat(),
-    transports: [new TestTransport()]
+    transports: [cap]
   })
+  logger.error('oh noes')
 
-  logger.error('ecs is cool!')
+  cap.records.forEach((rec) => {
+    // XXX t.equal
+    t.equal(rec['log.level'], 'error')
+  })
+  t.end()
 })
 
 test('Should append any additional property to the log message', t => {
   t.plan(2)
 
-  class TestTransport extends Transport {
-    log (info, callback) {
-      const line = JSON.parse(info[MESSAGE])
-      t.is(line.foo, 'bar')
-      t.is(line.faz, 'baz')
-      callback()
-    }
-  }
-
+  const cap = new CaptureTransport()
   const logger = winston.createLogger({
-    level: 'info',
     format: ecsFormat(),
-    transports: [new TestTransport()]
+    transports: [cap]
   })
+  logger.info('hi', { foo: 'bar', faz: 'baz' })
 
-  logger.info('ecs is cool!', { foo: 'bar', faz: 'baz' })
+  cap.records.forEach((rec) => {
+    t.equal(rec.foo, 'bar')
+    t.equal(rec.faz, 'baz')
+  })
+  t.end()
 })
 
-test.cb('http request and response (req, res keys)', t => {
-  t.plan(2)
-
-  class TestTransport extends Transport {
-    log (info, callback) {
-      const line = JSON.parse(info[MESSAGE])
-      t.true(validate(line))
-      callback()
-    }
-  }
-
+test('http request and response (req, res keys)', t => {
+  const cap = new CaptureTransport()
   const logger = winston.createLogger({
-    level: 'info',
     format: ecsFormat(),
-    transports: [new TestTransport()]
+    transports: [cap]
   })
 
-  const server = stoppable(http.createServer(handler))
-  server.listen(0, () => {
-    const body = JSON.stringify({ hello: 'world' })
-    sget({
-      method: 'POST',
-      url: `http://localhost:${server.address().port}?foo=bar`,
-      body,
-      headers: {
-        'user-agent': 'cool-agent',
-        'content-type': 'application/json',
-        'content-length': Buffer.byteLength(body)
-      }
-    }, (err, res) => {
-      t.falsy(err)
-      server.stop()
-      t.end()
-    })
-  })
-
-  function handler (req, res) {
+  const server = stoppable(http.createServer(function handler (req, res) {
     // test also the anchor
     req.url += '#anchor'
     logger.info('incoming request', { req, res })
     res.end('ok')
-  }
-})
+  }))
 
-test.cb('http request and response (request, response keys)', t => {
-  t.plan(2)
-
-  class TestTransport extends Transport {
-    log (info, callback) {
-      const line = JSON.parse(info[MESSAGE])
-      t.true(validate(line))
-      callback()
-    }
-  }
-
-  const logger = winston.createLogger({
-    level: 'info',
-    format: ecsFormat(),
-    transports: [new TestTransport()]
-  })
-
-  const server = stoppable(http.createServer(handler))
   server.listen(0, () => {
     const body = JSON.stringify({ hello: 'world' })
     sget({
@@ -200,49 +149,67 @@ test.cb('http request and response (request, response keys)', t => {
         'content-type': 'application/json',
         'content-length': Buffer.byteLength(body)
       }
-    }, (err, res) => {
-      t.falsy(err)
+    }, (err, _res) => {
+      t.error(err)
+      cap.records.forEach((rec) => {
+        t.ok(validate(rec), 'record is ECS valid')
+      })
       server.stop()
       t.end()
     })
   })
+})
 
-  function handler (request, response) {
+test('http request and response (request, response keys)', t => {
+  const cap = new CaptureTransport()
+  const logger = winston.createLogger({
+    format: ecsFormat(),
+    transports: [cap]
+  })
+
+  const server = stoppable(http.createServer(function handler (request, response) {
     // test also the anchor
     request.url += '#anchor'
     logger.info('incoming request', { request, response })
     response.end('ok')
-  }
+  }))
+
+  server.listen(0, () => {
+    const body = JSON.stringify({ hello: 'world' })
+    sget({
+      method: 'POST',
+      url: `http://localhost:${server.address().port}?foo=bar`,
+      body,
+      headers: {
+        'user-agent': 'cool-agent',
+        'content-type': 'application/json',
+        'content-length': Buffer.byteLength(body)
+      }
+    }, (err, _res) => {
+      t.error(err)
+      cap.records.forEach((rec) => {
+        t.ok(validate(rec), 'record is ECS valid')
+      })
+      server.stop()
+      t.end()
+    })
+  })
 })
 
 test('Keys order', t => {
   t.plan(2)
 
-  var count = 0
-  class TestTransport extends Transport {
-    log (info, callback) {
-      const line = JSON.parse(info[MESSAGE])
-      if (count++ === 0) {
-        t.is(
-          info[MESSAGE],
-          `{"@timestamp":"${line['@timestamp']}","log.level":"info","message":"ecs is cool!","ecs":{"version":"${version}"}}`
-        )
-      } else {
-        t.is(
-          info[MESSAGE],
-          `{"@timestamp":"${line['@timestamp']}","log.level":"error","message":"ecs is cool!","ecs":{"version":"${version}"},"hello":"world"}`
-        )
-      }
-      callback()
-    }
-  }
-
+  const cap = new CaptureTransport()
   const logger = winston.createLogger({
-    level: 'info',
     format: ecsFormat(),
-    transports: [new TestTransport()]
+    transports: [cap]
   })
+  logger.info('hi') // index 0
+  logger.error('oh noes', { hello: 'world' }) // index 1
 
-  logger.info('ecs is cool!')
-  logger.error('ecs is cool!', { hello: 'world' })
+  t.equal(cap.infos[0][MESSAGE],
+    `{"@timestamp":"${cap.records[0]['@timestamp']}","log.level":"info","message":"hi","ecs":{"version":"${version}"}}`)
+  t.equal(cap.infos[1][MESSAGE],
+    `{"@timestamp":"${cap.records[1]['@timestamp']}","log.level":"error","message":"oh noes","ecs":{"version":"${version}"},"hello":"world"}`)
+  t.end()
 })
