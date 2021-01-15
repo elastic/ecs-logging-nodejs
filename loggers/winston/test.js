@@ -75,8 +75,6 @@ test('Bad ecs log (on purpose)', t => {
 })
 
 test('Should not change the message', t => {
-  t.plan(1)
-
   const cap = new CaptureTransport()
   const logger = winston.createLogger({
     format: ecsFormat(),
@@ -91,8 +89,6 @@ test('Should not change the message', t => {
 })
 
 test('Should not change the log level', t => {
-  t.plan(1)
-
   const cap = new CaptureTransport()
   const logger = winston.createLogger({
     format: ecsFormat(),
@@ -101,15 +97,12 @@ test('Should not change the log level', t => {
   logger.error('oh noes')
 
   cap.records.forEach((rec) => {
-    // XXX t.equal
     t.equal(rec['log.level'], 'error')
   })
   t.end()
 })
 
 test('Should append any additional property to the log message', t => {
-  t.plan(2)
-
   const cap = new CaptureTransport()
   const logger = winston.createLogger({
     format: ecsFormat(),
@@ -125,8 +118,6 @@ test('Should append any additional property to the log message', t => {
 })
 
 test('can log non-HTTP res & req fields', t => {
-  t.plan(2)
-
   const cap = new CaptureTransport()
   const logger = winston.createLogger({
     format: ecsFormat(),
