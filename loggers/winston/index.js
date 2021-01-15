@@ -15,10 +15,9 @@ const {
 
 const reservedFields = {
   level: true,
-  log: true,
+  'log.level': true,
   ecs: true,
   '@timestamp': true,
-  message: true,
   req: true,
   res: true
 }

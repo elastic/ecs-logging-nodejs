@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- Fix guarding of the top-level 'log' and 'log.level' fields. A log statement
+  can now set ['log' fields](https://www.elastic.co/guide/en/ecs/current/ecs-log.html)
+  e.g.:
+
+  ```
+  log.info('hi', { log: { logger: 'myService' } })
+  ```
+
+  Also 'log.level' can now not accidentally be overwritten in a log statement.
+
 - BREAKING CHANGE: Conversion of HTTP request and response objects is no longer
   done by default. One must use the new `convertReqRes: true` formatter option.
   As well, only the meta keys `req` and `res` will be handled. Before this

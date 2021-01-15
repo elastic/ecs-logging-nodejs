@@ -66,13 +66,13 @@ test('Bad ecs log (on purpose)', t => {
   logger.info('hi', { hello: 'world' })
 
   cap.records.forEach((rec) => {
-    rec['@timestamp'] = true
+    rec['@timestamp'] = true // Intentionally break it
     t.false(validate(rec))
   })
   t.end()
 })
 
-test('Should not change the message', t => {
+test('Should set expected @timestamp, "log.level", message', t => {
   const cap = new CaptureTransport()
   const logger = winston.createLogger({
     format: ecsFormat(),
@@ -80,27 +80,19 @@ test('Should not change the message', t => {
   })
   logger.info('hi')
 
-  cap.records.forEach((rec) => {
-    t.equal(rec.message, 'hi')
-  })
+  t.equal(cap.records.length, 1)
+  const rec = cap.records[0]
+  t.equal(typeof (rec['@timestamp']), 'string', '@timestamp')
+  t.equal(rec['log.level'], 'info', 'log.level')
+  t.equal(rec.message, 'hi', 'message')
+
+  // Should *not* have a 'level' field.
+  t.notOk(rec.level, 'should not have a "level" field')
+
   t.end()
 })
 
-test('Should not change the log level', t => {
-  const cap = new CaptureTransport()
-  const logger = winston.createLogger({
-    format: ecsFormat(),
-    transports: [cap]
-  })
-  logger.error('oh noes')
-
-  cap.records.forEach((rec) => {
-    t.equal(rec['log.level'], 'error')
-  })
-  t.end()
-})
-
-test('Should append any additional property to the log message', t => {
+test('Should append additional fields to the log record', t => {
   const cap = new CaptureTransport()
   const logger = winston.createLogger({
     format: ecsFormat(),
@@ -112,6 +104,40 @@ test('Should append any additional property to the log message', t => {
     t.equal(rec.foo, 'bar')
     t.equal(rec.faz, 'baz')
   })
+  t.end()
+})
+
+test('Should not be able to override ECS fields with additional fields', t => {
+  const cap = new CaptureTransport()
+  const logger = winston.createLogger({
+    format: ecsFormat(),
+    transports: [cap]
+  })
+  // Even if specified in the additional fields (what Winston calls "meta"),
+  // the core ECS fields should not be overriden.
+  logger.info('hi', {
+    'log.level': 'boom',
+    log: 'boom',
+    ecs: 'boom',
+    '@timestamp': 'boom'
+  })
+
+  const rec = cap.records[0]
+  t.equal(rec['log.level'], 'info', '"log.level"')
+  t.equal(rec.ecs.version, version, 'ecs.version')
+  t.notEqual(rec['@timestamp'], 'boom', '@timestamp')
+  t.end()
+})
+
+test('Should be able to set log.logger', t => {
+  const cap = new CaptureTransport()
+  const logger = winston.createLogger({
+    format: ecsFormat(),
+    transports: [cap]
+  })
+  logger.info('hi', { log: { logger: 'myService' } })
+
+  t.equal(cap.records[0].log.logger, 'myService')
   t.end()
 })
 
