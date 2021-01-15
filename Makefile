@@ -23,3 +23,8 @@ fmt:
 .PHONY: test
 test:
 	./.ci/run-test.sh
+
+.PHONY: setup-pre-commit-hook
+setup-pre-commit-hook:
+	@cp utils/pre-commit-hook.sh .git/hooks/pre-commit
+	@chmod 751 .git/hooks/pre-commit
