@@ -124,6 +124,23 @@ test('Should append any additional property to the log message', t => {
   t.end()
 })
 
+test('can log non-HTTP res & req fields', t => {
+  t.plan(2)
+
+  const cap = new CaptureTransport()
+  const logger = winston.createLogger({
+    format: ecsFormat(),
+    transports: [cap]
+  })
+  logger.info('hi', { req: { id: 42 }, res: { status: 'OK' } })
+
+  cap.records.forEach((rec) => {
+    t.equal(rec.req.id, 42)
+    t.equal(rec.res.status, 'OK')
+  })
+  t.end()
+})
+
 test('http request and response (req, res keys)', t => {
   const cap = new CaptureTransport()
   const logger = winston.createLogger({

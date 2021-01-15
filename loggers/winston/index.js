@@ -32,12 +32,18 @@ function ecsTransform (info, opts) {
     ecs: { version }
   }
 
-  if (opts.convertReqRes) {
-    if (info.req) {
+  if (info.req) {
+    if (opts.convertReqRes) {
       formatHttpRequest(ecsFields, info.req)
+    } else {
+      ecsFields.req = info.req
     }
-    if (info.res) {
+  }
+  if (info.res) {
+    if (opts.convertReqRes) {
       formatHttpResponse(ecsFields, info.res)
+    } else {
+      ecsFields.res = info.res
     }
   }
 
