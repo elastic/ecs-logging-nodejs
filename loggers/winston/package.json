@@ -43,5 +43,10 @@
     "standard": "^14.3.1",
     "tap": "^14.x",
     "winston": "^3.2.1"
+  },
+  "standard": {
+    "ignore": [
+      "/examples/node_modules"
+    ]
   }
 }
