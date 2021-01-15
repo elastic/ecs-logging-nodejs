@@ -6,8 +6,6 @@
 
 const http = require('http')
 const test = require('tap').test
-const sget = require('simple-get')
-const stoppable = require('stoppable')
 const winston = require('winston')
 const Transport = require('winston-transport')
 const { MESSAGE } = require('triple-beam')
@@ -139,32 +137,45 @@ test('http request and response (req, res keys)', t => {
     transports: [cap]
   })
 
-  const server = stoppable(http.createServer(function handler (req, res) {
-    logger.info('incoming request', { req })
+  const server = http.createServer(function handler (req, res) {
+    logger.info('incoming request', { req }) // record 0
     req.url += '#anchor'
     res.end('ok')
-    logger.info('sent response', { res })
-  }))
+    logger.info('sent response', { res }) // record 1
+  })
 
   server.listen(0, () => {
     const body = JSON.stringify({ hello: 'world' })
-    sget({
-      method: 'POST',
-      url: `http://localhost:${server.address().port}?foo=bar`,
-      body,
-      headers: {
-        'user-agent': 'cool-agent',
-        'content-type': 'application/json',
-        'content-length': Buffer.byteLength(body)
+    const req = http.request(
+      `http://localhost:${server.address().port}?foo=bar`,
+      {
+        method: 'POST',
+        headers: {
+          'user-agent': 'cool-agent',
+          'content-type': 'application/json',
+          'content-length': Buffer.byteLength(body)
+        }
+      },
+      function (res) {
+        res.on('data', function () {})
+        res.on('close', function () {
+          t.equal(cap.records.length, 2)
+          t.ok(validate(cap.records[0]), 'record 0 is ECS valid')
+          t.ok(validate(cap.records[1]), 'record 1 is ECS valid')
+          // Spot check that some of the ECS HTTP fields are there.
+          t.equal(cap.records[0].http.request.method, 'post',
+            'http.request.method')
+          t.equal(cap.records[1].http.response.status_code, 200,
+            'http.response.status_code')
+          server.close(function () {
+            t.end()
+          })
+        })
       }
-    }, (err, _res) => {
-      t.error(err)
-      cap.records.forEach((rec) => {
-        t.ok(validate(rec), 'record is ECS valid')
-      })
-      server.stop()
-      t.end()
-    })
+    )
+
+    req.write(body)
+    req.end()
   })
 })
 
