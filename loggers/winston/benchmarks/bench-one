@@ -1,0 +1,35 @@
+#!/bin/bash
+#
+# Run a benchmarking load test on the given server script.
+# Adapted from https://github.com/pinojs/pino-http/blob/master/scripts/benchmark
+#
+
+if [ "$TRACE" != "" ]; then
+    export PS4='${BASH_SOURCE}:${LINENO}: ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
+    set -o xtrace
+fi
+set -o errexit
+set -o pipefail
+
+echo "## Benchmarking `basename $1`"
+echo
+echo "node: $(node --version)"
+echo "uname: $(uname -a)"
+echo "git: $(git describe --all --long --dirty)"
+
+function cleanup {
+	# Do a silent cleanup
+	kill $server_pid > /dev/null 2>&1
+	wait $server_pid 2> /dev/null || true
+}
+trap cleanup EXIT ERR
+
+node "$1" > /dev/null &
+server_pid=$!
+
+echo
+echo "Warmup 5s run"
+autocannon -c 100 -d 5 -p 10 localhost:3000 > /dev/null 2>&1
+# Reported longer run (to attempt to get stddev down)
+autocannon -c 100 -d 30 -p 10 localhost:3000
+echo

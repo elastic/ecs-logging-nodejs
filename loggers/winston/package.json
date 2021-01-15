@@ -28,6 +28,7 @@
   },
   "homepage": "https://github.com/elastic/ecs-logging-js/blob/master/loggers/winston/README.md",
   "scripts": {
+    "bench": "./benchmarks/bench",
     "test": "standard && tap --100 --timeout 5"
   },
   "engines": {
@@ -38,6 +39,7 @@
   },
   "devDependencies": {
     "ajv": "^6.11.0",
+    "autocannon": "^7.0.1",
     "standard": "^14.3.1",
     "tap": "^14.x",
     "winston": "^3.2.1"

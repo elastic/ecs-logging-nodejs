@@ -1,0 +1,21 @@
+#!/bin/bash
+#
+# Licensed to Elasticsearch B.V under one or more agreements.                                               // Elasticsearch B.V licenses this file to you under the Apache 2.0 License.
+# See the LICENSE file in the project root for more information
+#
+# For now the "bench" suite here is just to run a load test on
+# the simple "pong" HTTP server script here. This can be useful
+# for manually comparing the perf impact of code changes to this
+# module.
+#
+
+if [ "$TRACE" != "" ]; then
+    export PS4='${BASH_SOURCE}:${LINENO}: ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
+    set -o xtrace
+fi
+set -o errexit
+set -o pipefail
+
+TOP=$(cd "$(dirname "$0")/.." >/dev/null && pwd)
+
+$TOP/benchmarks/bench-one $TOP/benchmarks/server-pong.js
