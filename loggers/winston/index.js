@@ -20,12 +20,11 @@ const reservedKeys = [
   '@timestamp',
   'message',
   'req',
-  'request',
-  'res',
-  'response'
+  'res'
 ]
 
-function ecsTransform (info) {
+// https://github.com/winstonjs/winston#creating-custom-formats
+function ecsTransform (info, opts) {
   var ecsFields = {
     '@timestamp': new Date().toISOString(),
     'log.level': info.level,
@@ -33,12 +32,19 @@ function ecsTransform (info) {
     ecs: { version }
   }
 
-  if (info.req || info.request) {
-    formatHttpRequest(ecsFields, info.req || info.request)
+  if (info.req) {
+    if (opts.convertReqRes) {
+      formatHttpRequest(ecsFields, info.req)
+    } else {
+      ecsFields.req = info.req
+    }
   }
-
-  if (info.res || info.response) {
-    formatHttpResponse(ecsFields, info.res || info.response)
+  if (info.res) {
+    if (opts.convertReqRes) {
+      formatHttpResponse(ecsFields, info.res)
+    } else {
+      ecsFields.res = info.res
+    }
   }
 
   var keys = Object.keys(info)
