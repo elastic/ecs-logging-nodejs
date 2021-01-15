@@ -132,10 +132,10 @@ test('http request and response (req, res keys)', t => {
   })
 
   const server = stoppable(http.createServer(function handler (req, res) {
-    // test also the anchor
+    logger.info('incoming request', { req })
     req.url += '#anchor'
-    logger.info('incoming request', { req, res })
     res.end('ok')
+    logger.info('sent response', { res })
   }))
 
   server.listen(0, () => {
