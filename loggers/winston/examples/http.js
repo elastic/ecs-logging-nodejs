@@ -6,11 +6,11 @@
 
 const http = require('http')
 const winston = require('winston')
-const ecsFormat = require('../')
+const ecsFormat = require('../') // @elastic/ecs-winston-format
 
 const logger = winston.createLogger({
   level: 'info',
-  format: ecsFormat(),
+  format: ecsFormat({ convertReqRes: true }),  // <-- use convertReqRes option
   transports: [
     new winston.transports.Console()
   ]
@@ -18,10 +18,11 @@ const logger = winston.createLogger({
 
 const server = http.createServer(handler)
 server.listen(3000, () => {
-  console.log('Listening')
+  logger.info('listening at http://localhost:3000')
 })
 
 function handler (req, res) {
-  logger.info('incoming request', { req, res })
+  res.setHeader('Foo', 'Bar')
   res.end('ok')
+  logger.info('handled request', { req, res })  // <-- pass in `req` and/or `res`
 }

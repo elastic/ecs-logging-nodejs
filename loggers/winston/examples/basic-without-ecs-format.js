@@ -4,12 +4,19 @@
 
 'use strict'
 
+// This shows a basic Winston logging config *without ECS logging formatting*
+// for comparison with "basic.js". E.g. compare with `diff -u basic*.js`.
+
 const winston = require('winston')
-const ecsFormat = require('../') // @elastic/ecs-winston-format
 
 const logger = winston.createLogger({
   level: 'info',
-  format: ecsFormat(),
+  // Using @elastic/ecs-winston-format compares most closely with this
+  // winston format:
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.json()
+  ),
   transports: [
     new winston.transports.Console()
   ]
