@@ -13,15 +13,15 @@ const {
   formatHttpResponse
 } = require('@elastic/ecs-helpers')
 
-const reservedKeys = [
-  'level',
-  'log',
-  'ecs',
-  '@timestamp',
-  'message',
-  'req',
-  'res'
-]
+const reservedFields = {
+  level: true,
+  log: true,
+  ecs: true,
+  '@timestamp': true,
+  message: true,
+  req: true,
+  res: true
+}
 
 // https://github.com/winstonjs/winston#creating-custom-formats
 function ecsTransform (info, opts) {
@@ -50,7 +50,7 @@ function ecsTransform (info, opts) {
   var keys = Object.keys(info)
   for (var i = 0, len = keys.length; i < len; i++) {
     var key = keys[i]
-    if (reservedKeys.indexOf(key) === -1) {
+    if (!reservedFields[key]) {
       ecsFields[key] = info[key]
     }
   }
