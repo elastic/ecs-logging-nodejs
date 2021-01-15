@@ -4,7 +4,7 @@
   "description": "A formatter for the pino logger compatible with Elastic Common Schema.",
   "main": "index.js",
   "files": [
-      "index.js"
+    "index.js"
   ],
   "repository": {
     "type": "git",
@@ -16,6 +16,7 @@
     "formatter",
     "elasticsearch",
     "ecs",
+    "ecs-logging",
     "elastic",
     "common",
     "schema"

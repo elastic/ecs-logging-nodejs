@@ -16,6 +16,7 @@
     "formatter",
     "elasticsearch",
     "ecs",
+    "ecs-logging",
     "elastic",
     "common",
     "schema"
