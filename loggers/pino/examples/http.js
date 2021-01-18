@@ -8,7 +8,7 @@ const http = require('http')
 const ecsFormat = require('../') // @elastic/ecs-pino-format
 const pino = require('pino')
 
-const log = pino({ ...ecsFormat() })
+const log = pino({ ...ecsFormat({ convertReqRes: true }) })
 
 const server = http.createServer(function handler (req, res) {
   res.setHeader('Foo', 'Bar')

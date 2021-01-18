@@ -15,7 +15,7 @@ const express = require('express')
 const pino = require('pino')
 const pinoHttp = require('pino-http')
 
-const log = pino({ ...ecsFormat() })
+const log = pino({ ...ecsFormat({ convertReqRes: true }) })
 const app = express()
 app.set('env', 'test') // turns off Express's default console.error of errors
 
