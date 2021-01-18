@@ -6,14 +6,15 @@
 
 const app = require('express')()
 const morgan = require('morgan')
-const ecsFormat = require('./')()
+const ecsFormat = require('../') // @elastic/ecs-winston-format
 
-app.use(morgan(ecsFormat))
+app.use(morgan(ecsFormat()))
 
 app.get('/', function (req, res) {
   res.send('hello, world!')
 })
-
-app.listen(3000, () => {
-  console.log('Listening')
+app.get('/error', function (req, res, next) {
+  next(new Error('boom'))
 })
+
+app.listen(3000)
