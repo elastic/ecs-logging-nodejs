@@ -13,14 +13,19 @@ const {
 } = require('@elastic/ecs-helpers')
 
 function ecsFormat (format = morgan.combined) {
-  const messageFormat = morgan.compile(format)
-  return formatter
+  // `format` is a format *name* (e.g. 'combined'), format function (e.g.
+  // `morgan.combined`), or a format string (e.g. ':method :url :status')
+  // Resolve this to a format function a la morgan's own `getFormatFunction`.
+  let fmt = morgan[format] || format
+  if (typeof fmt !== 'function') {
+    fmt = morgan.compile(fmt)
+  }
 
-  function formatter (token, req, res) {
+  return function formatter (token, req, res) {
     var ecs = {
       '@timestamp': new Date().toISOString(),
       'log.level': res.statusCode < 500 ? 'info' : 'error',
-      message: messageFormat(token, req, res),
+      message: fmt(token, req, res),
       ecs: { version }
     }
 

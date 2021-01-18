@@ -4,6 +4,8 @@
 
 'use strict'
 
+const http = require('http')
+
 const test = require('ava')
 const sget = require('simple-get')
 const Ajv = require('ajv')
@@ -85,4 +87,115 @@ test.cb('Keys order', t => {
       t.end()
     })
   }))
+})
+
+test.cb('"format" argument - format name', t => {
+  t.plan(1)
+
+  // Example:
+  //  GET /?foo=bar 200 - - 0.073 ms
+  const format = 'tiny' // https://github.com/expressjs/morgan#tiny
+  const msgRe = /^GET \/\?foo=bar 200 - - \d+\.\d+ ms$/
+  const stream = split().on('data', line => {
+    const rec = JSON.parse(line)
+    t.true(msgRe.test(rec.message),
+      `rec.message ${JSON.stringify(rec.message)} matches ${msgRe}`)
+  })
+
+  // Express app using the given morgan `format`.
+  const app = express()
+  app.use(morgan(ecsFormat(format), { stream }))
+  app.use('/', (req, res) => {
+    res.end('ok')
+  })
+
+  // Make a request, then end the test.
+  const server = app.listen(0, () => {
+    const req = http.request(
+      `http://localhost:${server.address().port}?foo=bar`,
+      function (res) {
+        res.on('data', function () {})
+        res.on('close', function () {
+          server.close(function () {
+            t.end()
+          })
+        })
+      }
+    )
+    req.end()
+  })
+})
+
+test.cb('"format" argument - format string', t => {
+  t.plan(1)
+
+  // Example:
+  //  GET /?foo=bar 200
+  const format = ':method :url :status'
+  const msgRe = /^GET \/\?foo=bar 200$/
+  const stream = split().on('data', line => {
+    const rec = JSON.parse(line)
+    t.true(msgRe.test(rec.message),
+      `rec.message ${JSON.stringify(rec.message)} matches ${msgRe}`)
+  })
+
+  // Express app using the given morgan `format`.
+  const app = express()
+  app.use(morgan(ecsFormat(format), { stream }))
+  app.use('/', (req, res) => {
+    res.end('ok')
+  })
+
+  // Make a request, then end the test.
+  const server = app.listen(0, () => {
+    const req = http.request(
+      `http://localhost:${server.address().port}?foo=bar`,
+      function (res) {
+        res.on('data', function () {})
+        res.on('close', function () {
+          server.close(function () {
+            t.end()
+          })
+        })
+      }
+    )
+    req.end()
+  })
+})
+
+test.cb('"format" argument - format function', t => {
+  t.plan(1)
+
+  // Example:
+  //  GET /?foo=bar 200 - - 0.073 ms
+  const format = morgan.tiny
+  const msgRe = /^GET \/\?foo=bar 200 - - \d+\.\d+ ms$/
+  const stream = split().on('data', line => {
+    const rec = JSON.parse(line)
+    t.true(msgRe.test(rec.message),
+      `rec.message ${JSON.stringify(rec.message)} matches ${msgRe}`)
+  })
+
+  // Express app using the given morgan `format`.
+  const app = express()
+  app.use(morgan(ecsFormat(format), { stream }))
+  app.use('/', (req, res) => {
+    res.end('ok')
+  })
+
+  // Make a request, then end the test.
+  const server = app.listen(0, () => {
+    const req = http.request(
+      `http://localhost:${server.address().port}?foo=bar`,
+      function (res) {
+        res.on('data', function () {})
+        res.on('close', function () {
+          server.close(function () {
+            t.end()
+          })
+        })
+      }
+    )
+    req.end()
+  })
 })

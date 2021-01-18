@@ -1,5 +1,9 @@
 # @elastic/ecs-morgan-format Changelog
 
+## Unreleased
+
+- Fix passing of a format *name*, e.g. `app.use(morgan(ecsFormat('tiny')))`.
+
 ## v0.3.0
 
 - Serialize "log.level" as a top-level dotted field per
