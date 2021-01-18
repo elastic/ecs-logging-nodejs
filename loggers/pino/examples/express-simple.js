@@ -4,12 +4,12 @@
 
 'use strict'
 
-// This shows how one could use @elastic/ecs-winston-format with Express.
+// This shows how one could use @elastic/ecs-pino-format with Express.
 // This implements simple Express middleware to do so.
 
-const ecsFormat = require('../') // @elastic/ecs-winston-format
+const ecsFormat = require('../') // @elastic/ecs-pino-format
 const express = require('express')
-const winston = require('winston')
+const pino = require('pino')
 
 // Simple express middleware for request logging.
 function expressRequestLogger (opts) {
@@ -33,23 +33,17 @@ function expressErrorLogger (opts) {
 
   return function (err, req, res, next) {
     // TODO: error formatting `convertErr`
-    logger.info(`error handling ${req.method} ${req.path}`, { err })
+    logger.info({ err }, `error handling ${req.method} ${req.path}`)
     next(err)
   }
 }
 
-const logger = winston.createLogger({
-  format: ecsFormat({ convertReqRes: true }), // be sure to set convertReqRes
-  transports: [
-    new winston.transports.Console()
-  ]
-})
-
+const log = pino({ ...ecsFormat() })
 const app = express()
 app.set('env', 'test') // turns off Express's default console.error of errors
 
 // Attach request logger middleware *early*.
-app.use(expressRequestLogger({ logger }))
+app.use(expressRequestLogger({ logger: log }))
 
 app.get('/', function (req, res, next) {
   res.setHeader('Foo', 'Bar')
@@ -61,8 +55,8 @@ app.get('/error', function (req, res, next) {
 })
 
 // Express error loggers should be the last middleware added.
-app.use(expressErrorLogger({ logger }))
+app.use(expressErrorLogger({ logger: log }))
 
 app.listen(3000, function () {
-  logger.info(`listening at http://localhost:${this.address().port}`)
+  log.info(`listening at http://localhost:${this.address().port}`)
 })

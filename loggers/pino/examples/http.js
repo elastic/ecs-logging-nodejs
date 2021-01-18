@@ -5,15 +5,17 @@
 'use strict'
 
 const http = require('http')
-const ecsFormat = require('../')()
-const pino = require('pino')({ ...ecsFormat })
+const ecsFormat = require('../') // @elastic/ecs-pino-format
+const pino = require('pino')
 
-const server = http.createServer(handler)
-server.listen(3000, () => {
-  console.log('Listening')
+const log = pino({ ...ecsFormat() })
+
+const server = http.createServer(function handler (req, res) {
+  res.setHeader('Foo', 'Bar')
+  res.end('ok')
+  log.info({ req, res }, 'handled request')
 })
 
-function handler (req, res) {
-  pino.info({ req, res }, 'incoming request')
-  res.end('ok')
-}
+server.listen(3000, () => {
+  log.info('listening at http://localhost:3000')
+})

@@ -44,5 +44,10 @@
     "split2": "^3.1.1",
     "standard": "^14.3.1",
     "stoppable": "^1.1.0"
+  },
+  "standard": {
+    "ignore": [
+      "/examples/node_modules"
+    ]
   }
 }

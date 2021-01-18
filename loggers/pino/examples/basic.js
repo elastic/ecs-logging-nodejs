@@ -4,10 +4,11 @@
 
 'use strict'
 
-const ecsFormat = require('../')()
-const pino = require('pino')({ ...ecsFormat })
+const ecsFormat = require('../') // @elastic/ecs-pino-format
+const pino = require('pino')
 
-pino.info('Hello world')
+const log = pino({ ...ecsFormat() })
+log.info('Hello world')
 
-const child = pino.child({ module: 'foo' })
+const child = log.child({ module: 'foo' })
 child.warn('From child')

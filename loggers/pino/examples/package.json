@@ -1,0 +1,10 @@
+{
+  "name": "@elastic/ecs-pino-format-examples",
+  "version": "1.0.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "dependencies": {
+    "express": "^4.17.1",
+    "pino-http": "^5.3.0"
+  }
+}
