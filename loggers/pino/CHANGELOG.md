@@ -1,5 +1,35 @@
 # @elastic/ecs-pino-format Changelog
 
+## Unreleased
+
+- BREAKING CHANGE: Conversion of HTTP request and response objects is no longer
+  done by default. One must use the new `convertReqRes: true` formatter option.
+  As well, only the meta keys `req` and `res` will be handled. Before this
+  change the meta keys `req`, `res`, `request`, and `response` would all be
+  handled. ([#32](https://github.com/elastic/ecs-logging-js/issues/32))
+
+  Before (no longer works):
+
+  ```
+  const log = pino({ ...ecsFormat() })
+
+  http.createServer(function handler (request, response) {
+    // ...
+    log.info({ request, response }, 'handled request')
+  })
+  ```
+
+  After:
+
+  ```
+  const log = pino({ ...ecsFormat({ convertReqRes: true }) }) // <-- specify convertReqRes option
+
+  http.createServer(function handler (req, res) {
+    // ...
+    log.info({ req, res }, 'handled request') // <-- only `req` and `res` are special
+  })
+  ```
+
 ## v0.2.0
 
 - Serialize "log.level" as a top-level dotted field per

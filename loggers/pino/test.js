@@ -56,14 +56,27 @@ test('Should append any additional property to the log message', t => {
   pino.info({ foo: 'bar' }, 'Hello world')
 })
 
-test.cb('http request and response (req, res keys)', t => {
-  t.plan(2)
+test.cb('can log non-HTTP res & req fields', t => {
+  const recs = []
+  const stream = split(JSON.parse).on('data', rec => { recs.push(rec) })
+  const log = Pino({ ...ecsFormat() }, stream)
+  log.info({ req: { id: 42 }, res: { status: 'OK' } }, 'hi')
+  t.is(recs[0].req.id, 42)
+  t.is(recs[0].res.status, 'OK')
+  t.end()
+})
 
-  const stream = split(JSON.parse).on('data', line => {
-    t.true(validate(line))
+test.cb('convertReqRes:true and HTTP req, res', t => {
+  t.plan(4)
+
+  const stream = split(JSON.parse).on('data', rec => {
+    t.true(validate(rec))
+    // Spot check that some of the ECS HTTP fields are there.
+    t.is(rec.http.request.method, 'post', 'http.request.method')
+    t.is(rec.http.response.status_code, 200, 'http.response.status_code')
   })
 
-  const pino = Pino({ ...ecsFormat() }, stream)
+  const log = Pino({ ...ecsFormat({ convertReqRes: true }) }, stream)
 
   const server = stoppable(http.createServer(handler))
   server.listen(0, () => {
@@ -87,43 +100,7 @@ test.cb('http request and response (req, res keys)', t => {
   function handler (req, res) {
     // test also the anchor
     req.url += '#anchor'
-    pino.info({ req, res }, 'incoming request')
     res.end('ok')
-  }
-})
-
-test.cb('http request and response (request, response keys)', t => {
-  t.plan(2)
-
-  const stream = split(JSON.parse).on('data', line => {
-    t.true(validate(line))
-  })
-
-  const pino = Pino({ ...ecsFormat() }, stream)
-
-  const server = stoppable(http.createServer(handler))
-  server.listen(0, () => {
-    const body = JSON.stringify({ hello: 'world' })
-    sget({
-      method: 'POST',
-      url: `http://localhost:${server.address().port}?foo=bar`,
-      body,
-      headers: {
-        'user-agent': 'cool-agent',
-        'content-type': 'application/json',
-        'content-length': Buffer.byteLength(body)
-      }
-    }, (err, res) => {
-      t.falsy(err)
-      server.stop()
-      t.end()
-    })
-  })
-
-  function handler (request, response) {
-    // test also the anchor
-    request.url += '#anchor'
-    pino.info({ request, response }, 'incoming request')
-    response.end('ok')
+    log.info({ req, res }, 'handled request')
   }
 })

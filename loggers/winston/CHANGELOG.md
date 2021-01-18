@@ -16,7 +16,7 @@
   done by default. One must use the new `convertReqRes: true` formatter option.
   As well, only the meta keys `req` and `res` will be handled. Before this
   change the meta keys `req`, `res`, `request`, and `response` would all be
-  handled. ([#32](https://github.com/elastic/ecs-logging-js/pull/32))
+  handled. ([#32](https://github.com/elastic/ecs-logging-js/issues/32))
 
   Before (no longer works):
 

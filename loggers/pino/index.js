@@ -10,8 +10,20 @@ const {
   formatHttpResponse
 } = require('@elastic/ecs-helpers')
 
-function build () {
-  return {
+function createEcsPinoOptions (opts) {
+  // Boolean options for whether to handle converting `req` and `res`
+  // fields to ECS fields. These intentionally match the common serializers
+  // (https://getpino.io/#/docs/api?id=serializers-object). If enabled,
+  // this ECS conversion will take precedence over a serializer for the same
+  // field name.
+  let convertReqRes = false
+  if (opts) {
+    if (Object.prototype.hasOwnProperty.call(opts, 'convertReqRes')) {
+      convertReqRes = opts.convertReqRes
+    }
+  }
+
+  const ecsPinoOptions = {
     formatters: {
       level (label, number) {
         return { 'log.level': label }
@@ -51,31 +63,33 @@ function build () {
         }
 
         return ecsBindings
-      },
-
-      log (obj) {
-        const {
-          req,
-          request,
-          res,
-          response,
-          ...ecs
-        } = obj
-
-        if (req || request) {
-          formatHttpRequest(ecs, req || request)
-        }
-
-        if (res || response) {
-          formatHttpResponse(ecs, res || response)
-        }
-
-        return ecs
       }
     },
     messageKey: 'message',
     timestamp: () => `,"@timestamp":"${new Date().toISOString()}"`
   }
+
+  if (convertReqRes) {
+    ecsPinoOptions.formatters.log = function (obj) {
+      const {
+        req,
+        res,
+        ...ecsObj
+      } = obj
+
+      // https://www.elastic.co/guide/en/ecs/current/ecs-http.html
+      if (req) {
+        formatHttpRequest(ecsObj, req)
+      }
+      if (res) {
+        formatHttpResponse(ecsObj, res)
+      }
+
+      return ecsObj
+    }
+  }
+
+  return ecsPinoOptions
 }
 
-module.exports = build
+module.exports = createEcsPinoOptions
