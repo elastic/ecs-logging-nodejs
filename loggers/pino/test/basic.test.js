@@ -4,19 +4,23 @@
 
 'use strict'
 
+// Test everything that doesn't fit in a separate file.
+
 const http = require('http')
-const test = require('tap').test
+
 const Ajv = require('ajv')
 const pino = require('pino')
 const split = require('split2')
-const ecsFormat = require('./')
+const test = require('tap').test
+
+const ecsFormat = require('../')
 
 const ajv = Ajv({
   allErrors: true,
   verbose: true,
   format: 'full'
 })
-const validate = ajv.compile(require('../../utils/schema.json'))
+const validate = ajv.compile(require('../../../utils/schema.json'))
 
 test('Should produce valid ecs logs', t => {
   const stream = split(JSON.parse).once('data', line => {
