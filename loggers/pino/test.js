@@ -5,7 +5,7 @@
 'use strict'
 
 const http = require('http')
-const test = require('ava')
+const test = require('tap').test
 const sget = require('simple-get')
 const stoppable = require('stoppable')
 const Ajv = require('ajv')
@@ -21,11 +21,10 @@ const ajv = Ajv({
 const validate = ajv.compile(require('../../utils/schema.json'))
 
 test('Should produce valid ecs logs', t => {
-  t.plan(2)
-
-  const stream = split(JSON.parse).on('data', line => {
+  const stream = split(JSON.parse).once('data', line => {
     t.deepEqual(line['log.level'], 'info')
-    t.true(validate(line))
+    t.ok(validate(line))
+    t.end()
   })
 
   const pino = Pino({ ...ecsFormat() }, stream)
@@ -33,11 +32,10 @@ test('Should produce valid ecs logs', t => {
 })
 
 test('Should map "name" to "log.logger"', t => {
-  t.plan(2)
-
-  const stream = split(JSON.parse).on('data', line => {
+  const stream = split(JSON.parse).once('data', line => {
     t.deepEqual(line.log, { logger: 'myName' })
-    t.true(validate(line))
+    t.ok(validate(line))
+    t.end()
   })
 
   const pino = Pino({ name: 'myName', ...ecsFormat() }, stream)
@@ -45,35 +43,34 @@ test('Should map "name" to "log.logger"', t => {
 })
 
 test('Should append any additional property to the log message', t => {
-  t.plan(2)
-
-  const stream = split(JSON.parse).on('data', line => {
-    t.is(line.foo, 'bar')
-    t.true(validate(line))
+  const stream = split(JSON.parse).once('data', line => {
+    t.equal(line.foo, 'bar')
+    t.ok(validate(line))
+    t.end()
   })
 
   const pino = Pino({ ...ecsFormat() }, stream)
   pino.info({ foo: 'bar' }, 'Hello world')
 })
 
-test.cb('can log non-HTTP res & req fields', t => {
+test('can log non-HTTP res & req fields', t => {
   const recs = []
   const stream = split(JSON.parse).on('data', rec => { recs.push(rec) })
   const log = Pino({ ...ecsFormat() }, stream)
   log.info({ req: { id: 42 }, res: { status: 'OK' } }, 'hi')
-  t.is(recs[0].req.id, 42)
-  t.is(recs[0].res.status, 'OK')
+  t.equal(recs[0].req.id, 42)
+  t.equal(recs[0].res.status, 'OK')
   t.end()
 })
 
-test.cb('convertReqRes:true and HTTP req, res', t => {
+test('convertReqRes:true and HTTP req, res', t => {
   t.plan(4)
 
   const stream = split(JSON.parse).on('data', rec => {
-    t.true(validate(rec))
+    t.ok(validate(rec))
     // Spot check that some of the ECS HTTP fields are there.
-    t.is(rec.http.request.method, 'post', 'http.request.method')
-    t.is(rec.http.response.status_code, 200, 'http.response.status_code')
+    t.equal(rec.http.request.method, 'post', 'http.request.method')
+    t.equal(rec.http.response.status_code, 200, 'http.response.status_code')
   })
 
   const log = Pino({ ...ecsFormat({ convertReqRes: true }) }, stream)
@@ -91,7 +88,7 @@ test.cb('convertReqRes:true and HTTP req, res', t => {
         'content-length': Buffer.byteLength(body)
       }
     }, (err, res) => {
-      t.falsy(err)
+      t.ifErr(err)
       server.stop()
       t.end()
     })
