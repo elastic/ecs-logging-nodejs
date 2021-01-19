@@ -38,7 +38,8 @@ test('Should map "name" to "log.logger"', t => {
     t.end()
   })
 
-  const pino = Pino({ name: 'myName', ...ecsFormat() }, stream)
+  // Pass in empty opts object to ecsFormat() for coverage.
+  const pino = Pino({ name: 'myName', ...ecsFormat({}) }, stream)
   pino.info('Hello world')
 })
 
@@ -64,19 +65,24 @@ test('can log non-HTTP res & req fields', t => {
 })
 
 test('convertReqRes:true and HTTP req, res', t => {
-  t.plan(4)
+  t.plan(5)
 
   const stream = split(JSON.parse).on('data', rec => {
     t.ok(validate(rec))
-    // Spot check that some of the ECS HTTP fields are there.
-    t.equal(rec.http.request.method, 'post', 'http.request.method')
-    t.equal(rec.http.response.status_code, 200, 'http.response.status_code')
+    if (rec.message === 'handled request') {
+      // Spot check that some of the ECS HTTP fields are there.
+      t.equal(rec.http.request.method, 'post', 'http.request.method')
+      t.equal(rec.http.response.status_code, 200, 'http.response.status_code')
+    }
   })
 
   const log = Pino({ ...ecsFormat({ convertReqRes: true }) }, stream)
 
   const server = stoppable(http.createServer(handler))
   server.listen(0, () => {
+    // Log a record that doesn't pass req/res for coverage testing.
+    log.info('listening')
+
     const body = JSON.stringify({ hello: 'world' })
     sget({
       method: 'POST',

@@ -28,7 +28,7 @@
   },
   "homepage": "https://github.com/elastic/ecs-logging-js/blob/master/loggers/pino/README.md",
   "scripts": {
-    "test": "standard && tap --timeout 5"
+    "test": "standard && tap --100 --timeout 5"
   },
   "engines": {
     "node": ">=10"
