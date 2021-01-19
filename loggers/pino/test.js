@@ -6,10 +6,8 @@
 
 const http = require('http')
 const test = require('tap').test
-const sget = require('simple-get')
-const stoppable = require('stoppable')
 const Ajv = require('ajv')
-const Pino = require('pino')
+const pino = require('pino')
 const split = require('split2')
 const ecsFormat = require('./')
 
@@ -27,8 +25,8 @@ test('Should produce valid ecs logs', t => {
     t.end()
   })
 
-  const pino = Pino({ ...ecsFormat() }, stream)
-  pino.info('Hello world')
+  const log = pino({ ...ecsFormat() }, stream)
+  log.info('Hello world')
 })
 
 test('Should map "name" to "log.logger"', t => {
@@ -39,8 +37,8 @@ test('Should map "name" to "log.logger"', t => {
   })
 
   // Pass in empty opts object to ecsFormat() for coverage.
-  const pino = Pino({ name: 'myName', ...ecsFormat({}) }, stream)
-  pino.info('Hello world')
+  const log = pino({ name: 'myName', ...ecsFormat({}) }, stream)
+  log.info('Hello world')
 })
 
 test('Should append any additional property to the log message', t => {
@@ -50,14 +48,14 @@ test('Should append any additional property to the log message', t => {
     t.end()
   })
 
-  const pino = Pino({ ...ecsFormat() }, stream)
-  pino.info({ foo: 'bar' }, 'Hello world')
+  const log = pino({ ...ecsFormat() }, stream)
+  log.info({ foo: 'bar' }, 'Hello world')
 })
 
 test('can log non-HTTP res & req fields', t => {
   const recs = []
   const stream = split(JSON.parse).on('data', rec => { recs.push(rec) })
-  const log = Pino({ ...ecsFormat() }, stream)
+  const log = pino({ ...ecsFormat() }, stream)
   log.info({ req: { id: 42 }, res: { status: 'OK' } }, 'hi')
   t.equal(recs[0].req.id, 42)
   t.equal(recs[0].res.status, 'OK')
@@ -70,33 +68,31 @@ test('convertReqRes:true and HTTP req, res', t => {
   const stream = split(JSON.parse).on('data', rec => {
     t.ok(validate(rec))
     if (rec.message === 'handled request') {
-      // Spot check that some of the ECS HTTP fields are there.
-      t.equal(rec.http.request.method, 'post', 'http.request.method')
+      // Spot check that some of the ECS HTTP and User agent fields are there.
+      t.equal(rec.http.request.method, 'get', 'http.request.method')
       t.equal(rec.http.response.status_code, 200, 'http.response.status_code')
+      t.equal(rec.user_agent.original, 'cool-agent', 'user_agent.original')
     }
   })
 
-  const log = Pino({ ...ecsFormat({ convertReqRes: true }) }, stream)
+  const log = pino({ ...ecsFormat({ convertReqRes: true }) }, stream)
 
-  const server = stoppable(http.createServer(handler))
+  const server = http.createServer(handler)
   server.listen(0, () => {
     // Log a record that doesn't pass req/res for coverage testing.
     log.info('listening')
 
-    const body = JSON.stringify({ hello: 'world' })
-    sget({
-      method: 'POST',
-      url: `http://localhost:${server.address().port}?foo=bar`,
-      body,
+    http.get(`http://localhost:${server.address().port}?foo=bar`, {
       headers: {
-        'user-agent': 'cool-agent',
-        'content-type': 'application/json',
-        'content-length': Buffer.byteLength(body)
+        'user-agent': 'cool-agent'
       }
-    }, (err, res) => {
-      t.ifErr(err)
-      server.stop()
-      t.end()
+    }, function (res) {
+      res.on('data', function () {})
+      res.on('close', function () {
+        server.close(function () {
+          t.end()
+        })
+      })
     })
   })
 
