@@ -44,7 +44,7 @@ test('tracing integration works', t => {
       instream.pipe(split(JSON.parse)).on('data', function (traceObj) {
         collectTracesLogsAndCheck(traceObj, null)
       })
-      req.on('close', function () {
+      req.on('end', function () {
         res.end('ok')
       })
     })
