@@ -1,6 +1,6 @@
 # @elastic/ecs-helpers Changelog
 
-## Unreleased
+## v0.4.0
 
 - Add [ECS Tracing fields](https://www.elastic.co/guide/en/ecs/current/ecs-tracing.html)
   to `stringify()` schema.
