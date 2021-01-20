@@ -1,5 +1,10 @@
 # @elastic/ecs-helpers Changelog
 
+## Unreleased
+
+- Add [ECS Tracing fields](https://www.elastic.co/guide/en/ecs/current/ecs-tracing.html)
+  to `stringify()` schema.
+
 ## v0.3.0
 
 - Change `stringify()` to serialize "log.level" as a top-level dotted field

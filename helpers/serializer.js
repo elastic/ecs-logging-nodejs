@@ -94,6 +94,25 @@ const stringify = build({
       properties: {
         original: string
       }
+    },
+    // https://www.elastic.co/guide/en/ecs/current/ecs-tracing.html
+    trace: {
+      type: 'object',
+      properties: {
+        id: string
+      }
+    },
+    transaction: {
+      type: 'object',
+      properties: {
+        id: string
+      }
+    },
+    span: {
+      type: 'object',
+      properties: {
+        id: string
+      }
     }
   },
   additionalProperties: true
