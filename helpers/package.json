@@ -20,7 +20,7 @@
     "node": ">=10"
   },
   "dependencies": {
-    "fast-json-stringify": "^1.16.2"
+    "fast-json-stringify": "^2.4.1"
   },
   "devDependencies": {
     "ajv": "^6.11.0",
