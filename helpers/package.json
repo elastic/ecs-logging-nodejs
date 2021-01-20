@@ -2,7 +2,10 @@
   "name": "@elastic/ecs-helpers",
   "version": "0.4.0",
   "description": "ECS loggers helpers",
-  "main": "index.js",
+  "main": "lib/index.js",
+  "files": [
+    "lib"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/elastic/ecs-logging-js.git"
