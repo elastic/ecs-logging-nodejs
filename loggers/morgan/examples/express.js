@@ -6,7 +6,7 @@
 
 const app = require('express')()
 const morgan = require('morgan')
-const ecsFormat = require('../') // @elastic/ecs-winston-format
+const ecsFormat = require('../') // @elastic/ecs-morgan-format
 
 app.use(morgan(ecsFormat()))
 

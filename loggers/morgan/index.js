@@ -12,6 +12,14 @@ const {
   formatHttpResponse
 } = require('@elastic/ecs-helpers')
 
+// We will query the Elastic APM agent if it is available.
+let elasticApm = null
+try {
+  elasticApm = require('elastic-apm-node')
+} catch (ex) {
+  // Silently ignore.
+}
+
 function ecsFormat (format = morgan.combined) {
   // `format` is a format *name* (e.g. 'combined'), format function (e.g.
   // `morgan.combined`), or a format string (e.g. ':method :url :status')
@@ -22,17 +30,34 @@ function ecsFormat (format = morgan.combined) {
   }
 
   return function formatter (token, req, res) {
-    var ecs = {
+    var ecsFields = {
       '@timestamp': new Date().toISOString(),
       'log.level': res.statusCode < 500 ? 'info' : 'error',
       message: fmt(token, req, res),
       ecs: { version }
     }
 
-    formatHttpRequest(ecs, req)
-    formatHttpResponse(ecs, res)
+    // https://www.elastic.co/guide/en/ecs/current/ecs-tracing.html
+    // istanbul ignore else
+    if (elasticApm) {
+      const tx = elasticApm.currentTransaction
+      if (tx) {
+        ecsFields.trace = ecsFields.trace || {}
+        ecsFields.trace.id = tx.traceId
+        ecsFields.transaction = ecsFields.transaction || {}
+        ecsFields.transaction.id = tx.id
+        // Not including `span.id` because the way morgan logs (on the HTTP
+        // Response "finished" event), any spans during the request handler
+        // are no longer active. Also `span.id` isn't currently mandated by
+        // the ecs-logging spec.
+      }
+    }
 
-    return stringify(ecs)
+    // https://www.elastic.co/guide/en/ecs/current/ecs-http.html
+    formatHttpRequest(ecsFields, req)
+    formatHttpResponse(ecsFields, res)
+
+    return stringify(ecsFields)
   }
 }
 
