@@ -12,14 +12,14 @@ const morgan = require('morgan')
 const split = require('split2')
 const test = require('tap').test
 
-const ecsFormat = require('./')
+const ecsFormat = require('../')
 
 const ajv = Ajv({
   allErrors: true,
   verbose: true,
   format: 'full'
 })
-const validate = ajv.compile(require('../../utils/schema.json'))
+const validate = ajv.compile(require('../../../utils/schema.json'))
 
 // 1. Make an Express server using a given morgan ECS format `logger`.
 // 2. Make a request against it.
