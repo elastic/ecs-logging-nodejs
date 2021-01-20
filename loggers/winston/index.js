@@ -13,6 +13,14 @@ const {
   formatHttpResponse
 } = require('@elastic/ecs-helpers')
 
+// We will query the Elastic APM agent if it is available.
+let elasticApm = null
+try {
+  elasticApm = require('elastic-apm-node')
+} catch (ex) {
+  // Silently ignore.
+}
+
 const reservedFields = {
   level: true,
   'log.level': true,
@@ -31,6 +39,25 @@ function ecsTransform (info, opts) {
     ecs: { version }
   }
 
+  // https://www.elastic.co/guide/en/ecs/current/ecs-tracing.html
+  // istanbul ignore else
+  if (elasticApm) {
+    const tx = elasticApm.currentTransaction
+    if (tx) {
+      ecsFields.trace = ecsFields.trace || {}
+      ecsFields.trace.id = tx.traceId
+      ecsFields.transaction = ecsFields.transaction || {}
+      ecsFields.transaction.id = tx.id
+      const span = elasticApm.currentSpan
+      // istanbul ignore else
+      if (span) {
+        ecsFields.span = ecsFields.span || {}
+        ecsFields.span.id = span.id
+      }
+    }
+  }
+
+  // https://www.elastic.co/guide/en/ecs/current/ecs-http.html
   if (info.req) {
     if (opts.convertReqRes) {
       formatHttpRequest(ecsFields, info.req)

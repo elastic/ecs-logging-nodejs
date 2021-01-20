@@ -29,20 +29,23 @@
   "homepage": "https://github.com/elastic/ecs-logging-js/blob/master/loggers/winston/README.md",
   "scripts": {
     "bench": "./benchmarks/bench",
-    "test": "standard && tap --100 --timeout 5"
+    "test": "standard && tap --100 --timeout 5 test/*.test.js"
   },
   "engines": {
     "node": ">=10"
   },
   "dependencies": {
-    "@elastic/ecs-helpers": "^0.3.0"
+    "@elastic/ecs-helpers": "^0.4.0"
   },
   "devDependencies": {
     "ajv": "^6.11.0",
     "autocannon": "^7.0.1",
+    "elastic-apm-node": "^3.10.0",
+    "express": "^4.17.1",
+    "split2": "^3.2.2",
     "standard": "^14.3.1",
     "tap": "^14.x",
-    "winston": "^3.2.1"
+    "winston": "^3.3.3"
   },
   "standard": {
     "ignore": [

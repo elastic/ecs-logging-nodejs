@@ -12,14 +12,14 @@ const { MESSAGE } = require('triple-beam')
 const Ajv = require('ajv')
 const { version } = require('@elastic/ecs-helpers')
 
-const ecsFormat = require('./')
+const ecsFormat = require('../')
 
 const ajv = Ajv({
   allErrors: true,
   verbose: true,
   format: 'full'
 })
-const validate = ajv.compile(require('../../utils/schema.json'))
+const validate = ajv.compile(require('../../../utils/schema.json'))
 
 // Winston transport to capture logged records. Parsed JSON records are on
 // `.records`. Raw records (what Winston calls `info` objects) are on `.infos`.
