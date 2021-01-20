@@ -24,7 +24,7 @@ const ajv = Ajv({
 })
 const validate = ajv.compile(require('../utils/schema.json'))
 
-test('Stringify should return a valid ecs json', t => {
+test('stringify should return a valid ecs json', t => {
   const ecs = {
     '@timestamp': new Date().toISOString(),
     'log.level': 'info',
@@ -52,7 +52,7 @@ test('Bad ecs json (on purpose)', t => {
   t.false(validate(line))
 })
 
-test.cb('formatHttpRequest and formatHttpResponse should returna valid ecs object', t => {
+test.cb('formatHttpRequest and formatHttpResponse should return a valid ecs object', t => {
   const server = stoppable(http.createServer(handler))
   server.listen(0, () => {
     const body = JSON.stringify({ hello: 'world' })
@@ -126,4 +126,25 @@ test.cb('formatHttpRequest and formatHttpResponse should returna valid ecs objec
 
 test('Should export a valid version', t => {
   t.truthy(semver.valid(version))
+})
+
+test('stringify should emit valid tracing fields', t => {
+  const before = {
+    '@timestamp': new Date().toISOString(),
+    'log.level': 'info',
+    message: 'hello world',
+    ecs: {
+      version: '1.4.0'
+    },
+    trace: { id: 1 },
+    transaction: { id: 2 },
+    span: { id: 3, extra_fields: 'are dropped' }
+  }
+
+  const after = JSON.parse(stringify(before))
+  t.true(validate(after))
+  t.deepEqual(after.trace, { id: '1' }, 'trace.id is stringified')
+  t.deepEqual(after.transaction, { id: '2' }, 'transaction.id is stringified')
+  t.deepEqual(after.span, { id: '3' },
+    'span.id is stringified, extra fields are excluded')
 })
