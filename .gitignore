@@ -61,3 +61,5 @@ typings/
 .next
 
 .ecs
+.DS_Store
+/tmp

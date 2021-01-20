@@ -11,6 +11,9 @@ fi
 set -o errexit
 set -o pipefail
 
+TOP=$(cd "$(dirname "$0")/.." >/dev/null && pwd)
+AUTOCANNON=$TOP/node_modules/.bin/autocannon
+
 echo "## Benchmarking `basename $1`"
 echo
 echo "node: $(node --version)"
@@ -29,7 +32,7 @@ server_pid=$!
 
 echo
 echo "Warmup 5s run"
-autocannon -c 100 -d 5 -p 10 localhost:3000 > /dev/null 2>&1
+$AUTOCANNON -c 100 -d 5 -p 10 localhost:3000 > /dev/null 2>&1
 # Reported longer run (to attempt to get stddev down)
-autocannon -c 100 -d 30 -p 10 localhost:3000
+$AUTOCANNON -c 100 -d 30 -p 10 localhost:3000
 echo
