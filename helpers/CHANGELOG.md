@@ -1,6 +1,6 @@
 # @elastic/ecs-helpers Changelog
 
-## Unreleased
+## v0.5.0
 
 - Add [service.name](https://www.elastic.co/guide/en/ecs/current/ecs-service.html#field-service-name)
   and [event.dataset](https://www.elastic.co/guide/en/ecs/current/ecs-event.html#field-event-dataset)
