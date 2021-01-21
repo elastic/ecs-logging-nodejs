@@ -29,6 +29,26 @@ function ecsFormat (format = morgan.combined) {
     fmt = morgan.compile(fmt)
   }
 
+  // If there is a *started* APM agent, then use it.
+  const apm = elasticApm && elasticApm.isStarted() ? elasticApm : null
+  let serviceField
+  let eventField
+  if (apm) {
+    // https://github.com/elastic/apm-agent-nodejs/pull/1949 is adding
+    // getServiceName() in v3.11.0. Fallback to private `apm._conf`.
+    // istanbul ignore next
+    const serviceName = apm.getServiceName
+      ? apm.getServiceName()
+      : apm._conf.serviceName
+    // A mis-configured APM Agent can be "started" but not have a
+    // "serviceName".
+    // istanbul ignore else
+    if (serviceName) {
+      serviceField = { name: serviceName }
+      eventField = { dataset: serviceName + '.log' }
+    }
+  }
+
   return function formatter (token, req, res) {
     var ecsFields = {
       '@timestamp': new Date().toISOString(),
@@ -37,10 +57,17 @@ function ecsFormat (format = morgan.combined) {
       ecs: { version }
     }
 
+    if (serviceField) {
+      ecsFields.service = serviceField
+    }
+    if (eventField) {
+      ecsFields.event = eventField
+    }
+
     // https://www.elastic.co/guide/en/ecs/current/ecs-tracing.html
-    // istanbul ignore else
-    if (elasticApm) {
-      const tx = elasticApm.currentTransaction
+    if (apm) {
+      const tx = apm.currentTransaction
+      // istanbul ignore else
       if (tx) {
         ecsFields.trace = ecsFields.trace || {}
         ecsFields.trace.id = tx.traceId
@@ -48,8 +75,7 @@ function ecsFormat (format = morgan.combined) {
         ecsFields.transaction.id = tx.id
         // Not including `span.id` because the way morgan logs (on the HTTP
         // Response "finished" event), any spans during the request handler
-        // are no longer active. Also `span.id` isn't currently mandated by
-        // the ecs-logging spec.
+        // are no longer active.
       }
     }
 

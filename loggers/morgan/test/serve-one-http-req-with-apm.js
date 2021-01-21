@@ -19,7 +19,7 @@ const serverUrl = process.argv[2]
 /* eslint-disable-next-line no-unused-vars */
 const apm = require('elastic-apm-node').start({
   serverUrl,
-  serviceName: 'ecs-morgan-format-test-apm',
+  serviceName: 'test-apm',
   centralConfig: false,
   captureExceptions: false,
   metricsInterval: 0
