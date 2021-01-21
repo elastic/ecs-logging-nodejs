@@ -2,9 +2,10 @@
 
 ## Unreleased
 
-- Set "service.name" and "event.dataset" log fields if Elastic APM is active.
+- Set "service.name" and "event.dataset" log fields if Elastic APM is started.
   This helps to filter for different log streams in the same pod and the
   latter is required for log anomaly detection.
+  ([#41](https://github.com/elastic/ecs-logging-js/issues/41))
 
 - Add support for [ECS tracing fields](https://www.elastic.co/guide/en/ecs/current/ecs-tracing.html).
   If it is detected that [Elastic APM](https://www.npmjs.com/package/elastic-apm-node)
