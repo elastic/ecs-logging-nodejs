@@ -27,12 +27,16 @@ const stringify = build({
         version: string
       }
     },
+    // https://www.elastic.co/guide/en/ecs/current/ecs-event.html
     event: {
       type: 'object',
       properties: {
+        dataset: string,
         id: string
-      }
+      },
+      additionalProperties: true
     },
+    // https://www.elastic.co/guide/en/ecs/current/ecs-http.html
     http: {
       type: 'object',
       properties: {
@@ -71,6 +75,7 @@ const stringify = build({
         }
       }
     },
+    // https://www.elastic.co/guide/en/ecs/current/ecs-url.html
     url: {
       type: 'object',
       properties: {
@@ -82,6 +87,7 @@ const stringify = build({
         full: string
       }
     },
+    // https://www.elastic.co/guide/en/ecs/current/ecs-client.html
     client: {
       type: 'object',
       properties: {
@@ -89,6 +95,7 @@ const stringify = build({
         port: number
       }
     },
+    // https://www.elastic.co/guide/en/ecs/current/ecs-user_agent.html
     user_agent: {
       type: 'object',
       properties: {
@@ -113,6 +120,14 @@ const stringify = build({
       properties: {
         id: string
       }
+    },
+    // https://www.elastic.co/guide/en/ecs/current/ecs-service.html
+    service: {
+      type: 'object',
+      properties: {
+        name: string
+      },
+      additionalProperties: true
     }
   },
   additionalProperties: true

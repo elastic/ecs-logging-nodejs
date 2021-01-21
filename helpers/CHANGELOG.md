@@ -1,5 +1,13 @@
 # @elastic/ecs-helpers Changelog
 
+## Unreleased
+
+- Add [service.name](https://www.elastic.co/guide/en/ecs/current/ecs-service.html#field-service-name)
+  and [event.dataset](https://www.elastic.co/guide/en/ecs/current/ecs-event.html#field-event-dataset)
+  to the `stringify()` spec, according to the
+  [ecs-logging spec](https://github.com/elastic/ecs-logging/blob/7fc00daf3da87e749b0053c592eca61a38afc6ce/spec/spec.json#L62-L87).
+  These fields are automatically added by ECS loggers when APM is enabled.
+
 ## v0.4.0
 
 - Add [ECS Tracing fields](https://www.elastic.co/guide/en/ecs/current/ecs-tracing.html)
