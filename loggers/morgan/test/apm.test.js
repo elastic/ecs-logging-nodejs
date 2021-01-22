@@ -115,6 +115,8 @@ test('tracing integration works', t => {
       const tx = traceObjs[1].transaction
       t.equal(logObjs[0].trace.id, tx.trace_id, 'trace.id matches')
       t.equal(logObjs[0].transaction.id, tx.id, 'transaction.id matches')
+      t.equal(logObjs[0].service.name, 'test-apm')
+      t.equal(logObjs[0].event.dataset, 'test-apm.log')
       finish()
     }
   }

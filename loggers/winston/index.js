@@ -39,16 +39,49 @@ function ecsTransform (info, opts) {
     ecs: { version }
   }
 
-  // https://www.elastic.co/guide/en/ecs/current/ecs-tracing.html
+  // Add all unreserved fields.
+  var keys = Object.keys(info)
+  for (var i = 0, len = keys.length; i < len; i++) {
+    var key = keys[i]
+    if (!reservedFields[key]) {
+      ecsFields[key] = info[key]
+    }
+  }
+
+  // If there is a *started* APM agent, then use it.
+  const apm = elasticApm && elasticApm.isStarted() ? elasticApm : null
+
   // istanbul ignore else
-  if (elasticApm) {
-    const tx = elasticApm.currentTransaction
+  if (apm) {
+    // Set "service.name" and "event.dataset" from APM conf, if not already set.
+    let serviceName = ecsFields.service && ecsFields.service.name
+    if (!serviceName) {
+      // https://github.com/elastic/apm-agent-nodejs/pull/1949 is adding
+      // getServiceName() in v3.11.0. Fallback to private `apm._conf`.
+      // istanbul ignore next
+      serviceName = apm.getServiceName
+        ? apm.getServiceName()
+        : apm._conf.serviceName
+      // A mis-configured APM Agent can be "started" but not have a
+      // "serviceName".
+      if (serviceName) {
+        ecsFields.service = ecsFields.service || {}
+        ecsFields.service.name = serviceName
+      }
+    }
+    if (serviceName && !(ecsFields.event && ecsFields.event.dataset)) {
+      ecsFields.event = ecsFields.event || {}
+      ecsFields.event.dataset = serviceName + '.log'
+    }
+
+    // https://www.elastic.co/guide/en/ecs/current/ecs-tracing.html
+    const tx = apm.currentTransaction
     if (tx) {
       ecsFields.trace = ecsFields.trace || {}
       ecsFields.trace.id = tx.traceId
       ecsFields.transaction = ecsFields.transaction || {}
       ecsFields.transaction.id = tx.id
-      const span = elasticApm.currentSpan
+      const span = apm.currentSpan
       // istanbul ignore else
       if (span) {
         ecsFields.span = ecsFields.span || {}
@@ -70,14 +103,6 @@ function ecsTransform (info, opts) {
       formatHttpResponse(ecsFields, info.res)
     } else {
       ecsFields.res = info.res
-    }
-  }
-
-  var keys = Object.keys(info)
-  for (var i = 0, len = keys.length; i < len; i++) {
-    var key = keys[i]
-    if (!reservedFields[key]) {
-      ecsFields[key] = info[key]
     }
   }
 

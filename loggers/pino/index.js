@@ -4,19 +4,18 @@
 
 'use strict'
 
-// We will query the Elastic APM agent if it is available.
+const {
+  version,
+  formatHttpRequest,
+  formatHttpResponse
+} = require('@elastic/ecs-helpers')
+
 let elasticApm = null
 try {
   elasticApm = require('elastic-apm-node')
 } catch (ex) {
   // Silently ignore.
 }
-
-const {
-  version,
-  formatHttpRequest,
-  formatHttpResponse
-} = require('@elastic/ecs-helpers')
 
 function createEcsPinoOptions (opts) {
   // Boolean options for whether to handle converting `req` and `res`
@@ -30,6 +29,9 @@ function createEcsPinoOptions (opts) {
       convertReqRes = opts.convertReqRes
     }
   }
+
+  // If there is a *started* APM agent, then use it.
+  const apm = elasticApm && elasticApm.isStarted() ? elasticApm : null
 
   const ecsPinoOptions = {
     formatters: {
@@ -70,6 +72,21 @@ function createEcsPinoOptions (opts) {
           ecsBindings.log = { logger: name }
         }
 
+        if (apm) {
+          // https://github.com/elastic/apm-agent-nodejs/pull/1949 is adding
+          // getServiceName() in v3.11.0. Fallback to private `apm._conf`.
+          // istanbul ignore next
+          const serviceName = apm.getServiceName
+            ? apm.getServiceName()
+            : apm._conf.serviceName
+          // A mis-configured APM Agent can be "started" but not have a
+          // "serviceName".
+          if (serviceName) {
+            ecsBindings.service = { name: serviceName }
+            ecsBindings.event = { dataset: serviceName + '.log' }
+          }
+        }
+
         return ecsBindings
       }
     },
@@ -88,16 +105,16 @@ function createEcsPinoOptions (opts) {
         ...ecsObj
       } = obj
 
-      // https://www.elastic.co/guide/en/ecs/current/ecs-tracing.html
       // istanbul ignore else
-      if (elasticApm) {
-        const tx = elasticApm.currentTransaction
+      if (apm) {
+        // https://www.elastic.co/guide/en/ecs/current/ecs-tracing.html
+        const tx = apm.currentTransaction
         if (tx) {
           ecsObj.trace = ecsObj.trace || {}
           ecsObj.trace.id = tx.traceId
           ecsObj.transaction = ecsObj.transaction || {}
           ecsObj.transaction.id = tx.id
-          const span = elasticApm.currentSpan
+          const span = apm.currentSpan
           // istanbul ignore else
           if (span) {
             ecsObj.span = ecsObj.span || {}

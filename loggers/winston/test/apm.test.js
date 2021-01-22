@@ -8,7 +8,7 @@
 
 const http = require('http')
 const path = require('path')
-const { spawn } = require('child_process')
+const { execFile, spawn } = require('child_process')
 const zlib = require('zlib')
 
 const Ajv = require('ajv')
@@ -113,6 +113,8 @@ test('tracing integration works', t => {
       t.equal(logObjs[0].trace.id, span.trace_id, 'trace.id matches')
       t.equal(logObjs[0].transaction.id, span.transaction_id, 'transaction.id matches')
       t.equal(logObjs[0].span.id, span.id, 'span.id matches')
+      t.equal(logObjs[0].service.name, 'test-apm')
+      t.equal(logObjs[0].event.dataset, 'test-apm.log')
       finish()
     }
   }
@@ -148,5 +150,42 @@ test('tracing integration works', t => {
         // `collectTracesLogsAndCheck()`.
       })
     })
+  })
+})
+
+test('can override service.name, event.dataset', t => {
+  execFile(process.execPath, [
+    path.join(__dirname, 'use-apm-override-service-name.js'),
+    'test-apm'
+  ], {
+    timeout: 1000
+  }, function (err, stdout, stderr) {
+    t.ifErr(err)
+    const recs = stdout.trim().split(/\n/g).map(JSON.parse)
+    t.equal(recs[0].service.name, 'myname')
+    t.equal(recs[0].event.dataset, 'mydataset')
+    t.equal(recs[1].service.name, 'test-apm')
+    t.equal(recs[1].event.dataset, 'test-apm.log')
+    t.end()
+  })
+})
+
+test('unset APM serviceName does not set service.name, event.dataset, but also does not break', t => {
+  execFile(process.execPath, [
+    path.join(__dirname, 'use-apm-override-service-name.js')
+    // Leave <serviceName> arg empty.
+  ], {
+    timeout: 1000,
+    // Ensure the APM Agent's auto-configuration of `serviceName`, via looking
+    // up dirs for a package.json, does *not* work by execing from the root dir.
+    cwd: '/'
+  }, function (err, stdout, stderr) {
+    t.ifErr(err)
+    const recs = stdout.trim().split(/\n/g).map(JSON.parse)
+    t.equal(recs[0].service.name, 'myname')
+    t.equal(recs[0].event.dataset, 'mydataset')
+    t.equal(recs[1].service, undefined)
+    t.equal(recs[1].event, undefined)
+    t.end()
   })
 })

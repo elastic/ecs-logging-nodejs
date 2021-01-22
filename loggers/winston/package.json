@@ -29,13 +29,13 @@
   "homepage": "https://github.com/elastic/ecs-logging-js/blob/master/loggers/winston/README.md",
   "scripts": {
     "bench": "./benchmarks/bench",
-    "test": "standard && tap --100 --timeout 5 test/*.test.js"
+    "test": "standard && tap --100 --timeout 10 test/*.test.js"
   },
   "engines": {
     "node": ">=10"
   },
   "dependencies": {
-    "@elastic/ecs-helpers": "^0.4.0"
+    "@elastic/ecs-helpers": "^0.5.0"
   },
   "devDependencies": {
     "ajv": "^6.11.0",
