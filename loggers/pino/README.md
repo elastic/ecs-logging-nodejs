@@ -125,6 +125,17 @@ See [the examples](examples/) showing request and response logging
 etc.
 
 
+### Integration with APM
+
+This ECS log formatter integrates with [Elastic APM](https://www.elastic.co/apm).
+If your Node app is using the [Node.js Elastic APM Agent](https://www.elastic.co/guide/en/apm/agent/nodejs/current/intro.html),
+then fields are added to log records that [identify an active trace](https://www.elastic.co/guide/en/ecs/current/ecs-tracing.html) and the configured service name
+(["service.name"](https://www.elastic.co/guide/en/ecs/current/ecs-service.html#field-service-name) and
+["event.dataset"](https://www.elastic.co/guide/en/ecs/current/ecs-event.html#field-event-dataset)).
+These fields allow cross linking between traces and logs in Kibana and support
+log anomaly detection.
+
+
 ## Limitations and Considerations
 
 The [ecs-logging spec](https://github.com/elastic/ecs-logging/tree/master/spec)
