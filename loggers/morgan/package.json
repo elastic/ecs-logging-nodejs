@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/elastic/ecs-logging-js/blob/master/loggers/morgan/README.md",
   "scripts": {
-    "test": "standard && tap --timeout 5 --100 test/*.test.js"
+    "test": "standard && tap --timeout 10 --100 test/*.test.js"
   },
   "engines": {
     "node": ">=10"

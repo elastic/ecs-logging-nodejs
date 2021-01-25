@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/elastic/ecs-logging-js/blob/master/helpers/README.md",
   "scripts": {
-    "test": "standard && tap --timeout 5 test.js"
+    "test": "standard && tap --timeout 10 test.js"
   },
   "engines": {
     "node": ">=10"
