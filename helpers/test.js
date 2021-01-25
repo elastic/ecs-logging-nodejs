@@ -93,8 +93,10 @@ test('formatHttpRequest and formatHttpResponse should return a valid ecs object'
       }
     }
 
-    res.setHeader('content-type', 'application/json')
-    res.setHeader('content-length', '42')
+    const resBody = 'ok'
+    res.setHeader('content-type', 'text/plain')
+    const contentLen = Buffer.byteLength(resBody)
+    res.setHeader('content-length', String(contentLen))
 
     // add anchor
     req.url += '#anchor'
@@ -125,12 +127,12 @@ test('formatHttpRequest and formatHttpResponse should return a valid ecs object'
       },
       response: {
         status_code: 200,
-        headers: { 'content-type': 'application/json' },
-        body: { bytes: 42 }
+        headers: { 'content-type': 'text/plain' },
+        body: { bytes: contentLen }
       }
     })
 
-    res.end('ok')
+    res.end(resBody)
   }
 })
 
