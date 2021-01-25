@@ -5,11 +5,11 @@
 'use strict'
 
 const http = require('http')
-const test = require('ava')
+
 const Ajv = require('ajv')
-const sget = require('simple-get')
-const stoppable = require('stoppable')
 const semver = require('semver')
+const test = require('tap').test
+
 const {
   version,
   stringify,
@@ -35,7 +35,8 @@ test('stringify should return a valid ecs json', t => {
   }
 
   const line = JSON.parse(stringify(ecs))
-  t.true(validate(line))
+  t.equal(validate(line), true)
+  t.end()
 })
 
 test('Bad ecs json (on purpose)', t => {
@@ -49,27 +50,37 @@ test('Bad ecs json (on purpose)', t => {
   }
 
   const line = JSON.parse(stringify(ecs))
-  t.false(validate(line))
+  t.equal(validate(line), false)
+  t.end()
 })
 
-test.cb('formatHttpRequest and formatHttpResponse should return a valid ecs object', t => {
-  const server = stoppable(http.createServer(handler))
+test('formatHttpRequest and formatHttpResponse should return a valid ecs object', t => {
+  const server = http.createServer(handler)
   server.listen(0, () => {
     const body = JSON.stringify({ hello: 'world' })
-    sget({
-      method: 'POST',
-      url: `http://localhost:${server.address().port}/hello/world?foo=bar`,
-      body,
-      headers: {
-        'user-agent': 'cool-agent',
-        'content-type': 'application/json',
-        'content-length': Buffer.byteLength(body)
+    const req = http.request(
+      `http://localhost:${server.address().port}/hello/world?foo=bar`,
+      {
+        method: 'POST',
+        body,
+        headers: {
+          'user-agent': 'cool-agent',
+          'content-type': 'application/json',
+          'content-length': Buffer.byteLength(body)
+        }
+      },
+      function (res) {
+        res.on('data', function () {})
+        res.on('end', function () {
+          server.close(function () {
+            t.end()
+          })
+        })
       }
-    }, (err, res) => {
-      t.falsy(err)
-      server.stop()
-      t.end()
-    })
+    )
+    req.on('error', t.ifErr)
+    req.write(body)
+    req.end()
   })
 
   function handler (req, res) {
@@ -92,7 +103,7 @@ test.cb('formatHttpRequest and formatHttpResponse should return a valid ecs obje
     formatHttpResponse(ecs, res)
 
     const line = JSON.parse(stringify(ecs))
-    t.true(validate(line))
+    t.ok(validate(line))
 
     t.deepEqual(line.user_agent, { original: 'cool-agent' })
     t.deepEqual(line.url, {
@@ -106,7 +117,6 @@ test.cb('formatHttpRequest and formatHttpResponse should return a valid ecs obje
       request: {
         method: 'post',
         headers: {
-          'accept-encoding': 'gzip, deflate',
           'content-type': 'application/json',
           host: `localhost:${server.address().port}`,
           connection: 'close'
@@ -125,7 +135,8 @@ test.cb('formatHttpRequest and formatHttpResponse should return a valid ecs obje
 })
 
 test('Should export a valid version', t => {
-  t.truthy(semver.valid(version))
+  t.ok(semver.valid(version))
+  t.end()
 })
 
 test('stringify should emit valid tracing fields', t => {
@@ -142,9 +153,10 @@ test('stringify should emit valid tracing fields', t => {
   }
 
   const after = JSON.parse(stringify(before))
-  t.true(validate(after))
+  t.ok(validate(after))
   t.deepEqual(after.trace, { id: '1' }, 'trace.id is stringified')
   t.deepEqual(after.transaction, { id: '2' }, 'transaction.id is stringified')
   t.deepEqual(after.span, { id: '3' },
     'span.id is stringified, extra fields are excluded')
+  t.end()
 })

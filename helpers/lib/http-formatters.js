@@ -48,7 +48,9 @@ function formatHttpRequest (ecs, req) {
   if (hostname) {
     const [host, port] = hostname.split(':')
     ecs.url.domain = host
-    if (port) ecs.url.port = Number(port)
+    if (port) {
+      ecs.url.port = Number(port)
+    }
   }
 
   if (remoteAddress || remotePort) {

@@ -6,6 +6,14 @@
 all:
 	./.ci/run-install.sh
 
+.PHONY: clean
+clean:
+	(cd helpers && rm -rf node_modules)
+	(cd loggers/winston && rm -rf node_modules)
+	(cd loggers/morgan && rm -rf node_modules)
+	(cd loggers/pino && rm -rf node_modules)
+	(cd utils && rm -rf node_modules)
+
 .PHONY: check
 check:
 	(cd helpers && npx standard)
