@@ -32,7 +32,7 @@ const log = pino({ ...ecsFormat({ convertReqRes: true }) })
 // To create a more interesting span in our trace, we will call an external
 // service: using the Pokeapi to gather Charizard's (#6) abilities.
 function getCharizardAbilities (cb) {
-  var req = https.request('https://pokeapi.co/api/v2/pokemon/6', function (res) {
+  const req = https.request('https://pokeapi.co/api/v2/pokemon/6', function (res) {
     const chunks = []
     res.on('data', function (chunk) { chunks.push(chunk) })
     res.on('end', function () {

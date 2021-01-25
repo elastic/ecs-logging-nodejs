@@ -34,7 +34,7 @@ const log = pino({ ...ecsFormat({ convertReqRes: true }) })
 const server = http.createServer()
 
 server.once('request', function handler (req, res) {
-  var span = apm.startSpan('auth')
+  const span = apm.startSpan('auth')
   setImmediate(function doneAuth () {
     span.end()
     res.end('ok')

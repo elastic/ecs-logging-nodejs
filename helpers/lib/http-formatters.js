@@ -29,8 +29,8 @@ function formatHttpRequest (ecs, req) {
 
   ecs.url = ecs.url || {}
   ecs.url.full = (socket.encrypted ? 'https://' : 'http://') + headers.host + url
-  var hasQuery = url.indexOf('?')
-  var hasAnchor = url.indexOf('#')
+  const hasQuery = url.indexOf('?')
+  const hasAnchor = url.indexOf('#')
   if (hasQuery > -1 && hasAnchor > -1) {
     ecs.url.path = url.slice(0, hasQuery)
     ecs.url.query = url.slice(hasQuery + 1, hasAnchor)
@@ -59,10 +59,10 @@ function formatHttpRequest (ecs, req) {
     ecs.client.port = remotePort
   }
 
-  var hasHeaders = Object.keys(headers).length > 0
+  const hasHeaders = Object.keys(headers).length > 0
   if (hasHeaders === true) {
     ecs.http.request.headers = ecs.http.request.headers || {}
-    for (var header in headers) {
+    for (const header in headers) {
       if (header === 'content-length') {
         ecs.http.request.body = ecs.http.request.body || {}
         ecs.http.request.body.bytes = Number(headers[header])
@@ -78,16 +78,16 @@ function formatHttpRequest (ecs, req) {
 }
 
 function formatHttpResponse (ecs, res) {
-  var { statusCode } = res
+  const { statusCode } = res
   ecs.http = ecs.http || {}
   ecs.http.response = ecs.http.response || {}
   ecs.http.response.status_code = statusCode
 
-  var headers = res.getHeaders()
-  var hasHeaders = Object.keys(headers).length > 0
+  const headers = res.getHeaders()
+  const hasHeaders = Object.keys(headers).length > 0
   if (hasHeaders === true) {
     ecs.http.response.headers = ecs.http.response.headers || {}
-    for (var header in headers) {
+    for (const header in headers) {
       if (header === 'content-length') {
         ecs.http.response.body = ecs.http.response.body || {}
         ecs.http.response.body.bytes = Number(headers[header])

@@ -35,7 +35,7 @@ test('tracing integration works', t => {
     apmServer = http.createServer(function apmServerReq (req, res) {
       t.equal(req.method, 'POST')
       t.equal(req.url, '/intake/v2/events')
-      var instream = req
+      let instream = req
       if (req.headers['content-encoding'] === 'gzip') {
         instream = req.pipe(zlib.createGunzip())
       } else {

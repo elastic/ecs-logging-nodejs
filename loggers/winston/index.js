@@ -32,7 +32,7 @@ const reservedFields = {
 
 // https://github.com/winstonjs/winston#creating-custom-formats
 function ecsTransform (info, opts) {
-  var ecsFields = {
+  const ecsFields = {
     '@timestamp': new Date().toISOString(),
     'log.level': info.level,
     message: info.message,
@@ -40,9 +40,9 @@ function ecsTransform (info, opts) {
   }
 
   // Add all unreserved fields.
-  var keys = Object.keys(info)
-  for (var i = 0, len = keys.length; i < len; i++) {
-    var key = keys[i]
+  const keys = Object.keys(info)
+  for (let i = 0, len = keys.length; i < len; i++) {
+    const key = keys[i]
     if (!reservedFields[key]) {
       ecsFields[key] = info[key]
     }

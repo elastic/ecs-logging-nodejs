@@ -43,7 +43,7 @@
     "express": "^4.17.1",
     "morgan": "^1.9.1",
     "split2": "^3.1.1",
-    "standard": "^14.3.1",
+    "standard": "16.x",
     "tap": "^14.x"
   }
 }

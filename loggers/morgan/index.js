@@ -50,7 +50,7 @@ function ecsFormat (format = morgan.combined) {
   }
 
   return function formatter (token, req, res) {
-    var ecsFields = {
+    const ecsFields = {
       '@timestamp': new Date().toISOString(),
       'log.level': res.statusCode < 500 ? 'info' : 'error',
       message: fmt(token, req, res),
