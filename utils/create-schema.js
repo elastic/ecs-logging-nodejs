@@ -8,24 +8,40 @@
 // files at https://github.com/elastic/ecs/tree/master/schemas for use in
 // validation tests.
 //
-// Prerequisite: This depends on having a local clone of ecs.git at "../.ecs".
+// Usage:
+// 1. Get a clone and checkout of the intended tag of ecs.git. This tag should
+//    match the "version" at "../helpers/lib/index.js":
+//      git clone git@github.com:elastic/ecs.git
+//      cd ecs
+//      git checkout TAG   # e.g. v1.5.0
+// 2. Re-generate the JSON schema file:
+//      cd .../ecs-logging-js/utils
+//      npm install
+//      node create-schema.js .../ecs
+// 3. Run the tests and commit the updated schema.
 
-const { writeFileSync, readFileSync, readdirSync, statSync } = require('fs')
-const { join } = require('path')
+const { execSync } = require('child_process')
+const fs = require('fs')
+const path = require('path')
 const yaml = require('js-yaml')
 
-const properties = getAllFiles(join('..', '.ecs', 'schemas'))
+const ecsRepo = process.argv[2]
+if (!ecsRepo) {
+  usageError('missing $ecsRepo arg (path to a clone of elastic/ecs.git)')
+} else if (!fs.existsSync(ecsRepo)) {
+  usageError(`the given $ecsRepo dir does not exist: "${ecsRepo}"`)
+}
+const ecsSchemasDir = path.join(ecsRepo, 'schemas')
+
+// Build the JSON schema properties from the ECS schema YAML files.
+const properties = getAllFiles(ecsSchemasDir)
   .filter(file => !file.includes('README.md'))
-  .map(file => readFileSync(file, 'utf8'))
+  .map(file => fs.readFileSync(file, 'utf8'))
   .map(yaml.safeLoad)
   .reduce((acc, [val]) => {
     var properties = {}
-    if (val.name === 'http') {
-      val.fields.push({ name: 'request.headers', type: 'object' })
-      val.fields.push({ name: 'response.headers', type: 'object' })
-    }
     for (const prop of val.fields) {
-      properties = set(properties, prop.name, getType(prop.type))
+      properties = set(properties, prop.name, jsonSchemaTypeFromEcsType(prop.type))
     }
     if (val.name === 'base') {
       Object.assign(acc, properties)
@@ -38,33 +54,41 @@ const properties = getAllFiles(join('..', '.ecs', 'schemas'))
     return acc
   }, {})
 
+// Write out a JSON schema file.
+const gitInfo = execSync(`git log -1 --pretty=format:'commit %h%d'`, {
+  cwd: ecsRepo
+})
+const comment = `ecs.git ${gitInfo}`
 const jsonSchema = JSON.stringify({
+  '$comment': comment,
   type: 'object',
   properties,
   additionalProperties: true
 }, null, 2)
-writeFileSync(join('.', 'schema.json'), jsonSchema, 'utf8')
+const outSchemaFile = 'schema.json'
+fs.writeFileSync(outSchemaFile, jsonSchema, 'utf8')
+console.log(`wrote ${outSchemaFile} (${comment})`)
 
 function getAllFiles (dir) {
-  return readdirSync(dir).reduce((files, file) => {
-    const name = join(dir, file)
-    const isDirectory = statSync(name).isDirectory()
+  return fs.readdirSync(dir).reduce((files, file) => {
+    const name = path.join(dir, file)
+    const isDirectory = fs.statSync(name).isDirectory()
     return isDirectory ? [...files, ...getAllFiles(name)] : [...files, name]
   }, [])
 }
 
-function set (object, path, value, customizer) {
-  path = path
+function set (object, objPath, value, customizer) {
+  objPath = objPath
     .split('.')
     .join('.properties.')
     .split('.')
   var index = -1
-  var length = path.length
+  var length = objPath.length
   var lastIndex = length - 1
   var nested = object
 
   while (nested != null && ++index < length) {
-    var key = path[index]
+    var key = objPath[index]
     var newValue = value
 
     if (index !== lastIndex) {
@@ -73,7 +97,7 @@ function set (object, path, value, customizer) {
     }
     if (key === 'properties') {
       nested.type = 'object'
-      nested.additionalProperties = false
+      nested.additionalProperties = true
     }
     nested[key] = newValue
     nested = nested[key]
@@ -81,10 +105,10 @@ function set (object, path, value, customizer) {
   return object
 }
 
-function getType (type) {
+function jsonSchemaTypeFromEcsType (type) {
   switch (type) {
     case 'keyword':
-      return { type: ['string', 'number'] }
+      return { type: 'string' }
     case 'boolean':
       return { type: 'boolean' }
     case 'date':
@@ -119,4 +143,11 @@ function getType (type) {
     default:
       throw new Error(`Can't handle the type '${type}'`)
   }
+}
+
+function usageError(msg) {
+  const prog = path.basename(process.argv[1])
+  process.stderr.write(`${prog}: error: ${msg}\n`)
+  process.stderr.write('usage: node create-schema $ecsRepo\n')
+  process.exit(1)
 }

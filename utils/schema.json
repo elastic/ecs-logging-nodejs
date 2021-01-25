@@ -1,38 +1,24 @@
 {
+  "$comment": "ecs.git commit b5bbe25 (HEAD, tag: v1.5.0)",
   "type": "object",
   "properties": {
     "agent": {
       "type": "object",
       "properties": {
         "version": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "name": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "type": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "id": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "ephemeral_id": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         }
       }
     },
@@ -44,13 +30,10 @@
         },
         "organization": {
           "type": "object",
-          "additionalProperties": false,
+          "additionalProperties": true,
           "properties": {
             "name": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             }
           }
         }
@@ -61,10 +44,7 @@
       "format": "date-time"
     },
     "tags": {
-      "type": [
-        "string",
-        "number"
-      ]
+      "type": "string"
     },
     "labels": {
       "type": "object",
@@ -77,10 +57,7 @@
       "type": "object",
       "properties": {
         "address": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "ip": {
           "anyOf": [
@@ -98,28 +75,16 @@
           "type": "number"
         },
         "mac": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "domain": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "registered_domain": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "top_level_domain": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "bytes": {
           "type": "number"
@@ -129,7 +94,7 @@
         },
         "nat": {
           "type": "object",
-          "additionalProperties": false,
+          "additionalProperties": true,
           "properties": {
             "ip": {
               "anyOf": [
@@ -154,64 +119,63 @@
       "type": "object",
       "properties": {
         "provider": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "availability_zone": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "region": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "instance": {
           "type": "object",
-          "additionalProperties": false,
+          "additionalProperties": true,
           "properties": {
             "id": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             },
             "name": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             }
           }
         },
         "machine": {
           "type": "object",
-          "additionalProperties": false,
+          "additionalProperties": true,
           "properties": {
             "type": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             }
           }
         },
         "account": {
           "type": "object",
-          "additionalProperties": false,
+          "additionalProperties": true,
           "properties": {
             "id": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             }
           }
+        }
+      }
+    },
+    "code_signature": {
+      "type": "object",
+      "properties": {
+        "exists": {
+          "type": "boolean"
+        },
+        "subject_name": {
+          "type": "string"
+        },
+        "valid": {
+          "type": "boolean"
+        },
+        "trusted": {
+          "type": "boolean"
+        },
+        "status": {
+          "type": "string"
         }
       }
     },
@@ -219,40 +183,25 @@
       "type": "object",
       "properties": {
         "runtime": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "id": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "image": {
           "type": "object",
-          "additionalProperties": false,
+          "additionalProperties": true,
           "properties": {
             "name": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             },
             "tag": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             }
           }
         },
         "name": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "labels": {
           "type": "object",
@@ -264,10 +213,7 @@
       "type": "object",
       "properties": {
         "address": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "ip": {
           "anyOf": [
@@ -285,28 +231,16 @@
           "type": "number"
         },
         "mac": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "domain": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "registered_domain": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "top_level_domain": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "bytes": {
           "type": "number"
@@ -316,7 +250,7 @@
         },
         "nat": {
           "type": "object",
-          "additionalProperties": false,
+          "additionalProperties": true,
           "properties": {
             "ip": {
               "anyOf": [
@@ -337,111 +271,77 @@
         }
       }
     },
+    "dll": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        }
+      }
+    },
     "dns": {
       "type": "object",
       "properties": {
         "type": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "id": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "op_code": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "header_flags": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "response_code": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "question": {
           "type": "object",
-          "additionalProperties": false,
+          "additionalProperties": true,
           "properties": {
             "name": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             },
             "type": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             },
             "class": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             },
             "registered_domain": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             },
             "top_level_domain": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             },
             "subdomain": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             }
           }
         },
         "answers": {
           "type": "object",
-          "additionalProperties": false,
+          "additionalProperties": true,
           "properties": {
             "name": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             },
             "type": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             },
             "class": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             },
             "ttl": {
               "type": "number"
             },
             "data": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             }
           }
         },
@@ -463,10 +363,7 @@
       "type": "object",
       "properties": {
         "version": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         }
       }
     },
@@ -474,31 +371,19 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "message": {
           "type": "string"
         },
         "code": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "type": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "stack_trace": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         }
       }
     },
@@ -506,79 +391,43 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "code": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "kind": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "category": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "action": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "outcome": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "type": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "module": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "dataset": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "provider": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "severity": {
           "type": "number"
         },
         "original": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "hash": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "duration": {
           "type": "number"
@@ -587,10 +436,7 @@
           "type": "number"
         },
         "timezone": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "created": {
           "type": "string",
@@ -613,6 +459,12 @@
         "ingested": {
           "type": "string",
           "format": "date-time"
+        },
+        "reference": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
         }
       }
     },
@@ -620,94 +472,49 @@
       "type": "object",
       "properties": {
         "name": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "attributes": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "directory": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "drive_letter": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "path": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "target_path": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "extension": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "type": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "device": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "inode": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "uid": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "owner": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "gid": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "group": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "mode": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "size": {
           "type": "number"
@@ -727,6 +534,9 @@
         "accessed": {
           "type": "string",
           "format": "date-time"
+        },
+        "mime_type": {
+          "type": "string"
         }
       }
     },
@@ -745,46 +555,25 @@
           }
         },
         "continent_name": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "country_name": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "region_name": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "city_name": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "country_iso_code": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "region_iso_code": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "name": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         }
       }
     },
@@ -792,22 +581,13 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "name": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "domain": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         }
       }
     },
@@ -815,28 +595,16 @@
       "type": "object",
       "properties": {
         "md5": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "sha1": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "sha256": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "sha512": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         }
       }
     },
@@ -844,22 +612,13 @@
       "type": "object",
       "properties": {
         "hostname": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "name": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "id": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "ip": {
           "anyOf": [
@@ -874,31 +633,19 @@
           ]
         },
         "mac": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "type": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "uptime": {
           "type": "number"
         },
         "architecture": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "domain": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         }
       }
     },
@@ -907,23 +654,17 @@
       "properties": {
         "request": {
           "type": "object",
-          "additionalProperties": false,
+          "additionalProperties": true,
           "properties": {
             "method": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             },
             "body": {
               "type": "object",
-              "additionalProperties": false,
+              "additionalProperties": true,
               "properties": {
                 "content": {
-                  "type": [
-                    "string",
-                    "number"
-                  ]
+                  "type": "string"
                 },
                 "bytes": {
                   "type": "number"
@@ -931,36 +672,26 @@
               }
             },
             "referrer": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             },
             "bytes": {
               "type": "number"
-            },
-            "headers": {
-              "type": "object",
-              "additionalProperties": true
             }
           }
         },
         "response": {
           "type": "object",
-          "additionalProperties": false,
+          "additionalProperties": true,
           "properties": {
             "status_code": {
               "type": "number"
             },
             "body": {
               "type": "object",
-              "additionalProperties": false,
+              "additionalProperties": true,
               "properties": {
                 "content": {
-                  "type": [
-                    "string",
-                    "number"
-                  ]
+                  "type": "string"
                 },
                 "bytes": {
                   "type": "number"
@@ -969,18 +700,25 @@
             },
             "bytes": {
               "type": "number"
-            },
-            "headers": {
-              "type": "object",
-              "additionalProperties": true
             }
           }
         },
         "version": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
+        }
+      }
+    },
+    "interface": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "alias": {
+          "type": "string"
         }
       }
     },
@@ -988,36 +726,24 @@
       "type": "object",
       "properties": {
         "level": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "original": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "logger": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "origin": {
           "type": "object",
-          "additionalProperties": false,
+          "additionalProperties": true,
           "properties": {
             "file": {
               "type": "object",
-              "additionalProperties": false,
+              "additionalProperties": true,
               "properties": {
                 "name": {
-                  "type": [
-                    "string",
-                    "number"
-                  ]
+                  "type": "string"
                 },
                 "line": {
                   "type": "integer"
@@ -1025,44 +751,35 @@
               }
             },
             "function": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             }
           }
         },
         "syslog": {
           "type": "object",
-          "additionalProperties": false,
+          "additionalProperties": true,
           "properties": {
             "severity": {
               "type": "object",
-              "additionalProperties": false,
+              "additionalProperties": true,
               "properties": {
                 "code": {
                   "type": "number"
                 },
                 "name": {
-                  "type": [
-                    "string",
-                    "number"
-                  ]
+                  "type": "string"
                 }
               }
             },
             "facility": {
               "type": "object",
-              "additionalProperties": false,
+              "additionalProperties": true,
               "properties": {
                 "code": {
                   "type": "number"
                 },
                 "name": {
-                  "type": [
-                    "string",
-                    "number"
-                  ]
+                  "type": "string"
                 }
               }
             },
@@ -1077,46 +794,25 @@
       "type": "object",
       "properties": {
         "name": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "type": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "iana_number": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "transport": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "application": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "protocol": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "direction": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "forwarded_ip": {
           "anyOf": [
@@ -1131,16 +827,17 @@
           ]
         },
         "community_id": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "bytes": {
           "type": "number"
         },
         "packets": {
           "type": "number"
+        },
+        "inner": {
+          "type": "object",
+          "additionalProperties": true
         }
       }
     },
@@ -1148,10 +845,7 @@
       "type": "object",
       "properties": {
         "mac": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "ip": {
           "anyOf": [
@@ -1166,46 +860,43 @@
           ]
         },
         "hostname": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "name": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "product": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "vendor": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "version": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "serial_number": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "type": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
+        },
+        "ingress": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "zone": {
+              "type": "string"
+            }
+          }
+        },
+        "egress": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "zone": {
+              "type": "string"
+            }
+          }
         }
       }
     },
@@ -1213,16 +904,10 @@
       "type": "object",
       "properties": {
         "name": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "id": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         }
       }
     },
@@ -1230,40 +915,22 @@
       "type": "object",
       "properties": {
         "platform": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "name": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "full": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "family": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "version": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "kernel": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         }
       }
     },
@@ -1271,28 +938,16 @@
       "type": "object",
       "properties": {
         "name": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "version": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "build_version": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "description": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "size": {
           "type": "number"
@@ -1302,46 +957,45 @@
           "format": "date-time"
         },
         "path": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "architecture": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "checksum": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "install_scope": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "license": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "reference": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "type": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
+        }
+      }
+    },
+    "pe": {
+      "type": "object",
+      "properties": {
+        "original_file_name": {
+          "type": "string"
+        },
+        "file_version": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "product": {
+          "type": "string"
+        },
+        "company": {
+          "type": "string"
         }
       }
     },
@@ -1353,16 +1007,16 @@
         },
         "parent": {
           "type": "object",
-          "additionalProperties": false,
+          "additionalProperties": true,
           "properties": {
             "pid": {
               "type": "number"
             },
+            "entity_id": {
+              "type": "string"
+            },
             "name": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             },
             "ppid": {
               "type": "number"
@@ -1371,44 +1025,29 @@
               "type": "number"
             },
             "command_line": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             },
             "args": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             },
             "args_count": {
               "type": "number"
             },
             "executable": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             },
             "title": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             },
             "thread": {
               "type": "object",
-              "additionalProperties": false,
+              "additionalProperties": true,
               "properties": {
                 "id": {
                   "type": "number"
                 },
                 "name": {
-                  "type": [
-                    "string",
-                    "number"
-                  ]
+                  "type": "string"
                 }
               }
             },
@@ -1420,21 +1059,18 @@
               "type": "number"
             },
             "working_directory": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             },
             "exit_code": {
               "type": "number"
             }
           }
         },
+        "entity_id": {
+          "type": "string"
+        },
         "name": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "ppid": {
           "type": "number"
@@ -1443,44 +1079,29 @@
           "type": "number"
         },
         "command_line": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "args": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "args_count": {
           "type": "number"
         },
         "executable": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "title": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "thread": {
           "type": "object",
-          "additionalProperties": false,
+          "additionalProperties": true,
           "properties": {
             "id": {
               "type": "number"
             },
             "name": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             }
           }
         },
@@ -1492,10 +1113,7 @@
           "type": "number"
         },
         "working_directory": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "exit_code": {
           "type": "number"
@@ -1506,50 +1124,29 @@
       "type": "object",
       "properties": {
         "hive": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "key": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "value": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "path": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "data": {
           "type": "object",
-          "additionalProperties": false,
+          "additionalProperties": true,
           "properties": {
             "type": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             },
             "strings": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             },
             "bytes": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             }
           }
         }
@@ -1571,16 +1168,10 @@
           ]
         },
         "user": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "hash": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         }
       }
     },
@@ -1588,52 +1179,34 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "uuid": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "version": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "name": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "description": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "category": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "ruleset": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "reference": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
+        },
+        "author": {
+          "type": "string"
+        },
+        "license": {
+          "type": "string"
         }
       }
     },
@@ -1641,10 +1214,7 @@
       "type": "object",
       "properties": {
         "address": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "ip": {
           "anyOf": [
@@ -1662,28 +1232,16 @@
           "type": "number"
         },
         "mac": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "domain": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "registered_domain": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "top_level_domain": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "bytes": {
           "type": "number"
@@ -1693,7 +1251,7 @@
         },
         "nat": {
           "type": "object",
-          "additionalProperties": false,
+          "additionalProperties": true,
           "properties": {
             "ip": {
               "anyOf": [
@@ -1718,52 +1276,31 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "name": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "node": {
           "type": "object",
-          "additionalProperties": false,
+          "additionalProperties": true,
           "properties": {
             "name": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             }
           }
         },
         "type": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "state": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "version": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "ephemeral_id": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         }
       }
     },
@@ -1771,10 +1308,7 @@
       "type": "object",
       "properties": {
         "address": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "ip": {
           "anyOf": [
@@ -1792,28 +1326,16 @@
           "type": "number"
         },
         "mac": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "domain": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "registered_domain": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "top_level_domain": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "bytes": {
           "type": "number"
@@ -1823,7 +1345,7 @@
         },
         "nat": {
           "type": "object",
-          "additionalProperties": false,
+          "additionalProperties": true,
           "properties": {
             "ip": {
               "anyOf": [
@@ -1848,56 +1370,35 @@
       "type": "object",
       "properties": {
         "framework": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "tactic": {
           "type": "object",
-          "additionalProperties": false,
+          "additionalProperties": true,
           "properties": {
             "name": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             },
             "id": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             },
             "reference": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             }
           }
         },
         "technique": {
           "type": "object",
-          "additionalProperties": false,
+          "additionalProperties": true,
           "properties": {
             "name": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             },
             "id": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             },
             "reference": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             }
           }
         }
@@ -1907,28 +1408,16 @@
       "type": "object",
       "properties": {
         "version": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "version_protocol": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "cipher": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "curve": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "resumed": {
           "type": "boolean"
@@ -1937,44 +1426,26 @@
           "type": "boolean"
         },
         "next_protocol": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "client": {
           "type": "object",
-          "additionalProperties": false,
+          "additionalProperties": true,
           "properties": {
             "ja3": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             },
             "server_name": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             },
             "supported_ciphers": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             },
             "subject": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             },
             "issuer": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             },
             "not_before": {
               "type": "string",
@@ -1985,38 +1456,23 @@
               "format": "date-time"
             },
             "certificate_chain": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             },
             "certificate": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             },
             "hash": {
               "type": "object",
-              "additionalProperties": false,
+              "additionalProperties": true,
               "properties": {
                 "md5": {
-                  "type": [
-                    "string",
-                    "number"
-                  ]
+                  "type": "string"
                 },
                 "sha1": {
-                  "type": [
-                    "string",
-                    "number"
-                  ]
+                  "type": "string"
                 },
                 "sha256": {
-                  "type": [
-                    "string",
-                    "number"
-                  ]
+                  "type": "string"
                 }
               }
             }
@@ -2024,25 +1480,16 @@
         },
         "server": {
           "type": "object",
-          "additionalProperties": false,
+          "additionalProperties": true,
           "properties": {
             "ja3s": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             },
             "subject": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             },
             "issuer": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             },
             "not_before": {
               "type": "string",
@@ -2053,38 +1500,23 @@
               "format": "date-time"
             },
             "certificate_chain": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             },
             "certificate": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             },
             "hash": {
               "type": "object",
-              "additionalProperties": false,
+              "additionalProperties": true,
               "properties": {
                 "md5": {
-                  "type": [
-                    "string",
-                    "number"
-                  ]
+                  "type": "string"
                 },
                 "sha1": {
-                  "type": [
-                    "string",
-                    "number"
-                  ]
+                  "type": "string"
                 },
                 "sha256": {
-                  "type": [
-                    "string",
-                    "number"
-                  ]
+                  "type": "string"
                 }
               }
             }
@@ -2097,25 +1529,19 @@
       "properties": {
         "trace": {
           "type": "object",
-          "additionalProperties": false,
+          "additionalProperties": true,
           "properties": {
             "id": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             }
           }
         },
         "transaction": {
           "type": "object",
-          "additionalProperties": false,
+          "additionalProperties": true,
           "properties": {
             "id": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             }
           }
         }
@@ -2125,79 +1551,43 @@
       "type": "object",
       "properties": {
         "original": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "full": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "scheme": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "domain": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "registered_domain": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "top_level_domain": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "port": {
           "type": "number"
         },
         "path": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "query": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "extension": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "fragment": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "username": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "password": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         }
       }
     },
@@ -2205,40 +1595,22 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "name": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "full_name": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "email": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "hash": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "domain": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         }
       }
     },
@@ -2246,34 +1618,33 @@
       "type": "object",
       "properties": {
         "original": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "name": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "version": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "device": {
           "type": "object",
-          "additionalProperties": false,
+          "additionalProperties": true,
           "properties": {
             "name": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             }
           }
+        }
+      }
+    },
+    "vlan": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
         }
       }
     },
@@ -2281,26 +1652,17 @@
       "type": "object",
       "properties": {
         "classification": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "enumeration": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "reference": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "score": {
           "type": "object",
-          "additionalProperties": false,
+          "additionalProperties": true,
           "properties": {
             "base": {
               "type": "number"
@@ -2312,54 +1674,33 @@
               "type": "number"
             },
             "version": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             }
           }
         },
         "category": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "description": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "id": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "scanner": {
           "type": "object",
-          "additionalProperties": false,
+          "additionalProperties": true,
           "properties": {
             "vendor": {
-              "type": [
-                "string",
-                "number"
-              ]
+              "type": "string"
             }
           }
         },
         "severity": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         },
         "report_id": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": "string"
         }
       }
     }
