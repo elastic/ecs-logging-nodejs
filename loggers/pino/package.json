@@ -37,7 +37,8 @@
     "@elastic/ecs-helpers": "^0.5.0"
   },
   "devDependencies": {
-    "ajv": "^6.11.0",
+    "ajv": "^7.0.3",
+    "ajv-formats": "^1.5.1",
     "elastic-apm-node": "^3.10.0",
     "express": "^4.17.1",
     "pino": "^6.0.0",

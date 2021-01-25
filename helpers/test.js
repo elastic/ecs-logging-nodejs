@@ -6,7 +6,8 @@
 
 const http = require('http')
 
-const Ajv = require('ajv')
+const addFormats = require('ajv-formats').default
+const Ajv = require('ajv').default
 const semver = require('semver')
 const test = require('tap').test
 
@@ -17,11 +18,11 @@ const {
   formatHttpResponse
 } = require('./')
 
-const ajv = Ajv({
+const ajv = new Ajv({
   allErrors: true,
-  verbose: true,
-  format: 'full'
+  verbose: true
 })
+addFormats(ajv)
 const validate = ajv.compile(require('../utils/schema.json'))
 
 test('stringify should return a valid ecs json', t => {

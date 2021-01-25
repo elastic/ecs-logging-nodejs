@@ -11,15 +11,16 @@ const path = require('path')
 const { execFile, spawn } = require('child_process')
 const zlib = require('zlib')
 
-const Ajv = require('ajv')
+const addFormats = require('ajv-formats').default
+const Ajv = require('ajv').default
 const split = require('split2')
 const test = require('tap').test
 
-const ajv = Ajv({
+const ajv = new Ajv({
   allErrors: true,
-  verbose: true,
-  format: 'full'
+  verbose: true
 })
+addFormats(ajv)
 const validate = ajv.compile(require('../../../utils/schema.json'))
 
 test('tracing integration works', t => {

@@ -8,18 +8,19 @@
 
 const http = require('http')
 
-const Ajv = require('ajv')
+const addFormats = require('ajv-formats').default
+const Ajv = require('ajv').default
 const pino = require('pino')
 const split = require('split2')
 const test = require('tap').test
 
 const ecsFormat = require('../')
 
-const ajv = Ajv({
+const ajv = new Ajv({
   allErrors: true,
-  verbose: true,
-  format: 'full'
+  verbose: true
 })
+addFormats(ajv)
 const validate = ajv.compile(require('../../../utils/schema.json'))
 
 test('Should produce valid ecs logs', t => {

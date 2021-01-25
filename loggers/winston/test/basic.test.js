@@ -9,16 +9,17 @@ const test = require('tap').test
 const winston = require('winston')
 const Transport = require('winston-transport')
 const { MESSAGE } = require('triple-beam')
-const Ajv = require('ajv')
+const addFormats = require('ajv-formats').default
+const Ajv = require('ajv').default
 const { version } = require('@elastic/ecs-helpers')
 
 const ecsFormat = require('../')
 
-const ajv = Ajv({
+const ajv = new Ajv({
   allErrors: true,
-  verbose: true,
-  format: 'full'
+  verbose: true
 })
+addFormats(ajv)
 const validate = ajv.compile(require('../../../utils/schema.json'))
 
 // Winston transport to capture logged records. Parsed JSON records are on
