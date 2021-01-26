@@ -14,6 +14,7 @@ const test = require('tap').test
 const {
   version,
   stringify,
+  formatError,
   formatHttpRequest,
   formatHttpResponse
 } = require('./')
@@ -161,5 +162,63 @@ test('stringify should emit valid tracing fields', t => {
   t.deepEqual(after.transaction, { id: '2' }, 'transaction.id is stringified')
   t.deepEqual(after.span, { id: '3' },
     'span.id is stringified, extra fields are excluded')
+  t.end()
+})
+
+test('formatError: Error', t => {
+  const rec = {}
+  formatError(rec, new Error('boom'))
+  t.equal(rec.error.type, 'Error')
+  t.equal(rec.error.message, 'boom')
+  t.match(rec.error.stack_trace, /^Error: boom\n {4}at/)
+  t.end()
+})
+
+test('formatError: TypeError', t => {
+  const rec = {}
+  formatError(rec, new TypeError('boom'))
+  t.equal(rec.error.type, 'TypeError')
+  t.equal(rec.error.message, 'boom')
+  t.match(rec.error.stack_trace, /^TypeError: boom\n {4}at/)
+  t.end()
+})
+
+test('formatError: MyError', t => {
+  const rec = {}
+  class MyError extends Error {}
+  formatError(rec, new MyError('boom'))
+  t.equal(rec.error.type, 'MyError')
+  t.equal(rec.error.message, 'boom')
+  t.match(rec.error.stack_trace, /^Error: boom\n {4}at/)
+  t.end()
+})
+
+test('formatError: non-Error', t => {
+  const rec = {}
+  const nonError = { foo: 'bar' }
+  formatError(rec, nonError)
+  t.notOk(rec.error, 'should not be an "error" field')
+  t.equal(rec.err, nonError, 'the "err" field should pass through unchanged')
+  t.end()
+})
+
+test('formatError: MyError with removed constructor', t => {
+  const rec = {}
+  class MyError extends Error {}
+  const err = new MyError('boom')
+  err.constructor = { mwuhaha: true }
+  formatError(rec, err)
+  t.equal(rec.error.type, 'Error')
+  t.equal(rec.error.message, 'boom')
+  t.match(rec.error.stack_trace, /^Error: boom\n {4}at/)
+  t.end()
+})
+
+test('formatError: non-Error', t => {
+  const rec = {}
+  const nonError = { foo: 'bar' }
+  formatError(rec, nonError)
+  t.notOk(rec.error, 'should not be an "error" field')
+  t.equal(rec.err, nonError, 'the "err" field should pass through unchanged')
   t.end()
 })

@@ -128,6 +128,16 @@ const stringify = build({
         name: string
       },
       additionalProperties: true
+    },
+    // https://www.elastic.co/guide/en/ecs/current/ecs-error.html
+    error: {
+      type: 'object',
+      properties: {
+        type: string,
+        message: string,
+        stack_trace: string
+      },
+      additionalProperties: true
     }
   },
   additionalProperties: true
