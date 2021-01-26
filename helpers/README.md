@@ -8,13 +8,15 @@ A set of helpers for the ECS logging libraries.
 You should not directly used this package, but the ECS logging libraries instead.
 
 ## Install
+
 ```sh
-npm i @elastic/ecs-helpers
+npm install @elastic/ecs-helpers
 ```
 
 ## API
 
 ### `version`
+
 The currently supported version of [Elastic Common Schema](https://www.elastic.co/guide/en/ecs/current/index.html).
 
 ### `stringify`
@@ -44,7 +46,48 @@ of objects with circular references. This generally means that ecs-logging-js
 libraries will throw a "Converting circular structure to JSON" exception if an
 attempt is made to log an object with circular references.
 
+### `formatError`
+
+A function that adds [ECS Error fields](https://www.elastic.co/guide/en/ecs/current/ecs-error.html)
+for a given `Error` object.
+
+```js
+const { formatError } = require('@elastic/ecs-helpers')
+const logRecord = { msg: 'oops', /* ... */ }
+formatError(logRecord, new Error('boom'))
+console.log(logRecord)
+```
+
+will show:
+
+```js
+{
+  msg: 'oops',
+  error: {
+    type: 'Error',
+    message: 'boom',
+    stack_trace: 'Error: boom\n' +
+      '    at REPL30:1:26\n' +
+      '    at Script.runInThisContext (vm.js:133:18)\n' +
+      '    at REPLServer.defaultEval (repl.js:484:29)\n' +
+      '    at bound (domain.js:413:15)\n' +
+      '    at REPLServer.runBound [as eval] (domain.js:424:12)\n' +
+      '    at REPLServer.onLine (repl.js:817:10)\n' +
+      '    at REPLServer.emit (events.js:327:22)\n' +
+      '    at REPLServer.EventEmitter.emit (domain.js:467:12)\n' +
+      '    at REPLServer.Interface._onLine (readline.js:337:10)\n' +
+      '    at REPLServer.Interface._line (readline.js:666:8)'
+  }
+}
+```
+
+The ECS logging libraries typically use this to automatically handle an `err`
+metadata field passed to a logging statement. E.g.
+`log.warn({err: myErr}, '...')` for pino, `log.warn('...', {err: myErr})`
+for winston.
+
 ### `formatHttpRequest`
+
 Function that enhances an ECS object with http request data.
 The request object should be Node.js's core request object.
 
@@ -67,6 +110,7 @@ console.log(ecs)
 ```
 
 ### `formatHttpResponse`
+
 Function that enhances an ECS object with http response data.
 The response object should be Node.js's core response object.
 
@@ -89,4 +133,5 @@ console.log(ecs)
 ```
 
 ## License
+
 This software is licensed under the [Apache 2 license](./LICENSE).
