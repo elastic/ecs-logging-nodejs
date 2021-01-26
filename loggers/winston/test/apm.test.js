@@ -159,7 +159,7 @@ test('can override service.name, event.dataset', t => {
     path.join(__dirname, 'use-apm-override-service-name.js'),
     'test-apm'
   ], {
-    timeout: 1000
+    timeout: 5000
   }, function (err, stdout, stderr) {
     t.ifErr(err)
     const recs = stdout.trim().split(/\n/g).map(JSON.parse)
@@ -176,7 +176,7 @@ test('unset APM serviceName does not set service.name, event.dataset, but also d
     path.join(__dirname, 'use-apm-override-service-name.js')
     // Leave <serviceName> arg empty.
   ], {
-    timeout: 1000,
+    timeout: 5000,
     // Ensure the APM Agent's auto-configuration of `serviceName`, via looking
     // up dirs for a package.json, does *not* work by execing from the root dir.
     cwd: '/'
