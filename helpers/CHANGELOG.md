@@ -1,5 +1,11 @@
 # @elastic/ecs-helpers Changelog
 
+## Unreleased
+
+- Add `formatError` for adding [ECS Error fields](https://www.elastic.co/guide/en/ecs/current/ecs-error.html)
+  for a given `Error` object.
+  ([#42](https://github.com/elastic/ecs-logging-js/pull/42))
+
 ## v0.5.0
 
 - Add [service.name](https://www.elastic.co/guide/en/ecs/current/ecs-service.html#field-service-name)
