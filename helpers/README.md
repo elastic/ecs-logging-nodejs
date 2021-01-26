@@ -69,14 +69,7 @@ will show:
     stack_trace: 'Error: boom\n' +
       '    at REPL30:1:26\n' +
       '    at Script.runInThisContext (vm.js:133:18)\n' +
-      '    at REPLServer.defaultEval (repl.js:484:29)\n' +
-      '    at bound (domain.js:413:15)\n' +
-      '    at REPLServer.runBound [as eval] (domain.js:424:12)\n' +
-      '    at REPLServer.onLine (repl.js:817:10)\n' +
-      '    at REPLServer.emit (events.js:327:22)\n' +
-      '    at REPLServer.EventEmitter.emit (domain.js:467:12)\n' +
-      '    at REPLServer.Interface._onLine (readline.js:337:10)\n' +
-      '    at REPLServer.Interface._line (readline.js:666:8)'
+      // ...
   }
 }
 ```
