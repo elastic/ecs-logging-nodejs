@@ -1,6 +1,6 @@
 {
   "name": "@elastic/ecs-helpers",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "ECS loggers helpers",
   "main": "lib/index.js",
   "files": [

@@ -1,6 +1,6 @@
 # @elastic/ecs-helpers Changelog
 
-## Unreleased
+## v0.6.0
 
 - Add `formatError` for adding [ECS Error fields](https://www.elastic.co/guide/en/ecs/current/ecs-error.html)
   for a given `Error` object.
