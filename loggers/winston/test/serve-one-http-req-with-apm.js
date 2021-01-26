@@ -4,7 +4,7 @@
 
 'use strict'
 
-// This script is used to test @elastic/ecs-pino-format + APM.
+// This script is used to test @elastic/ecs-winston-format + APM.
 //
 // It will:
 // - configure APM using the given APM server url (first arg)

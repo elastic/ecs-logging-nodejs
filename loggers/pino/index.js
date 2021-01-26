@@ -6,10 +6,12 @@
 
 const {
   version,
+  formatError,
   formatHttpRequest,
   formatHttpResponse
 } = require('@elastic/ecs-helpers')
 
+const { hasOwnProperty } = Object.prototype
 let elasticApm = null
 try {
   elasticApm = require('elastic-apm-node')
@@ -18,14 +20,20 @@ try {
 }
 
 function createEcsPinoOptions (opts) {
-  // Boolean options for whether to handle converting `req` and `res`
-  // fields to ECS fields. These intentionally match the common serializers
+  // Boolean options for whether to specially handle some logged field names:
+  //  - `err` to ECS Error fields
+  //  - `req` and `res` to ECS HTTP, User agent, etc. fields
+  // These intentionally match the common serializers
   // (https://getpino.io/#/docs/api?id=serializers-object). If enabled,
   // this ECS conversion will take precedence over a serializer for the same
   // field name.
+  let convertErr = true
   let convertReqRes = false
   if (opts) {
-    if (Object.prototype.hasOwnProperty.call(opts, 'convertReqRes')) {
+    if (hasOwnProperty.call(opts, 'convertErr')) {
+      convertErr = opts.convertErr
+    }
+    if (hasOwnProperty.call(opts, 'convertReqRes')) {
       convertReqRes = opts.convertReqRes
     }
   }
@@ -96,12 +104,12 @@ function createEcsPinoOptions (opts) {
 
   // For performance, avoid adding the `formatters.log` pino option unless we
   // know we'll do some processing in it.
-  // istanbul ignore else
-  if (convertReqRes || elasticApm) {
+  if (convertErr || convertReqRes || apm) {
     ecsPinoOptions.formatters.log = function (obj) {
       const {
         req,
         res,
+        err,
         ...ecsObj
       } = obj
 
@@ -124,14 +132,23 @@ function createEcsPinoOptions (opts) {
       }
 
       // https://www.elastic.co/guide/en/ecs/current/ecs-http.html
-      if (req) {
+      if (err !== undefined) {
+        if (!convertErr) {
+          ecsObj.err = err
+        } else {
+          formatError(ecsObj, err)
+        }
+      }
+
+      // https://www.elastic.co/guide/en/ecs/current/ecs-http.html
+      if (req !== undefined) {
         if (!convertReqRes) {
           ecsObj.req = req
         } else {
           formatHttpRequest(ecsObj, req)
         }
       }
-      if (res) {
+      if (res !== undefined) {
         if (!convertReqRes) {
           ecsObj.res = res
         } else {
