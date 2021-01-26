@@ -10,18 +10,23 @@ See [ecs-logging](https://github.com/elastic/ecs-logging) for other ECS logging 
 
 ---
 
-**Please note** that this library is in a **beta** version and backwards-incompatible changes might be introduced in future releases. While we strive to comply to [semver](https://semver.org/), we can not guarantee to avoid breaking changes in minor releases.
+**Please note** that the packages provided from this repo are in **beta** and
+backwards-incompatible changes might be introduced in releases during the
+"0.x" series. "1.0.0" versions will be released when no longer in beta.
 
 ---
 
-### Supported loggers
-- [pino](https://github.com/elastic/ecs-logging-js/tree/master/loggers/pino)
-- [winston](https://github.com/elastic/ecs-logging-js/tree/master/loggers/winston)
-- [morgan](https://github.com/elastic/ecs-logging-js/tree/master/loggers/morgan)
+### Supported logging frameworks
+
+- [Pino](https://getpino.io/#/) via [@elastic/ecs-pino-format](https://github.com/elastic/ecs-logging-js/tree/master/loggers/pino)
+- [Winston](https://github.com/winstonjs/winston) via [@elastic/ecs-winston-format](https://github.com/elastic/ecs-logging-js/tree/master/loggers/winston)
+- [Morgan](https://github.com/expressjs/morgan) via [@elastic/ecs-morgan-format](https://github.com/elastic/ecs-logging-js/tree/master/loggers/morgan)
 
 ### References
+
 * Introduction to ECS [blog post](https://www.elastic.co/blog/introducing-the-elastic-common-schema).
 * Logs UI [blog post](https://www.elastic.co/blog/infrastructure-and-logs-ui-new-ways-for-ops-to-interact-with-elasticsearch).
 
 ## License
+
 This software is licensed under the [Apache 2 license](./LICENSE).
