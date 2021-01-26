@@ -19,7 +19,7 @@ function expressRequestLogger (opts) {
     function onResDone (err) {
       this.removeListener('finish', onResDone)
       this.removeListener('error', onResDone)
-      logger.info({ req, res, err }, `${req.method} ${req.path}`)
+      logger.info(`handled ${req.method} ${req.path}`, { req, res, err })
     }
     res.on('finish', onResDone)
     res.on('error', onResDone)
@@ -31,7 +31,7 @@ function expressRequestLogger (opts) {
 function expressErrorLogger (opts) {
   const logger = opts.logger
 
-  return function (err, req, res, next) {
+  return function (err, req, _res, next) {
     // TODO: error formatting `convertErr`
     logger.info(`error handling ${req.method} ${req.path}`, { err })
     next(err)

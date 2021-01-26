@@ -108,3 +108,67 @@ test('convertReqRes:true and HTTP req, res', t => {
     log.info({ req, res }, 'handled request')
   }
 })
+
+test('convertErr is true by default', t => {
+  const recs = []
+  const stream = split(JSON.parse).on('data', rec => { recs.push(rec) })
+  const log = pino({ ...ecsFormat() }, stream)
+
+  log.info({ err: new Error('boom') }, 'hi')
+  const rec = recs[0]
+  t.ok(validate(rec))
+  t.equal(rec.error.type, 'Error')
+  t.equal(rec.error.message, 'boom')
+  t.match(rec.error.stack_trace, /^Error: boom\n {4}at/)
+  t.end()
+})
+
+test('convertErr does not blow up on non-Errors', t => {
+  const recs = []
+  const stream = split(JSON.parse).on('data', rec => { recs.push(rec) })
+  const log = pino({ ...ecsFormat() }, stream)
+
+  log.info({ err: 42 }, 'one')
+  log.info({ err: false }, 'two')
+  log.info({ err: null }, 'three')
+  log.info({ err: { foo: 'bar' } }, 'four')
+  t.equal(recs[0].err, 42)
+  t.equal(recs[1].err, false)
+  t.equal(recs[2].err, null)
+  t.deepEqual(recs[3].err, { foo: 'bar' })
+  t.end()
+})
+
+test('convertErr=false allows passing through err=<non-Error>', t => {
+  const recs = []
+  const stream = split(JSON.parse).on('data', rec => { recs.push(rec) })
+  // For *coverage* testing we also set `convertReqRes` to ensure
+  // createEcsPinoOptions includes a `formatters.log` function.
+  const log = pino(
+    { ...ecsFormat({ convertErr: false, convertReqRes: true }) },
+    stream)
+
+  log.info({ err: 42 }, 'hi')
+  const rec = recs[0]
+  t.ok(validate(rec))
+  t.equal(rec.err, 42, 'rec.err is unchanged')
+  t.equal(rec.error, undefined, 'no rec.error is set')
+  t.end()
+})
+
+test('createEcsPinoOptions with no formatters.log', t => {
+  // There is a supposed fast path in createEcsPinoOptions where formatters.log
+  // is excluded. Since convertErr is true by default, this case is rare.
+  // For coverage testing, we concoct that case here.
+  const recs = []
+  const stream = split(JSON.parse).on('data', rec => { recs.push(rec) })
+  const log = pino({ ...ecsFormat({ convertErr: false }) }, stream)
+
+  log.info({ err: 42, req: 'my req', res: null }, 'hi')
+  const rec = recs[0]
+  t.ok(validate(rec))
+  t.equal(rec.err, 42)
+  t.equal(rec.req, 'my req')
+  t.equal(rec.res, null)
+  t.end()
+})

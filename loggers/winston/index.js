@@ -9,6 +9,7 @@ const { format } = require('winston')
 const {
   version,
   stringify,
+  formatError,
   formatHttpRequest,
   formatHttpResponse
 } = require('@elastic/ecs-helpers')
@@ -26,12 +27,28 @@ const reservedFields = {
   'log.level': true,
   ecs: true,
   '@timestamp': true,
+  err: true,
   req: true,
   res: true
 }
 
 // https://github.com/winstonjs/winston#creating-custom-formats
 function ecsTransform (info, opts) {
+  // Boolean options for whether to specially handle some logged field names:
+  //  - `err` to ECS Error fields
+  //  - `req` and `res` to ECS HTTP, User agent, etc. fields
+  let convertErr = true
+  let convertReqRes = false
+  // istanbul ignore else
+  if (opts) {
+    if (hasOwnProperty.call(opts, 'convertErr')) {
+      convertErr = opts.convertErr
+    }
+    if (hasOwnProperty.call(opts, 'convertReqRes')) {
+      convertReqRes = opts.convertReqRes
+    }
+  }
+
   const ecsFields = {
     '@timestamp': new Date().toISOString(),
     'log.level': info.level,
@@ -90,16 +107,25 @@ function ecsTransform (info, opts) {
     }
   }
 
+  // https://www.elastic.co/guide/en/ecs/current/ecs-error.html
+  if (info.err !== undefined) {
+    if (convertErr) {
+      formatError(ecsFields, info.err)
+    } else {
+      ecsFields.err = info.err
+    }
+  }
+
   // https://www.elastic.co/guide/en/ecs/current/ecs-http.html
-  if (info.req) {
-    if (opts.convertReqRes) {
+  if (info.req !== undefined) {
+    if (convertReqRes) {
       formatHttpRequest(ecsFields, info.req)
     } else {
       ecsFields.req = info.req
     }
   }
-  if (info.res) {
-    if (opts.convertReqRes) {
+  if (info.res !== undefined) {
+    if (convertReqRes) {
       formatHttpResponse(ecsFields, info.res)
     } else {
       ecsFields.res = info.res

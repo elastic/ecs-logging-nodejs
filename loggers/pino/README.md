@@ -33,7 +33,7 @@ This package will configure Pino's `formatters`, `messageKey` and `timestamp` op
 const ecsFormat = require('@elastic/ecs-pino-format')
 const pino = require('pino')
 
-const log = pino({ ...ecsFormat() })
+const log = pino(ecsFormat())
 log.info('Hello world')
 
 const child = log.child({ module: 'foo' })
@@ -46,6 +46,47 @@ Running this will produce log output similar to the following:
 {"log.level":"info","@timestamp":"2021-01-19T22:51:12.142Z","ecs":{"version":"1.5.0"},"process":{"pid":82240},"host":{"hostname":"pink.local"},"message":"Hello world"}
 {"log.level":"warn","@timestamp":"2021-01-19T22:51:12.143Z","ecs":{"version":"1.5.0"},"process":{"pid":82240},"host":{"hostname":"pink.local"},"module":"foo","message":"From child"}
 ```
+
+### Error logging
+
+By default, the formatter will convert an `err` field that is an Error instance
+to [ECS Error fields](https://www.elastic.co/guide/en/ecs/current/ecs-error.html).
+For example:
+
+```js
+const ecsFormat = require('@elastic/ecs-pino-format')
+const pino = require('pino')
+const log = pino(ecsFormat())
+
+const myErr = new Error('boom')
+log.info({ err: myErr }, 'oops')
+```
+
+will yield (pretty-printed for readability):
+
+```sh
+% node examples/error.js | jq .
+{
+  "log.level": "info",
+  "@timestamp": "2021-01-26T17:02:23.697Z",
+  ...
+  "error": {
+    "type": "Error",
+    "message": "boom",
+    "stack_trace": "Error: boom\n    at Object.<anonymous> (..."
+  },
+  "message": "oops"
+}
+```
+
+This is analogous to and overrides
+[Pino's default err serializer](https://getpino.io/#/docs/api?id=serializers-object).
+Special handling of the `err` field can be disabled via the `convertErr: false` option:
+
+```js
+const log = pino(ecsFormat({ convertErr: false }))
+```
+
 
 ### HTTP Request and Response Logging
 

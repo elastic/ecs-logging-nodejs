@@ -2,6 +2,37 @@
 
 ## Unreleased
 
+- Add error logging feature. By default if an Error instance is passed as the
+  `err` meta field, then it will be converted to
+  [ECS Error fields](https://www.elastic.co/guide/en/ecs/current/ecs-error.html),
+  e.g.:
+
+
+  ```js
+  logger.info('oops', { err: new Error('boom') })
+  ```
+
+  yields:
+
+  ```js
+  {
+    "@timestamp": "2021-01-26T17:25:07.983Z",
+    "log.level": "info",
+    "message": "oops",
+    "ecs": {
+      "version": "1.5.0"
+    },
+    "error": {
+      "type": "Error",
+      "message": "boom",
+      "stack_trace": "Error: boom\n    at Object.<anonymous> (..."
+    }
+  }
+  ```
+
+  This special handling of the `err` meta field can be disabled via the
+  `convertErr: false` formatter option.
+
 - Set "service.name" and "event.dataset" log fields if Elastic APM is started.
   This helps to filter for different log streams in the same pod and the
   latter is required for log anomaly detection.

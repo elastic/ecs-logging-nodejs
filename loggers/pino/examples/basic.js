@@ -7,7 +7,7 @@
 const ecsFormat = require('../') // @elastic/ecs-pino-format
 const pino = require('pino')
 
-const log = pino({ ...ecsFormat() })
+const log = pino(ecsFormat())
 log.info('Hello world')
 
 const child = log.child({ module: 'foo' })

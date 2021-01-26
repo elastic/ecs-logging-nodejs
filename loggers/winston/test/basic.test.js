@@ -223,3 +223,53 @@ test('Keys order', t => {
     `{"@timestamp":"${cap.records[1]['@timestamp']}","log.level":"error","message":"oh noes","ecs":{"version":"${version}"},"hello":"world"}`)
   t.end()
 })
+
+test('convertErr is true by default', t => {
+  const cap = new CaptureTransport()
+  const log = winston.createLogger({
+    format: ecsFormat(),
+    transports: [cap]
+  })
+
+  log.info('hi', { err: new Error('boom') })
+  const rec = cap.records[0]
+  t.ok(validate(rec))
+  t.equal(rec.error.type, 'Error')
+  t.equal(rec.error.message, 'boom')
+  t.match(rec.error.stack_trace, /^Error: boom\n {4}at/)
+  t.equal(rec.err, undefined)
+  t.end()
+})
+
+test('convertErr does not blow up on non-Errors', t => {
+  const cap = new CaptureTransport()
+  const log = winston.createLogger({
+    format: ecsFormat(),
+    transports: [cap]
+  })
+
+  log.info('one', { err: 42 })
+  log.info('two', { err: false })
+  log.info('three', { err: null })
+  log.info('four', { err: { foo: 'bar' } })
+  t.equal(cap.records[0].err, 42)
+  t.equal(cap.records[1].err, false)
+  t.equal(cap.records[2].err, null)
+  t.deepEqual(cap.records[3].err, { foo: 'bar' })
+  t.end()
+})
+
+test('convertErr=false allows passing through err=<non-Error>', t => {
+  const cap = new CaptureTransport()
+  const log = winston.createLogger({
+    format: ecsFormat({ convertErr: false }),
+    transports: [cap]
+  })
+
+  log.info('hi', { err: 42 })
+  const rec = cap.records[0]
+  t.ok(validate(rec))
+  t.equal(rec.err, 42, 'rec.err is unchanged')
+  t.equal(rec.error, undefined, 'no rec.error is set')
+  t.end()
+})
