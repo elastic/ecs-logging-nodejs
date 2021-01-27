@@ -32,6 +32,13 @@ fmt:
 test:
 	./.ci/run-test.sh
 
+# List licenses of prod deps.
+.PHONY: list-licenses
+list-licenses:
+	@for dir in helpers $(shell ls -d loggers/*); do \
+		(cd $$dir && npm ls --prod --parseable | while read subdir; do node -e "console.log(require('$$subdir/package.json').license)"; done) \
+	done | sort | uniq -c | sort -n
+
 .PHONY: setup-pre-commit-hook
 setup-pre-commit-hook:
 	@cp utils/pre-commit-hook.sh .git/hooks/pre-commit
