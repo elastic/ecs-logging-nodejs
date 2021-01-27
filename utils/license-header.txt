@@ -14,19 +14,3 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-
-'use strict'
-
-const winston = require('winston')
-const ecsFormat = require('../') // @elastic/ecs-winston-format
-
-const logger = winston.createLogger({
-  level: 'info',
-  format: ecsFormat(),
-  transports: [
-    new winston.transports.Console()
-  ]
-})
-
-const myErr = new Error('boom')
-logger.info('oops', { err: myErr })

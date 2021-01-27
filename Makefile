@@ -15,7 +15,7 @@ clean:
 	(cd utils && rm -rf node_modules)
 
 .PHONY: check
-check:
+check: check-license-headers
 	(cd helpers && npx standard)
 	(cd loggers/winston && npx standard)
 	(cd loggers/morgan && npx standard)
@@ -38,6 +38,10 @@ list-licenses:
 	@for dir in helpers $(shell ls -d loggers/*); do \
 		(cd $$dir && npm ls --prod --parseable | while read subdir; do node -e "console.log(require('$$subdir/package.json').license)"; done) \
 	done | sort | uniq -c | sort -n
+
+.PHONY: check-license-headers
+check-license-headers:
+	@bash utils/check-license-headers.sh
 
 .PHONY: setup-pre-commit-hook
 setup-pre-commit-hook:
