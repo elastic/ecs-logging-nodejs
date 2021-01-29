@@ -29,7 +29,7 @@
   "homepage": "https://github.com/elastic/ecs-logging-js/blob/master/loggers/winston/README.md",
   "scripts": {
     "bench": "./benchmarks/bench",
-    "test": "standard && tap --100 --timeout 15 test/*.test.js"
+    "test": "standard && tap --100 --timeout ${TAP_TIMEOUT:-10} test/*.test.js"
   },
   "engines": {
     "node": ">=10"
