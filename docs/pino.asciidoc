@@ -1,0 +1,54 @@
+[[pino]]
+== ECS Logging with Pino
+
+This Node.js package provides a formatter for the https://getpino.io[pino]
+logger, compatible with {ecs-logging-ref}/intro.html[ELastic Common Schema (ECS) logging].
+In combination with the https://www.elastic.co/beats/filebeat[Filebeat] shipper,
+you can https://www.elastic.co/log-monitoring[monitor all your logs] in one 
+place in the Elastic Stack.
+
+
+[float]
+=== Setup
+
+[float]
+[[setup-step-1]]
+=== Step 1: Install
+
+[source,cmd]
+----
+$ npm install @elastic/ecs-pino-format
+----
+
+[float]
+[[setup-step-1]]
+=== Step 1: Configure
+
+[source,js]
+----
+const ecsFormat = require('@elastic/ecs-pino-format')
+const pino = require('pino')
+
+const log = pino(ecsFormat()) <1>
+log.info('hi')
+log.error({ err: new Error('boom') }, 'oops there is a problem')
+// ...
+----
+<1> This will https://getpino.io/#/docs/api?id=options[configure] Pino's `formatters`, `messageKey` and `timestamp` options.
+
+See usage discussion and examples below.
+
+[float]
+[[setup-step-3]]
+==== Step 3: Configure Filebeat
+
+The best way to collect the logs once they are ECS-formatted is with https://www.elastic.co/beats/filebeat[Filebeat]:
+
+include::{ecs-repo-dir}/setup.asciidoc[tag=configure-filebeat]
+
+
+[float]
+[[usage]]
+=== Usage
+
+XXX

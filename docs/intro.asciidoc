@@ -1,0 +1,30 @@
+[[intro]]
+== Introduction
+
+beta::[]
+
+ECS loggers are formatter plugins for your favorite logging libraries.
+They make it easy to format your logs into ECS-compatible JSON.
+
+The formatters log structured JSON and support serialization of Error objects,
+and HTTP Request and Response objects from Node.js core and popular web
+frameworks. A minimal log record includes these fields:
+
+[source,json]
+----
+{
+  "@timestamp": "2021-01-13T21:32:38.095Z",
+  "log.level": "info",
+  "message": "hi",
+  "ecs": {"version":"1.5.0"}
+}
+----
+
+TIP: Want to learn more about ECS, ECS logging, and other available language plugins?
+See the {ecs-logging-ref}/intro.html[ECS logging guide].
+
+Ready to jump into Node.js ECS logging?
+
+- <<morgan,ECS Logging with Morgan>>
+- <<pino,ECS Logging with Pino>>
+- <<winston,ECS Logging with Winston>>

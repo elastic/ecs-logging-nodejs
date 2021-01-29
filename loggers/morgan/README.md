@@ -10,7 +10,7 @@ This Node.js package provides a formatter for the
 In combination with the [filebeat](https://www.elastic.co/products/beats/filebeat)
 shipper, you can send your logs directly to Elasticsearch and leverage
 [Kibana's Logs UI](https://www.elastic.co/guide/en/infrastructure/guide/current/logs-ui-overview.html)
-to inspect all logs in one single place
+to inspect all logs in one single place.
 
 ---
 
@@ -38,9 +38,6 @@ app.use(morgan(ecsFormat()))
 app.get('/', function (req, res) {
   res.send('hello, world!')
 })
-app.get('/error', function (req, res, next) {
-  next(new Error('boom'))
-}
 
 app.listen(3000)
 ```

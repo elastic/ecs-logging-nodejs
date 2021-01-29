@@ -1,0 +1,59 @@
+[[winston]]
+== ECS Logging with Winston
+
+This Node.js package provides a formatter for the https://github.com/winstonjs/winston#readme[winston]
+logger, compatible with {ecs-logging-ref}/intro.html[ELastic Common Schema (ECS) logging].
+In combination with the https://www.elastic.co/beats/filebeat[Filebeat] shipper,
+you can https://www.elastic.co/log-monitoring[monitor all your logs] in one 
+place in the Elastic Stack.
+
+
+[float]
+=== Setup
+
+[float]
+[[setup-step-1]]
+=== Step 1: Install
+
+[source,cmd]
+----
+$ npm install @elastic/ecs-winston-format
+----
+
+[float]
+[[setup-step-1]]
+=== Step 1: Configure
+
+[source,js]
+----
+const winston = require('winston')
+const ecsFormat = require('@elastic/ecs-winston-format')
+
+const logger = winston.createLogger({
+  format: ecsFormat(), <1>
+  transports: [
+    new winston.transports.Console()
+  ]
+})
+
+logger.info('hi')
+logger.error('oops there is a problem', { err: new Error('boom') })
+----
+<1> Pass the ECS formatter to winston here.
+
+See usage discussion and examples below.
+
+[float]
+[[setup-step-3]]
+==== Step 3: Configure Filebeat
+
+The best way to collect the logs once they are ECS-formatted is with https://www.elastic.co/beats/filebeat[Filebeat]:
+
+include::{ecs-repo-dir}/setup.asciidoc[tag=configure-filebeat]
+
+
+[float]
+[[usage]]
+=== Usage
+
+XXX
