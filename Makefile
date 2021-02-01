@@ -20,6 +20,7 @@ check: check-license-headers
 	(cd loggers/winston && npx standard)
 	(cd loggers/morgan && npx standard)
 	(cd loggers/pino && npx standard)
+	(cd utils && npx standard)
 
 .PHONY: fmt
 fmt:
@@ -27,6 +28,7 @@ fmt:
 	(cd loggers/winston && npx standard --fix)
 	(cd loggers/morgan && npx standard --fix)
 	(cd loggers/pino && npx standard --fix)
+	(cd utils && npx standard --fix)
 
 .PHONY: test
 test:

@@ -28,6 +28,7 @@ const split = require('split2')
 const test = require('tap').test
 
 const ecsFormat = require('../')
+const { ecsLoggingValidate } = require('../../../utils/lib/ecs-logging-validate')
 
 const ajv = new Ajv({
   allErrors: true,
@@ -40,6 +41,7 @@ test('Should produce valid ecs logs', t => {
   const stream = split(JSON.parse).once('data', line => {
     t.deepEqual(line['log.level'], 'info')
     t.ok(validate(line))
+    t.equal(ecsLoggingValidate(line), null)
     t.end()
   })
 
@@ -51,6 +53,7 @@ test('Should map "name" to "log.logger"', t => {
   const stream = split(JSON.parse).once('data', line => {
     t.deepEqual(line.log, { logger: 'myName' })
     t.ok(validate(line))
+    t.equal(ecsLoggingValidate(line), null)
     t.end()
   })
 
@@ -63,6 +66,7 @@ test('Should append any additional property to the log message', t => {
   const stream = split(JSON.parse).once('data', line => {
     t.equal(line.foo, 'bar')
     t.ok(validate(line))
+    t.equal(ecsLoggingValidate(line), null)
     t.end()
   })
 
@@ -81,10 +85,11 @@ test('can log non-HTTP res & req fields', t => {
 })
 
 test('convertReqRes:true and HTTP req, res', t => {
-  t.plan(5)
+  t.plan(7)
 
   const stream = split(JSON.parse).on('data', rec => {
     t.ok(validate(rec))
+    t.equal(ecsLoggingValidate(rec), null)
     if (rec.message === 'handled request') {
       // Spot check that some of the ECS HTTP and User agent fields are there.
       t.equal(rec.http.request.method, 'get', 'http.request.method')
@@ -130,6 +135,7 @@ test('convertErr is true by default', t => {
   log.info({ err: new Error('boom') }, 'hi')
   const rec = recs[0]
   t.ok(validate(rec))
+  t.equal(ecsLoggingValidate(rec), null)
   t.equal(rec.error.type, 'Error')
   t.equal(rec.error.message, 'boom')
   t.match(rec.error.stack_trace, /^Error: boom\n {4}at/)
@@ -164,6 +170,7 @@ test('convertErr=false allows passing through err=<non-Error>', t => {
   log.info({ err: 42 }, 'hi')
   const rec = recs[0]
   t.ok(validate(rec))
+  t.equal(ecsLoggingValidate(rec), null)
   t.equal(rec.err, 42, 'rec.err is unchanged')
   t.equal(rec.error, undefined, 'no rec.error is set')
   t.end()
@@ -180,6 +187,7 @@ test('createEcsPinoOptions with no formatters.log', t => {
   log.info({ err: 42, req: 'my req', res: null }, 'hi')
   const rec = recs[0]
   t.ok(validate(rec))
+  t.equal(ecsLoggingValidate(rec), null)
   t.equal(rec.err, 42)
   t.equal(rec.req, 'my req')
   t.equal(rec.res, null)

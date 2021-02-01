@@ -24,6 +24,8 @@ const Ajv = require('ajv').default
 const semver = require('semver')
 const test = require('tap').test
 
+const { ecsLoggingValidate } = require('../utils/lib/ecs-logging-validate')
+
 const {
   version,
   stringify,
@@ -40,7 +42,7 @@ addFormats(ajv)
 const validate = ajv.compile(require('../utils/schema.json'))
 
 test('stringify should return a valid ecs json', t => {
-  const ecs = {
+  const ecsFields = {
     '@timestamp': new Date().toISOString(),
     'log.level': 'info',
     message: 'hello world',
@@ -49,23 +51,49 @@ test('stringify should return a valid ecs json', t => {
     }
   }
 
-  const line = JSON.parse(stringify(ecs))
-  t.equal(validate(line), true)
+  const line = stringify(ecsFields)
+  const rec = JSON.parse(line)
+  t.equal(validate(rec), true)
+  t.equal(ecsLoggingValidate(line), null)
   t.end()
 })
 
-test('Bad ecs json (on purpose)', t => {
-  const ecs = {
+test('bad ECS json on purpose: @timestamp', t => {
+  const ecsFields = {
     '@timestamp': 'not a date',
     'log.level': 'info',
-    message: true,
+    message: 'foo',
     ecs: {
       version: '1.4.0'
     }
   }
 
-  const line = JSON.parse(stringify(ecs))
-  t.equal(validate(line), false)
+  const line = stringify(ecsFields)
+  const rec = JSON.parse(line)
+
+  t.equal(validate(rec), false)
+
+  const err = ecsLoggingValidate(line)
+  t.ok(err, 'got an ecsLoggingValidate error')
+  t.equal(err.details.length, 1)
+  t.ok(err.details[0].message)
+  t.equal(err.details[0].specKey, 'type')
+  t.equal(err.details[0].name, '@timestamp')
+
+  t.end()
+})
+
+test('bad ECS json on purpose: message type, ecs.version missing', t => {
+  const line = '{"@timestamp":"2021-02-01T21:21:06.281Z","log.level":"info","message":true,"foo":"bar"}'
+
+  const err = ecsLoggingValidate(line)
+  t.ok(err, 'got an ecsLoggingValidate error')
+  t.equal(err.details.length, 2)
+  t.equal(err.details[0].specKey, 'type')
+  t.equal(err.details[0].name, 'message')
+  t.equal(err.details[1].specKey, 'required')
+  t.equal(err.details[1].name, 'ecs.version')
+
   t.end()
 })
 
@@ -121,6 +149,7 @@ test('formatHttpRequest and formatHttpResponse should return a valid ecs object'
 
     const line = JSON.parse(stringify(ecs))
     t.ok(validate(line))
+    t.equal(ecsLoggingValidate(line), null)
 
     t.deepEqual(line.user_agent, { original: 'cool-agent' })
     t.deepEqual(line.url, {
@@ -171,6 +200,7 @@ test('stringify should emit valid tracing fields', t => {
 
   const after = JSON.parse(stringify(before))
   t.ok(validate(after))
+  t.equal(ecsLoggingValidate(after), null)
   t.deepEqual(after.trace, { id: '1' }, 'trace.id is stringified')
   t.deepEqual(after.transaction, { id: '2' }, 'transaction.id is stringified')
   t.deepEqual(after.span, { id: '3' },

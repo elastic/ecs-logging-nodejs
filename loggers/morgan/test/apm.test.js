@@ -29,6 +29,8 @@ const Ajv = require('ajv').default
 const split = require('split2')
 const test = require('tap').test
 
+const { ecsLoggingValidate } = require('../../../utils/lib/ecs-logging-validate')
+
 const ajv = new Ajv({
   allErrors: true,
   verbose: true
@@ -117,6 +119,7 @@ test('tracing integration works', t => {
     }
     if (logObj) {
       t.ok(validate(logObj), 'logObj is ECS valid')
+      t.equal(ecsLoggingValidate(logObj), null)
       logObjs.push(logObj)
     }
     // Unlike the equivalent apm.test.js for other logging frameworks, we are
