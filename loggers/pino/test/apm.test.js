@@ -41,6 +41,7 @@ const validate = ajv.compile(require('../../../utils/schema.json'))
 test('tracing integration works', t => {
   let apmServer
   let app
+  let appIsClosed = false
   const traceObjs = []
   const logObjs = []
   let stderr = ''
@@ -97,6 +98,7 @@ test('tracing integration works', t => {
     app.on('close', function (code) {
       t.equal(stderr, '', 'empty stderr from app')
       t.equal(code, 0, 'app exited 0')
+      appIsClosed = true
     })
   }
 
@@ -137,11 +139,17 @@ test('tracing integration works', t => {
   }
 
   function finish () {
-    app.on('close', function () {
+    if (appIsClosed) {
       apmServer.close(function () {
         t.end()
       })
-    })
+    } else {
+      app.on('close', function () {
+        apmServer.close(function () {
+          t.end()
+        })
+      })
+    }
   }
 
   step1StartMockApmServer(function onListening (apmServerErr, apmServerUrl) {

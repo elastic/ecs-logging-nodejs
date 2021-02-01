@@ -41,6 +41,7 @@ const validate = ajv.compile(require('../../../utils/schema.json'))
 test('tracing integration works', t => {
   let apmServer
   let app
+  let appIsClosed = false
   const traceObjs = []
   const logObjs = []
   let stderr = ''
@@ -97,6 +98,7 @@ test('tracing integration works', t => {
     app.on('close', function (code) {
       t.equal(stderr, '', 'empty stderr from app')
       t.equal(code, 0, 'app exited 0')
+      appIsClosed = true
     })
   }
 
@@ -116,11 +118,13 @@ test('tracing integration works', t => {
   function collectTracesLogsAndCheck (traceObj, logObj) {
     if (traceObj) {
       traceObjs.push(traceObj)
+      t.comment(`received traceObjs ${traceObjs.length}`)
     }
     if (logObj) {
       t.ok(validate(logObj), 'logObj is ECS valid')
-      t.equal(ecsLoggingValidate(logObj), null)
+      t.equal(ecsLoggingValidate(logObj), null, 'logObj is ecs-logging valid')
       logObjs.push(logObj)
+      t.comment(`received logObjs ${logObjs.length}`)
     }
     if (traceObjs.length >= 3 && logObjs.length >= 1) {
       t.ok(traceObjs[0].metadata, 'traceObjs[0] is metadata')
@@ -130,22 +134,28 @@ test('tracing integration works', t => {
       t.equal(logObjs[0].trace.id, span.trace_id, 'trace.id matches')
       t.equal(logObjs[0].transaction.id, span.transaction_id, 'transaction.id matches')
       t.equal(logObjs[0].span.id, span.id, 'span.id matches')
-      t.equal(logObjs[0].service.name, 'test-apm')
-      t.equal(logObjs[0].event.dataset, 'test-apm.log')
+      t.equal(logObjs[0].service.name, 'test-apm', 'service.name matches')
+      t.equal(logObjs[0].event.dataset, 'test-apm.log', 'event.dataset matches')
       finish()
     }
   }
 
   function finish () {
-    app.on('close', function () {
+    if (appIsClosed) {
       apmServer.close(function () {
         t.end()
       })
-    })
+    } else {
+      app.on('close', function () {
+        apmServer.close(function () {
+          t.end()
+        })
+      })
+    }
   }
 
   step1StartMockApmServer(function onListening (apmServerErr, apmServerUrl) {
-    t.ifErr(apmServerErr)
+    t.ifErr(apmServerErr, 'no error from starting the mock APM server')
     if (apmServerErr) {
       finish()
       return
@@ -153,7 +163,7 @@ test('tracing integration works', t => {
     t.ok(apmServerUrl, 'apmServerUrl: ' + apmServerUrl)
 
     step2StartApp(apmServerUrl, function onReady (appErr, appUrl) {
-      t.ifErr(appErr)
+      t.ifErr(appErr, 'no error from starting the app')
       if (appErr) {
         finish()
         return
@@ -161,7 +171,7 @@ test('tracing integration works', t => {
       t.ok(appUrl, 'appUrl: ' + appUrl)
 
       step3CallApp(appUrl, function (clientErr) {
-        t.ifErr(clientErr)
+        t.ifErr(clientErr, 'no error from calling the app')
 
         // The thread of control now is expected to be in
         // `collectTracesLogsAndCheck()`.
