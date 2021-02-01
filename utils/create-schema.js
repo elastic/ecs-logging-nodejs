@@ -52,7 +52,7 @@ const properties = getAllFiles(ecsSchemasDir)
   .map(file => fs.readFileSync(file, 'utf8'))
   .map(yaml.safeLoad)
   .reduce((acc, [val]) => {
-    var properties = {}
+    let properties = {}
     for (const prop of val.fields) {
       properties = set(properties, prop.name, jsonSchemaTypeFromEcsType(prop.type))
     }
@@ -68,12 +68,12 @@ const properties = getAllFiles(ecsSchemasDir)
   }, {})
 
 // Write out a JSON schema file.
-const gitInfo = execSync(`git log -1 --pretty=format:'commit %h%d'`, {
+const gitInfo = execSync('git log -1 --pretty=format:\'commit %h%d\'', {
   cwd: ecsRepo
 })
 const comment = `ecs.git ${gitInfo}`
 const jsonSchema = JSON.stringify({
-  '$comment': comment,
+  $comment: comment,
   type: 'object',
   properties,
   additionalProperties: true
@@ -95,17 +95,17 @@ function set (object, objPath, value, customizer) {
     .split('.')
     .join('.properties.')
     .split('.')
-  var index = -1
-  var length = objPath.length
-  var lastIndex = length - 1
-  var nested = object
+  let index = -1
+  const length = objPath.length
+  const lastIndex = length - 1
+  let nested = object
 
   while (nested != null && ++index < length) {
-    var key = objPath[index]
-    var newValue = value
+    const key = objPath[index]
+    let newValue = value
 
     if (index !== lastIndex) {
-      var objValue = nested[key]
+      const objValue = nested[key]
       newValue = objValue || {}
     }
     if (key === 'properties') {
@@ -158,7 +158,7 @@ function jsonSchemaTypeFromEcsType (type) {
   }
 }
 
-function usageError(msg) {
+function usageError (msg) {
   const prog = path.basename(process.argv[1])
   process.stderr.write(`${prog}: error: ${msg}\n`)
   process.stderr.write('usage: node create-schema $ecsRepo\n')
