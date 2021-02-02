@@ -5,7 +5,7 @@
 pipeline {
   agent { label 'linux && immutable' }
   environment {
-    REPO = 'ecs-logging-js'
+    REPO = 'ecs-logging-nodejs'
     BASE_DIR = "src/go.elastic.co/apm/${env.REPO}"
     NOTIFY_TO = credentials('notify-to')
     JOB_GCS_BUCKET = credentials('gcs-bucket')

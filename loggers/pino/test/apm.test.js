@@ -29,6 +29,8 @@ const Ajv = require('ajv').default
 const split = require('split2')
 const test = require('tap').test
 
+const { ecsLoggingValidate } = require('../../../utils/lib/ecs-logging-validate')
+
 const ajv = new Ajv({
   allErrors: true,
   verbose: true
@@ -39,6 +41,7 @@ const validate = ajv.compile(require('../../../utils/schema.json'))
 test('tracing integration works', t => {
   let apmServer
   let app
+  let appIsClosed = false
   const traceObjs = []
   const logObjs = []
   let stderr = ''
@@ -95,6 +98,7 @@ test('tracing integration works', t => {
     app.on('close', function (code) {
       t.equal(stderr, '', 'empty stderr from app')
       t.equal(code, 0, 'app exited 0')
+      appIsClosed = true
     })
   }
 
@@ -117,6 +121,7 @@ test('tracing integration works', t => {
     }
     if (logObj) {
       t.ok(validate(logObj), 'logObj is ECS valid')
+      t.equal(ecsLoggingValidate(logObj), null)
       logObjs.push(logObj)
     }
     if (traceObjs.length >= 3 && logObjs.length >= 1) {
@@ -134,11 +139,17 @@ test('tracing integration works', t => {
   }
 
   function finish () {
-    app.on('close', function () {
+    if (appIsClosed) {
       apmServer.close(function () {
         t.end()
       })
-    })
+    } else {
+      app.on('close', function () {
+        apmServer.close(function () {
+          t.end()
+        })
+      })
+    }
   }
 
   step1StartMockApmServer(function onListening (apmServerErr, apmServerUrl) {

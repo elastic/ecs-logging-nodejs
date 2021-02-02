@@ -27,6 +27,7 @@ const Ajv = require('ajv').default
 const { version } = require('@elastic/ecs-helpers')
 
 const ecsFormat = require('../')
+const { ecsLoggingValidate } = require('../../../utils/lib/ecs-logging-validate')
 
 const ajv = new Ajv({
   allErrors: true,
@@ -53,7 +54,7 @@ class CaptureTransport extends Transport {
 }
 
 test('Should produce valid ecs logs', t => {
-  t.plan(2)
+  t.plan(4)
 
   const cap = new CaptureTransport()
   const logger = winston.createLogger({
@@ -64,13 +65,14 @@ test('Should produce valid ecs logs', t => {
   logger.error('ecs is cool!', { hello: 'world' })
 
   cap.records.forEach((rec) => {
-    t.true(validate(rec))
+    t.ok(validate(rec))
+    t.equal(ecsLoggingValidate(rec), null)
   })
   t.end()
 })
 
 test('Bad ecs log (on purpose)', t => {
-  t.plan(1)
+  t.plan(2)
 
   const cap = new CaptureTransport()
   const logger = winston.createLogger({
@@ -82,6 +84,7 @@ test('Bad ecs log (on purpose)', t => {
   cap.records.forEach((rec) => {
     rec['@timestamp'] = true // Intentionally break it
     t.false(validate(rec))
+    t.notOk(ecsLoggingValidate(rec))
   })
   t.end()
 })
@@ -201,7 +204,9 @@ test('http request and response (req, res keys)', t => {
         res.on('close', function () {
           t.equal(cap.records.length, 2)
           t.ok(validate(cap.records[0]), 'record 0 is ECS valid')
+          t.equal(ecsLoggingValidate(cap.records[0]), null)
           t.ok(validate(cap.records[1]), 'record 1 is ECS valid')
+          t.equal(ecsLoggingValidate(cap.records[1]), null)
           // Spot check that some of the ECS HTTP fields are there.
           t.equal(cap.records[0].http.request.method, 'post',
             'http.request.method')
@@ -247,6 +252,7 @@ test('convertErr is true by default', t => {
   log.info('hi', { err: new Error('boom') })
   const rec = cap.records[0]
   t.ok(validate(rec))
+  t.equal(ecsLoggingValidate(rec), null)
   t.equal(rec.error.type, 'Error')
   t.equal(rec.error.message, 'boom')
   t.match(rec.error.stack_trace, /^Error: boom\n {4}at/)
@@ -282,6 +288,7 @@ test('convertErr=false allows passing through err=<non-Error>', t => {
   log.info('hi', { err: 42 })
   const rec = cap.records[0]
   t.ok(validate(rec))
+  t.equal(ecsLoggingValidate(rec), null)
   t.equal(rec.err, 42, 'rec.err is unchanged')
   t.equal(rec.error, undefined, 'no rec.error is set')
   t.end()

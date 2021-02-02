@@ -6,7 +6,11 @@
   "main": "create-schema.js",
   "author": "Tomas Della Vedova",
   "license": "Apache-2.0",
+  "scripts": {
+    "check": "standard"
+  },
   "devDependencies": {
-    "js-yaml": "^3.13.1"
+    "js-yaml": "^3.13.1",
+    "standard": "^16.0.3"
   }
 }

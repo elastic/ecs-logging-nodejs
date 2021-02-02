@@ -27,6 +27,7 @@ const split = require('split2')
 const test = require('tap').test
 
 const ecsFormat = require('../')
+const { ecsLoggingValidate } = require('../../../utils/lib/ecs-logging-validate')
 
 const ajv = new Ajv({
   allErrors: true,
@@ -69,10 +70,11 @@ function makeExpressServerAndRequest (logger, path, reqOpts, body, cb) {
 }
 
 test('Should produce valid ecs logs', t => {
-  t.plan(2)
+  t.plan(3)
 
   const stream = split(JSON.parse).on('data', line => {
     t.true(validate(line))
+    t.equal(ecsLoggingValidate(line), null)
   })
   const logger = morgan(ecsFormat(), { stream })
 
