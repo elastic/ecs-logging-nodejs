@@ -28,7 +28,7 @@
 //      cd ecs
 //      git checkout TAG   # e.g. v1.5.0
 // 2. Re-generate the JSON schema file:
-//      cd .../ecs-logging-js/utils
+//      cd .../ecs-logging-nodejs/utils
 //      npm install
 //      node create-schema.js .../ecs
 // 3. Run the tests and commit the updated schema.

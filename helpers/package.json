@@ -8,14 +8,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/elastic/ecs-logging-js.git"
+    "url": "git+https://github.com/elastic/ecs-logging-nodejs.git"
   },
   "author": "Tomas Della Vedova",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/elastic/ecs-logging-js/issues"
+    "url": "https://github.com/elastic/ecs-logging-nodejs/issues"
   },
-  "homepage": "https://github.com/elastic/ecs-logging-js/blob/master/helpers/README.md",
+  "homepage": "https://github.com/elastic/ecs-logging-nodejs/blob/master/helpers/README.md",
   "scripts": {
     "test": "standard && tap --timeout ${TAP_TIMEOUT:-10} test.js"
   },

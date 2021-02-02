@@ -5,13 +5,13 @@
 - Set "service.name" and "event.dataset" log fields if Elastic APM is started.
   This helps to filter for different log streams in the same pod and the
   latter is required for log anomaly detection.
-  ([#41](https://github.com/elastic/ecs-logging-js/issues/41))
+  ([#41](https://github.com/elastic/ecs-logging-nodejs/issues/41))
 
 - Add support for [ECS tracing fields](https://www.elastic.co/guide/en/ecs/current/ecs-tracing.html).
   If it is detected that [Elastic APM](https://www.npmjs.com/package/elastic-apm-node)
   is in use and there is an active trace, then tracing fields will be added to
   log records. This enables linking between traces and log records in Kibana.
-  ([#35](https://github.com/elastic/ecs-logging-js/issues/35))
+  ([#35](https://github.com/elastic/ecs-logging-nodejs/issues/35))
 
 - Fix passing of a format *name*, e.g. `app.use(morgan(ecsFormat('tiny')))`.
 
@@ -19,11 +19,11 @@
 
 - Serialize "log.level" as a top-level dotted field per
   https://github.com/elastic/ecs-logging/pull/33.
-  [#23](https://github.com/elastic/ecs-logging-js/pull/23)
+  [#23](https://github.com/elastic/ecs-logging-nodejs/pull/23)
 
 ## v0.2.0
 
-- Use the version number provided by ecs-helpers - [#13](https://github.com/elastic/ecs-logging-js/pull/13)
+- Use the version number provided by ecs-helpers - [#13](https://github.com/elastic/ecs-logging-nodejs/pull/13)
 
 ## v0.1.0
 

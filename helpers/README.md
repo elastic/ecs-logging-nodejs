@@ -2,7 +2,7 @@
 
 # @elastic/ecs-helpers
 
-[![Build Status](https://apm-ci.elastic.co/buildStatus/icon?job=apm-agent-nodejs%2Fecs-logging-js-mbp%2Fmaster)](https://apm-ci.elastic.co/job/apm-agent-nodejs/job/ecs-logging-js-mbp/job/master/)  [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](http://standardjs.com/)
+[![Build Status](https://apm-ci.elastic.co/buildStatus/icon?job=apm-agent-nodejs%2Fecs-logging-nodejs-mbp%2Fmaster)](https://apm-ci.elastic.co/job/apm-agent-nodejs/job/ecs-logging-nodejs-mbp/job/master/)  [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](http://standardjs.com/)
 
 A set of helpers for the ECS logging libraries.
 You should not directly used this package, but the ECS logging libraries instead.
@@ -42,7 +42,7 @@ console.log(stringify(ecs))
 
 Note: This uses [fast-json-stringify](https://github.com/fastify/fast-json-stringify)
 for serialization. By design this chooses speed over supporting serialization
-of objects with circular references. This generally means that ecs-logging-js
+of objects with circular references. This generally means that ecs-logging-nodejs
 libraries will throw a "Converting circular structure to JSON" exception if an
 attempt is made to log an object with circular references.
 

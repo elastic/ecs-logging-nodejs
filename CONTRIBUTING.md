@@ -1,6 +1,6 @@
-# Contributing to the ecs-logging-js libraries
+# Contributing to the ecs-logging-nodejs libraries
 
-The ecs-logging-js libraries are open source and we love to receive contributions
+The ecs-logging-nodejs libraries are open source and we love to receive contributions
 from our community — you!
 
 There are many ways to contribute,
