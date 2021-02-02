@@ -4,7 +4,7 @@
 This Node.js package provides a formatter for the https://github.com/winstonjs/winston#readme[winston]
 logger, compatible with {ecs-logging-ref}/intro.html[ELastic Common Schema (ECS) logging].
 In combination with the https://www.elastic.co/beats/filebeat[Filebeat] shipper,
-you can https://www.elastic.co/log-monitoring[monitor all your logs] in one 
+you can https://www.elastic.co/log-monitoring[monitor all your logs] in one
 place in the Elastic Stack.
 
 
@@ -12,7 +12,7 @@ place in the Elastic Stack.
 === Setup
 
 [float]
-[[setup-step-1]]
+[[winston-setup-step-1]]
 === Step 1: Install
 
 [source,cmd]
@@ -21,8 +21,8 @@ $ npm install @elastic/ecs-winston-format
 ----
 
 [float]
-[[setup-step-1]]
-=== Step 1: Configure
+[[winston-setup-step-2]]
+=== Step 2: Configure
 
 [source,js]
 ----
@@ -44,7 +44,7 @@ logger.error('oops there is a problem', { err: new Error('boom') })
 See usage discussion and examples below.
 
 [float]
-[[setup-step-3]]
+[[winston-setup-step-3]]
 ==== Step 3: Configure Filebeat
 
 The best way to collect the logs once they are ECS-formatted is with https://www.elastic.co/beats/filebeat[Filebeat]:
@@ -53,7 +53,7 @@ include::{ecs-repo-dir}/setup.asciidoc[tag=configure-filebeat]
 
 
 [float]
-[[usage]]
+[[winston-usage]]
 === Usage
 
 XXX
