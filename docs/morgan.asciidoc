@@ -47,7 +47,7 @@ See usage discussion and examples below.
 [[morgan-setup-step-3]]
 ==== Step 3: Configure Filebeat
 
-The best way to collect the logs once they are ECS-formatted is with https://www.elastic.co/beats/filebeat[Filebeat]:
+The best way to collect the logs once they are ECS-formatted is with {filebeat-ref}[Filebeat]:
 
 include::{ecs-repo-dir}/setup.asciidoc[tag=configure-filebeat]
 
