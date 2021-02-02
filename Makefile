@@ -5,6 +5,7 @@
 .PHONY: all
 all:
 	./.ci/run-install.sh
+	(cd utils && npm install)
 
 .PHONY: clean
 clean:

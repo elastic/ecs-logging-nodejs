@@ -6,7 +6,8 @@
 
 This set of libraries allows you to transform your application logs to structured logs that comply with the [Elastic Common Schema (ECS)](https://www.elastic.co/guide/en/ecs/current/ecs-reference.html).
 In combination with [filebeat](https://www.elastic.co/products/beats/filebeat) you can send your logs directly to Elasticsearch and leverage [Kibana's Logs UI](https://www.elastic.co/guide/en/infrastructure/guide/current/logs-ui-overview.html) to inspect all logs in one single place.
-See [ecs-logging](https://github.com/elastic/ecs-logging) for other ECS logging libraries and more resources about ECS & logging.
+
+Please see the [Node.js ECS logging documentation](https://www.elastic.co/guide/en/ecs-logging/nodejs/current/intro.html).
 
 ---
 
@@ -16,13 +17,16 @@ backwards-incompatible changes might be introduced in releases during the
 
 ---
 
-### Supported logging frameworks
+## Supported logging frameworks
 
-- [Pino](https://getpino.io/#/) via [@elastic/ecs-pino-format](./loggers/pino)
-- [Winston](https://github.com/winstonjs/winston) via [@elastic/ecs-winston-format](./loggers/winston)
 - [Morgan](https://github.com/expressjs/morgan) via [@elastic/ecs-morgan-format](./loggers/morgan)
+  ([docs](https://www.elastic.co/guide/en/ecs-logging/nodejs/current/morgan.html))
+- [Pino](https://getpino.io/#/) via [@elastic/ecs-pino-format](./loggers/pino)
+  ([docs](https://www.elastic.co/guide/en/ecs-logging/nodejs/current/pino.html))
+- [Winston](https://github.com/winstonjs/winston) via [@elastic/ecs-winston-format](./loggers/winston)
+  ([docs](https://www.elastic.co/guide/en/ecs-logging/nodejs/current/winston.html))
 
-### References
+## Links
 
 * Introduction to ECS [blog post](https://www.elastic.co/blog/introducing-the-elastic-common-schema).
 * Logs UI [blog post](https://www.elastic.co/blog/infrastructure-and-logs-ui-new-ways-for-ops-to-interact-with-elasticsearch).
