@@ -34,6 +34,19 @@ fmt:
 test:
 	./.ci/run-test.sh
 
+# Build and open the rendered docs for testing.
+#
+# Requirements:
+# - Docker is running
+# - "../docs" is an elastic/docs.git clone
+# - "../ecs-logging" is an elastic/ecs-logging.git clone
+.PHONY: docs-and-open
+docs-and-open:
+	export GIT_HOME=$(shell cd .. && pwd) && \
+		$$GIT_HOME/docs/build_docs \
+			--resource $$GIT_HOME/ecs-logging/docs/ --chunk 1 --open \
+			--doc $$PWD/docs/index.asciidoc
+
 # List licenses of prod deps.
 .PHONY: list-licenses
 list-licenses:
