@@ -209,7 +209,7 @@ etc.
 
 This ECS log formatter integrates with https://www.elastic.co/apm[Elastic APM].
 If your Node app is using the {apm-node-ref}/intro.html[Node.js Elastic APM Agent],
-then fields are added to log records that {ecs-ref}ecs-tracing.html[identify an active trace] and the configured service name
+then fields are added to log records that {ecs-ref}/ecs-tracing.html[identify an active trace] and the configured service name
 ({ecs-ref}/ecs-service.html#field-service-name["service.name"] and
 {ecs-ref}/ecs-event.html#field-event-dataset["event.dataset"]).
 These fields allow cross linking between traces and logs in Kibana and support
