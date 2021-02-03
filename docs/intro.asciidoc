@@ -10,7 +10,7 @@ logs directly to Elasticsearch and leverage https://www.elastic.co/guide/en/infr
 to inspect all logs in one single place.
 
 The Node.js ECS logging formatters log structured JSON and support serialization
-of Error objects, and HTTP Request and Response objects from Node.js core and
+of Error objects and HTTP Request and Response objects from Node.js core and
 popular web frameworks. A minimal log record includes the following fields:
 
 [source,json]
