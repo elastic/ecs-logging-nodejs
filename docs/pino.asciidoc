@@ -150,7 +150,7 @@ server.listen(3000, () => {
 <2> log with `req` and/or `res` fields
 
 This will produce logs with request and response info using
-https://www.elastic.co/guide/en/ecs/current/ecs-http.html[ECS HTTP fields].
+{ecs-ref}/ecs-http.html[ECS HTTP fields].
 For example:
 
 [source,cmd]
@@ -258,4 +258,3 @@ fields passed to `<logger>.child({ ... })`. This means that, even with the
 `convertReqRes` option, a call to `<logger>.child({ req })` will *not* convert
 that `req` to ECS HTTP fields. This is a slight limitation for users of
 https://github.com/pinojs/pino-http[pino-http] which does this.
-
