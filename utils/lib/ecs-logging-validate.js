@@ -97,7 +97,15 @@ function dottedLookup (obj, name) {
 // NOT maintain key order:
 //    > Object.keys(JSON.parse('{"a":true,"1":true,"c":true,"b":true}'))
 //    [ '1', 'a', 'c', 'b' ]
-function ecsLoggingValidate (rec) {
+//
+// - @param {String|Object} rec - The log record to validate. If an *object*
+//    is given then validation of "index" cannot be done.
+// - @param {Object} opts - Optional. Options to control validation.
+//    - {Boolean} opts.ignoreIndex - Set true to ignore "index" in validation.
+function ecsLoggingValidate (rec, opts) {
+  opts = opts || {}
+  const ignoreIndex = !!opts.ignoreIndex
+
   let recObj
   let recStr = null
   if (typeof (rec) === 'string') {
@@ -113,6 +121,9 @@ function ecsLoggingValidate (rec) {
 
   const details = []
   const addDetail = detail => {
+    if (ignoreIndex && detail.specKey === 'index') {
+      return
+    }
     details.push(detail)
   }
   const spec = loadSpec()

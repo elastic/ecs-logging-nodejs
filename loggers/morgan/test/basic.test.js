@@ -72,8 +72,9 @@ function makeExpressServerAndRequest (logger, path, reqOpts, body, cb) {
 test('Should produce valid ecs logs', t => {
   t.plan(3)
 
-  const stream = split(JSON.parse).on('data', line => {
-    t.true(validate(line))
+  const stream = split().on('data', line => {
+    const rec = JSON.parse(line)
+    t.true(validate(rec))
     t.equal(ecsLoggingValidate(line), null)
   })
   const logger = morgan(ecsFormat(), { stream })

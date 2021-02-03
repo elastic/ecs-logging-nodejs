@@ -66,7 +66,9 @@ test('Should produce valid ecs logs', t => {
 
   cap.records.forEach((rec) => {
     t.ok(validate(rec))
-    t.equal(ecsLoggingValidate(rec), null)
+  })
+  cap.infos.forEach((info) => {
+    t.equal(ecsLoggingValidate(info[MESSAGE]), null)
   })
   t.end()
 })
@@ -204,9 +206,9 @@ test('http request and response (req, res keys)', t => {
         res.on('close', function () {
           t.equal(cap.records.length, 2)
           t.ok(validate(cap.records[0]), 'record 0 is ECS valid')
-          t.equal(ecsLoggingValidate(cap.records[0]), null)
+          t.equal(ecsLoggingValidate(cap.infos[0][MESSAGE]), null)
           t.ok(validate(cap.records[1]), 'record 1 is ECS valid')
-          t.equal(ecsLoggingValidate(cap.records[1]), null)
+          t.equal(ecsLoggingValidate(cap.infos[1][MESSAGE]), null)
           // Spot check that some of the ECS HTTP fields are there.
           t.equal(cap.records[0].http.request.method, 'post',
             'http.request.method')
@@ -224,24 +226,6 @@ test('http request and response (req, res keys)', t => {
   })
 })
 
-test('Keys order', t => {
-  t.plan(2)
-
-  const cap = new CaptureTransport()
-  const logger = winston.createLogger({
-    format: ecsFormat(),
-    transports: [cap]
-  })
-  logger.info('hi') // index 0
-  logger.error('oh noes', { hello: 'world' }) // index 1
-
-  t.equal(cap.infos[0][MESSAGE],
-    `{"@timestamp":"${cap.records[0]['@timestamp']}","log.level":"info","message":"hi","ecs":{"version":"${version}"}}`)
-  t.equal(cap.infos[1][MESSAGE],
-    `{"@timestamp":"${cap.records[1]['@timestamp']}","log.level":"error","message":"oh noes","ecs":{"version":"${version}"},"hello":"world"}`)
-  t.end()
-})
-
 test('convertErr is true by default', t => {
   const cap = new CaptureTransport()
   const log = winston.createLogger({
@@ -252,7 +236,7 @@ test('convertErr is true by default', t => {
   log.info('hi', { err: new Error('boom') })
   const rec = cap.records[0]
   t.ok(validate(rec))
-  t.equal(ecsLoggingValidate(rec), null)
+  t.equal(ecsLoggingValidate(cap.infos[0][MESSAGE]), null)
   t.equal(rec.error.type, 'Error')
   t.equal(rec.error.message, 'boom')
   t.match(rec.error.stack_trace, /^Error: boom\n {4}at/)
@@ -288,7 +272,7 @@ test('convertErr=false allows passing through err=<non-Error>', t => {
   log.info('hi', { err: 42 })
   const rec = cap.records[0]
   t.ok(validate(rec))
-  t.equal(ecsLoggingValidate(rec), null)
+  t.equal(ecsLoggingValidate(cap.infos[0][MESSAGE]), null)
   t.equal(rec.err, 42, 'rec.err is unchanged')
   t.equal(rec.error, undefined, 'no rec.error is set')
   t.end()

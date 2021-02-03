@@ -38,10 +38,11 @@ addFormats(ajv)
 const validate = ajv.compile(require('../../../utils/schema.json'))
 
 test('Should produce valid ecs logs', t => {
-  const stream = split(JSON.parse).once('data', line => {
-    t.deepEqual(line['log.level'], 'info')
-    t.ok(validate(line))
-    t.equal(ecsLoggingValidate(line), null)
+  const stream = split().once('data', line => {
+    const rec = JSON.parse(line)
+    t.deepEqual(rec['log.level'], 'info')
+    t.ok(validate(rec))
+    t.equal(ecsLoggingValidate(line, { ignoreIndex: true }), null)
     t.end()
   })
 
@@ -50,10 +51,11 @@ test('Should produce valid ecs logs', t => {
 })
 
 test('Should map "name" to "log.logger"', t => {
-  const stream = split(JSON.parse).once('data', line => {
-    t.deepEqual(line.log, { logger: 'myName' })
-    t.ok(validate(line))
-    t.equal(ecsLoggingValidate(line), null)
+  const stream = split().once('data', line => {
+    const rec = JSON.parse(line)
+    t.deepEqual(rec.log, { logger: 'myName' })
+    t.ok(validate(rec))
+    t.equal(ecsLoggingValidate(line, { ignoreIndex: true }), null)
     t.end()
   })
 
@@ -63,10 +65,11 @@ test('Should map "name" to "log.logger"', t => {
 })
 
 test('Should append any additional property to the log message', t => {
-  const stream = split(JSON.parse).once('data', line => {
-    t.equal(line.foo, 'bar')
-    t.ok(validate(line))
-    t.equal(ecsLoggingValidate(line), null)
+  const stream = split().once('data', line => {
+    const rec = JSON.parse(line)
+    t.equal(rec.foo, 'bar')
+    t.ok(validate(rec))
+    t.equal(ecsLoggingValidate(line, { ignoreIndex: true }), null)
     t.end()
   })
 
@@ -87,9 +90,10 @@ test('can log non-HTTP res & req fields', t => {
 test('convertReqRes:true and HTTP req, res', t => {
   t.plan(7)
 
-  const stream = split(JSON.parse).on('data', rec => {
+  const stream = split().on('data', line => {
+    const rec = JSON.parse(line)
     t.ok(validate(rec))
-    t.equal(ecsLoggingValidate(rec), null)
+    t.equal(ecsLoggingValidate(line, { ignoreIndex: true }), null)
     if (rec.message === 'handled request') {
       // Spot check that some of the ECS HTTP and User agent fields are there.
       t.equal(rec.http.request.method, 'get', 'http.request.method')
@@ -128,14 +132,14 @@ test('convertReqRes:true and HTTP req, res', t => {
 })
 
 test('convertErr is true by default', t => {
-  const recs = []
-  const stream = split(JSON.parse).on('data', rec => { recs.push(rec) })
+  const lines = []
+  const stream = split().on('data', line => { lines.push(line) })
   const log = pino({ ...ecsFormat() }, stream)
 
   log.info({ err: new Error('boom') }, 'hi')
-  const rec = recs[0]
+  const rec = JSON.parse(lines[0])
   t.ok(validate(rec))
-  t.equal(ecsLoggingValidate(rec), null)
+  t.equal(ecsLoggingValidate(lines[0], { ignoreIndex: true }), null)
   t.equal(rec.error.type, 'Error')
   t.equal(rec.error.message, 'boom')
   t.match(rec.error.stack_trace, /^Error: boom\n {4}at/)
@@ -159,8 +163,8 @@ test('convertErr does not blow up on non-Errors', t => {
 })
 
 test('convertErr=false allows passing through err=<non-Error>', t => {
-  const recs = []
-  const stream = split(JSON.parse).on('data', rec => { recs.push(rec) })
+  const lines = []
+  const stream = split().on('data', line => { lines.push(line) })
   // For *coverage* testing we also set `convertReqRes` to ensure
   // createEcsPinoOptions includes a `formatters.log` function.
   const log = pino(
@@ -168,9 +172,9 @@ test('convertErr=false allows passing through err=<non-Error>', t => {
     stream)
 
   log.info({ err: 42 }, 'hi')
-  const rec = recs[0]
+  const rec = JSON.parse(lines[0])
   t.ok(validate(rec))
-  t.equal(ecsLoggingValidate(rec), null)
+  t.equal(ecsLoggingValidate(lines[0], { ignoreIndex: true }), null)
   t.equal(rec.err, 42, 'rec.err is unchanged')
   t.equal(rec.error, undefined, 'no rec.error is set')
   t.end()
@@ -180,14 +184,14 @@ test('createEcsPinoOptions with no formatters.log', t => {
   // There is a supposed fast path in createEcsPinoOptions where formatters.log
   // is excluded. Since convertErr is true by default, this case is rare.
   // For coverage testing, we concoct that case here.
-  const recs = []
-  const stream = split(JSON.parse).on('data', rec => { recs.push(rec) })
+  const lines = []
+  const stream = split().on('data', line => { lines.push(line) })
   const log = pino({ ...ecsFormat({ convertErr: false }) }, stream)
 
   log.info({ err: 42, req: 'my req', res: null }, 'hi')
-  const rec = recs[0]
+  const rec = JSON.parse(lines[0])
   t.ok(validate(rec))
-  t.equal(ecsLoggingValidate(rec), null)
+  t.equal(ecsLoggingValidate(lines[0], { ignoreIndex: true }), null)
   t.equal(rec.err, 42)
   t.equal(rec.req, 'my req')
   t.equal(rec.res, null)
