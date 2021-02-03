@@ -92,7 +92,7 @@ the https://github.com/winstonjs/logform#timestamp[timestamp] formatter.
 === Error logging
 
 By default, the formatter will convert an `err` meta field that is an Error instance
-to https://www.elastic.co/guide/en/ecs/current/ecs-error.html[ECS Error fields].
+to {ecs-ref}/ecs-error.html[ECS Error fields].
 For https://github.com/elastic/ecs-logging-nodejs/blob/master/loggers/winston/examples/error.js[example]:
 
 [source,js]
