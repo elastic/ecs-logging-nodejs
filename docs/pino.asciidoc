@@ -77,7 +77,7 @@ Running this will produce log output similar to the following:
 === Error Logging
 
 By default, the formatter will convert an `err` field that is an Error instance
-to https://www.elastic.co/guide/en/ecs/current/ecs-error.html[ECS Error fields].
+to {ecs-ref}/ecs-error.html[ECS Error fields].
 For example:
 
 [source,js]
