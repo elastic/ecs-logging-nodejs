@@ -8,7 +8,7 @@ This Node.js package provides a formatter for the [pino](https://www.npmjs.com/p
 logger compatible with [Elastic Common Schema (ECS) logging](https://www.elastic.co/guide/en/ecs/current/index.html).<br/>
 In combination with the [filebeat](https://www.elastic.co/products/beats/filebeat)
 shipper, you can send your logs directly to Elasticsearch and leverage
-[Kibana's Logs UI](https://www.elastic.co/guide/en/infrastructure/guide/current/logs-ui-overview.html)
+[Kibana's Logs app](https://www.elastic.co/guide/en/observability/current/monitor-logs.html)
 to inspect all logs in one single place.
 
 Please see the [Node.js ECS pino documentation](https://www.elastic.co/guide/en/ecs-logging/nodejs/current/pino.html).
