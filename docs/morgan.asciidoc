@@ -1,0 +1,197 @@
+[[morgan]]
+== ECS Logging with Morgan
+
+This Node.js package provides a formatter for the https://github.com/expressjs/morgan#readme[morgan]
+logging middleware -- commonly used with Express -- compatible with
+{ecs-logging-ref}/intro.html[Elastic Common Schema (ECS) logging].
+In combination with the https://www.elastic.co/beats/filebeat[Filebeat] shipper,
+you can https://www.elastic.co/log-monitoring[monitor all your logs] in one
+place in the Elastic Stack.
+
+
+[float]
+=== Setup
+
+[float]
+[[morgan-setup-step-1]]
+==== Step 1: Install
+
+[source,cmd]
+----
+$ npm install @elastic/ecs-morgan-format
+----
+
+
+[float]
+[[morgan-setup-step-2]]
+==== Step 2: Configure
+
+[source,js]
+----
+const app = require('express')()
+const morgan = require('morgan')
+const ecsFormat = require('@elastic/ecs-morgan-format')
+
+app.use(morgan(ecsFormat())) <1>
+
+// ...
+app.get('/', function (req, res) {
+  res.send('hello, world!')
+})
+app.listen(3000)
+----
+<1> Pass the ECS formatter to `morgan()`.
+
+
+[float]
+[[morgan-setup-step-3]]
+==== Step 3: Configure Filebeat
+
+The best way to collect the logs once they are ECS-formatted is with {filebeat-ref}[Filebeat]:
+
+include::{ecs-repo-dir}/setup.asciidoc[tag=configure-filebeat]
+
+
+[float]
+[[morgan-usage]]
+=== Usage
+
+[source,js]
+----
+const app = require('express')()
+const morgan = require('morgan')
+const ecsFormat = require('@elastic/ecs-morgan-format')
+
+app.use(morgan(ecsFormat()))
+
+app.get('/', function (req, res) {
+  res.send('hello, world!')
+})
+app.get('/error', function (req, res, next) {
+  next(new Error('boom'))
+})
+
+app.listen(3000)
+----
+
+Running this script (the full example is https://github.com/elastic/ecs-logging-nodejs/blob/master/loggers/morgan/examples/express.js[here])
+and making a request (via `curl -i localhost:3000/`) will produce log output
+similar to the following:
+
+[source,cmd]
+----
+% node examples/express.js | jq .  # piping to jq for pretty-printing
+{
+  "@timestamp": "2021-01-16T00:03:23.279Z",
+  "log.level": "info",
+  "message": "::1 - - [16/Jan/2021:00:03:23 +0000] \"GET / HTTP/1.1\" 200 13 \"-\" \"curl/7.64.1\"",
+  "ecs": {
+    "version": "1.5.0"
+  },
+  "http": {
+    "version": "1.1",
+    "request": {
+      "method": "get",
+      "headers": {
+        "host": "localhost:3000",
+        "accept": "*/*"
+      }
+    },
+    "response": {
+      "status_code": 200,
+      "headers": {
+        "x-powered-by": "Express",
+        "content-type": "text/html; charset=utf-8",
+        "etag": "W/\"d-HwnTDHB9U/PRbFMN1z1wps51lqk\""
+      },
+      "body": {
+        "bytes": 13
+      }
+    }
+  },
+  "url": {
+    "path": "/",
+    "domain": "localhost",
+    "full": "http://localhost:3000/"
+  },
+  "user_agent": {
+    "original": "curl/7.64.1"
+  }
+}
+----
+
+[float]
+[[morgan-format-options]]
+=== Format Options
+
+You can pass any https://github.com/expressjs/morgan#morganformat-options[`format` argument]
+you would normally pass to `morgan()`, and the log "message" field will use the
+specified format. The default is https://github.com/expressjs/morgan#combined[`combined`].
+
+[source,js]
+----
+const app = require('express')()
+const morgan = require('morgan')
+const ecsFormat = require('@elastic/ecs-morgan-format')
+
+app.use(morgan(ecsFormat('tiny'))) <1>
+// ...
+----
+
+[float]
+[[morgan-log-level]]
+=== log.level
+
+The `log.level` field will be "error" for response codes >= 500, otherwise
+"info". For example, running  https://github.com/elastic/ecs-logging-nodejs/blob/master/loggers/morgan/examples/express.js[examples/express.js]
+again, a `curl -i localhost:3000/error` will yield:
+
+[source,cmd]
+----
+% node examples/express.js | jq .
+{
+  "@timestamp": "2021-01-18T17:52:12.810Z",
+  "log.level": "error",
+  "message": "::1 - - [18/Jan/2021:17:52:12 +0000] \"GET /error HTTP/1.1\" 500 1416 \"-\" \"curl/7.64.1\"",
+  "http": {
+    "response": {
+      "status_code": 500,
+  ...
+----
+
+
+[float]
+[[morgan-apm]]
+=== Integration with APM Tracing
+
+This ECS log formatter integrates with https://www.elastic.co/apm[Elastic APM] tracing.
+If your Node app is using the {apm-node-ref}/intro.html[Node.js Elastic APM Agent],
+then fields are added to log records that {ecs-ref}/ecs-tracing.html[identify an active trace] and the configured service name
+({ecs-ref}/ecs-service.html#field-service-name["service.name"] and
+{ecs-ref}/ecs-event.html#field-event-dataset["event.dataset"]).
+These fields allow cross linking between traces and logs in Kibana and support
+log anomaly detection.
+
+For example, running https://github.com/elastic/ecs-logging-nodejs/blob/master/loggers/morgan/examples/express-with-apm.js[examples/express-with-apm.js] and `curl -i localhost:3000/` results in a log record with the following:
+
+[source,cmd]
+----
+% node examples/express-with-apm.js | jq .
+{
+  ...
+  "event": {
+    "dataset": "express-with-elastic-apm.log"
+  },
+  "trace": {
+    "id": "e097193afa9ac221017b45a1f674601c"
+  },
+  "transaction": {
+    "id": "c6aa5b47e01bad72"
+  },
+  "service": {
+    "name": "express-with-elastic-apm"
+  }
+}
+----
+
+These IDs match trace data reported by the APM agent.

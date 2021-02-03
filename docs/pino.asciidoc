@@ -1,0 +1,260 @@
+[[pino]]
+== ECS Logging with Pino
+
+This Node.js package provides a formatter for the https://getpino.io[pino]
+logger, compatible with {ecs-logging-ref}/intro.html[Elastic Common Schema (ECS) logging].
+In combination with the https://www.elastic.co/beats/filebeat[Filebeat] shipper,
+you can https://www.elastic.co/log-monitoring[monitor all your logs] in one
+place in the Elastic Stack.
+
+
+[float]
+=== Setup
+
+[float]
+[[pino-setup-step-1]]
+==== Step 1: Install
+
+[source,cmd]
+----
+$ npm install @elastic/ecs-pino-format
+----
+
+[float]
+[[pino-setup-step-2]]
+==== Step 2: Configure
+
+[source,js]
+----
+const ecsFormat = require('@elastic/ecs-pino-format')
+const pino = require('pino')
+
+const log = pino(ecsFormat()) <1>
+log.info('hi')
+log.error({ err: new Error('boom') }, 'oops there is a problem')
+// ...
+----
+<1> This will https://getpino.io/#/docs/api?id=options[configure] Pino's `formatters`, `messageKey` and `timestamp` options.
+
+See usage discussion and examples below.
+
+[float]
+[[pino-setup-step-3]]
+==== Step 3: Configure Filebeat
+
+The best way to collect the logs once they are ECS-formatted is with {filebeat-ref}[Filebeat]:
+
+include::{ecs-repo-dir}/setup.asciidoc[tag=configure-filebeat]
+
+
+[float]
+[[pino-usage]]
+=== Usage
+
+[source,js]
+----
+const ecsFormat = require('@elastic/ecs-pino-format')
+const pino = require('pino')
+
+const log = pino(ecsFormat()) <1>
+log.info('Hello world')
+
+const child = log.child({ module: 'foo' })
+child.warn('From child')
+----
+
+
+Running this will produce log output similar to the following:
+
+[source,cmd]
+----
+{"log.level":"info","@timestamp":"2021-01-19T22:51:12.142Z","ecs":{"version":"1.5.0"},"process":{"pid":82240},"host":{"hostname":"pink.local"},"message":"Hello world"}
+{"log.level":"warn","@timestamp":"2021-01-19T22:51:12.143Z","ecs":{"version":"1.5.0"},"process":{"pid":82240},"host":{"hostname":"pink.local"},"module":"foo","message":"From child"}
+----
+
+[float]
+[[pino-error-logging]]
+=== Error Logging
+
+By default, the formatter will convert an `err` field that is an Error instance
+to {ecs-ref}/ecs-error.html[ECS Error fields].
+For example:
+
+[source,js]
+----
+const ecsFormat = require('@elastic/ecs-pino-format')
+const pino = require('pino')
+const log = pino(ecsFormat())
+
+const myErr = new Error('boom')
+log.info({ err: myErr }, 'oops')
+----
+
+will yield (pretty-printed for readability):
+
+[source,cmd]
+----
+% node examples/error.js | jq .
+{
+  "log.level": "info",
+  "@timestamp": "2021-01-26T17:02:23.697Z",
+  ...
+  "error": {
+    "type": "Error",
+    "message": "boom",
+    "stack_trace": "Error: boom\n    at Object.<anonymous> (..."
+  },
+  "message": "oops"
+}
+----
+
+This is analogous to and overrides
+https://getpino.io/#/docs/api?id=serializers-object[Pino's default err serializer].
+Special handling of the `err` field can be disabled via the `convertErr: false` option:
+
+[source,js]
+----
+const log = pino(ecsFormat({ convertErr: false }))
+----
+
+
+[float]
+[[pino-http-logging]]
+=== HTTP Request and Response Logging
+
+With the `convertReqRes: true` option, the formatter will automatically
+convert Node.js core https://nodejs.org/api/http.html#http_class_http_incomingmessage[request]
+and https://nodejs.org/api/http.html#http_class_http_serverresponse[response]
+objects when passed as the `req` and `res` fields, respectively.
+(This option replaces the usage of `req` and `res` https://getpino.io/#/docs/api?id=pinostdserializers-object[Pino serializers].)
+
+[source,js]
+----
+const http = require('http')
+const ecsFormat = require('@elastic/ecs-pino-format')
+const pino = require('pino')
+
+const log = pino(ecsFormat({ convertReqRes: true })) <1>
+
+const server = http.createServer(function handler (req, res) {
+  res.setHeader('Foo', 'Bar')
+  res.end('ok')
+  log.info({ req, res }, 'handled request') <2>
+})
+
+server.listen(3000, () => {
+  log.info('listening at http://localhost:3000')
+}
+----
+<1> use `convertReqRes` option
+<2> log with `req` and/or `res` fields
+
+This will produce logs with request and response info using
+{ecs-ref}/ecs-http.html[ECS HTTP fields].
+For example:
+
+[source,cmd]
+----
+% node examples/http.js | jq .    # using jq for pretty printing
+...                               # run 'curl http://localhost:3000/'
+{
+  "log.level": "info",
+  "@timestamp": "2021-01-19T22:58:59.649Z",
+  "ecs": {
+    "version": "1.5.0"
+  },
+  "process": {
+    "pid": 82670
+  },
+  "host": {
+    "hostname": "pink.local"
+  },
+  "http": {
+    "version": "1.1",
+    "request": {
+      "method": "get",
+      "headers": {
+        "host": "localhost:3000",
+        "accept": "*/*"
+      }
+    },
+    "response": {
+      "status_code": 200,
+      "headers": {
+        "foo": "Bar"
+      }
+    }
+  },
+  "url": {
+    "full": "http://localhost:3000/",
+    "path": "/"
+  },
+  "user_agent": {
+    "original": "curl/7.64.1"
+  },
+  "message": "handled request"
+}
+----
+
+The https://github.com/elastic/ecs-logging-nodejs/tree/master/loggers/pino/examples[examples/ directory]
+shows sample programs using request and response logging:
+https://github.com/elastic/ecs-logging-nodejs/tree/master/loggers/pino/examples/express-simple.js[with Express],
+https://github.com/elastic/ecs-logging-nodejs/tree/master/loggers/pino/examples/express-with-pino-http.js[with the pino-http middleware package],
+etc.
+
+
+[float]
+[[pino-apm]]
+=== Integration with APM Tracing
+
+This ECS log formatter integrates with https://www.elastic.co/apm[Elastic APM].
+If your Node app is using the {apm-node-ref}/intro.html[Node.js Elastic APM Agent],
+then fields are added to log records that {ecs-ref}ecs-tracing.html[identify an active trace] and the configured service name
+({ecs-ref}/ecs-service.html#field-service-name["service.name"] and
+{ecs-ref}/ecs-event.html#field-event-dataset["event.dataset"]).
+These fields allow cross linking between traces and logs in Kibana and support
+log anomaly detection.
+
+For example, running https://github.com/elastic/ecs-logging-nodejs/blob/master/loggers/pino/examples/http-with-elastic-apm.js[examples/http-with-elastic-apm.js] and `curl -i localhost:3000/` results in a log record with the following:
+
+[source,cmd]
+----
+% node examples/http-with-elastic-apm.js | jq .
+...
+  "service": {
+    "name": "http-with-elastic-apm"
+  },
+  "event": {
+    "dataset": "http-with-elastic-apm.log"
+  },
+  "trace": {
+    "id": "a1c23e04d7174462f330f5921c8f036d"
+  },
+  "transaction": {
+    "id": "2550c4c267d4dd53"
+  },
+  "span": {
+    "id": "16a8704258dbc328"
+  },
+...
+----
+
+These IDs match trace data reported by the APM agent.
+
+
+[float]
+[[pino-considerations]]
+=== Limitations and Considerations
+
+The https://github.com/elastic/ecs-logging/tree/master/spec[ecs-logging spec]
+suggests that the first three fields in log records must be `@timestamp`,
+`log.level`, and `message`. Pino does not provide a mechanism to put
+the `message` field near the front. Given that ordering of ecs-logging fields
+is for *human readability* and does not affect interoperability, this is not
+considered a significant concern.
+
+The hooks that Pino currently provides do not enable this package to convert
+fields passed to `<logger>.child({ ... })`. This means that, even with the
+`convertReqRes` option, a call to `<logger>.child({ req })` will *not* convert
+that `req` to ECS HTTP fields. This is a slight limitation for users of
+https://github.com/pinojs/pino-http[pino-http] which does this.

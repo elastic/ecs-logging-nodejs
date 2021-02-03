@@ -60,6 +60,9 @@ typings/
 # next.js build output
 .next
 
+# doc build output
+html_docs
+
 .ecs
 .DS_Store
 /tmp
