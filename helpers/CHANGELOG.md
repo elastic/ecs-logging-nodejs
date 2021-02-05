@@ -1,5 +1,12 @@
 # @elastic/ecs-helpers Changelog
 
+## Unreleased
+
+- Fix the setting of the remote IP and port
+  [ECS client fields](https://www.elastic.co/guide/en/ecs/current/ecs-client.html):
+  `client.address`, `client.ip`, `client.port`. This also supports using
+  Express's `req.ip`.
+
 ## v0.6.0
 
 - Add `formatError` for adding [ECS Error fields](https://www.elastic.co/guide/en/ecs/current/ecs-error.html)

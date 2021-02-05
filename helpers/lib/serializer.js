@@ -105,6 +105,7 @@ const stringify = build({
       type: 'object',
       properties: {
         address: string,
+        ip: string,
         port: number
       }
     },

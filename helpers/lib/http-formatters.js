@@ -22,8 +22,6 @@ function formatHttpRequest (ecs, req) {
     id,
     method,
     url,
-    remoteAddress,
-    remotePort,
     headers,
     hostname,
     httpVersion,
@@ -66,10 +64,21 @@ function formatHttpRequest (ecs, req) {
     }
   }
 
-  if (remoteAddress || remotePort) {
-    ecs.client = ecs.client || {}
-    ecs.client.address = remoteAddress
-    ecs.client.port = remotePort
+  // https://www.elastic.co/guide/en/ecs/current/ecs-client.html
+  ecs.client = ecs.client || {}
+  let ip
+  if (req.ip) {
+    // Express provides req.ip that may handle X-Forward-For processing.
+    // https://expressjs.com/en/5x/api.html#req.ip
+    ip = req.ip
+  } else if (socket && socket.remoteAddress) {
+    ip = socket.remoteAddress
+  }
+  if (ip) {
+    ecs.client.ip = ecs.client.address = ip
+  }
+  if (socket) {
+    ecs.client.port = socket.remotePort
   }
 
   const hasHeaders = Object.keys(headers).length > 0
