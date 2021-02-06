@@ -82,7 +82,10 @@ for winston.
 ### `formatHttpRequest`
 
 Function that enhances an ECS object with http request data.
-The request object should be Node.js's core request object.
+The request object should be Node.js's core
+[`http.IncomingMessage`](https://nodejs.org/api/all.html#http_class_http_incomingmessage),
+or [Express's request object](https://expressjs.com/en/5x/api.html#req) that
+extends it.
 
 ```js
 const { formatHttpRequest } = require('@elastic/ecs-helpers')
@@ -105,7 +108,10 @@ console.log(ecs)
 ### `formatHttpResponse`
 
 Function that enhances an ECS object with http response data.
-The response object should be Node.js's core response object.
+The response object should be Node.js's core
+[`http.ServerResponse`](https://nodejs.org/api/all.html#http_class_http_serverresponse),
+or [Express's response object](https://expressjs.com/en/5x/api.html#res) that
+extends it.
 
 ```js
 const { formatHttpResponse } = require('@elastic/ecs-helpers')
