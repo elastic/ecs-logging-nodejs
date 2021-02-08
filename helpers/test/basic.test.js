@@ -161,7 +161,7 @@ test('formatHttpRequest and formatHttpResponse should return a valid ecs object'
     t.deepEqual(line.http, {
       version: '1.1',
       request: {
-        method: 'post',
+        method: 'POST',
         headers: {
           'content-type': 'application/json',
           host: `localhost:${server.address().port}`,

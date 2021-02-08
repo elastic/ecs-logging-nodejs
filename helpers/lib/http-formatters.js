@@ -43,7 +43,7 @@ function formatHttpRequest (ecs, req) {
   ecs.http = ecs.http || {}
   ecs.http.version = httpVersion
   ecs.http.request = ecs.http.request || {}
-  ecs.http.request.method = method.toLowerCase()
+  ecs.http.request.method = method
 
   ecs.url = ecs.url || {}
   ecs.url.full = (socket && socket.encrypted ? 'https://' : 'http://') + headers.host + url

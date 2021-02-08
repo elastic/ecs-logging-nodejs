@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Update ECS version to "1.6.0". Relevant [ECS changes](https://github.com/elastic/ecs/blob/master/CHANGELOG.md#160):
+  - "span.id" - This field is included by the loggers when integrating with APM.
+  - "Deprecate guidance to lowercase http.request.method."
+    Now when using `formatHttpRequest` the "http.request.method" field will no
+    longer be lowercased.
 - Fix possible crash in `formatHttpRequest` if `req.socket` is not available.
   ([#17](https://github.com/elastic/ecs-logging-nodejs/issues/17))
 - Add support for the hapi request object being passed to `formatHttpRequest`

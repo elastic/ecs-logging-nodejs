@@ -50,7 +50,7 @@ test('express res/req serialization', t => {
     t.deepEqual(rec.http, {
       version: '1.1',
       request: {
-        method: 'get',
+        method: 'GET',
         headers: {
           host: `localhost:${server.address().port}`,
           connection: 'close'
