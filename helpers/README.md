@@ -46,7 +46,7 @@ of objects with circular references. This generally means that ecs-logging-nodej
 libraries will throw a "Converting circular structure to JSON" exception if an
 attempt is made to log an object with circular references.
 
-### `formatError`
+### `formatError(obj, err)`
 
 A function that adds [ECS Error fields](https://www.elastic.co/guide/en/ecs/current/ecs-error.html)
 for a given `Error` object.
@@ -79,56 +79,93 @@ metadata field passed to a logging statement. E.g.
 `log.warn({err: myErr}, '...')` for pino, `log.warn('...', {err: myErr})`
 for winston.
 
-### `formatHttpRequest`
+### `formatHttpRequest(obj, req)`
 
 Function that enhances an ECS object with http request data.
-The request object should be Node.js's core
-[`http.IncomingMessage`](https://nodejs.org/api/all.html#http_class_http_incomingmessage),
-or [Express's request object](https://expressjs.com/en/5x/api.html#req) that
-extends it.
+The given request object, `req`, must be one of the following:
+- Node.js's core [`http.IncomingMessage`](https://nodejs.org/api/all.html#http_class_http_incomingmessage),
+- [Express's request object](https://expressjs.com/en/5x/api.html#req) that extends IncomingMessage, or
+- a [hapi request object](https://hapi.dev/api/#request).
 
 ```js
+const http = require('http')
 const { formatHttpRequest } = require('@elastic/ecs-helpers')
-const ecs = {
-  '@timestamp': new Date().toISOString(),
-  'log.level': 'info',
-  message: 'hello world',
-  log: {
-    logger: 'test'
-  },
-  ecs: {
-    version: '1.4.0'
-  }
-}
 
-formatHttpRequest(ecs, request)
-console.log(ecs)
+http.createServer(function (req, res) {
+  res.end('hi')
+
+  const obj = {}
+  formatHttpRequest(obj, req)
+  console.log('obj:', JSON.stringify(obj, null, 4))
+}).listen(3000)
 ```
 
-### `formatHttpResponse`
+Running this and making a request via `curl http://localhost:3000/` will
+print something close to:
+
+```
+obj: {
+    "http": {
+        "version": "1.1",
+        "request": {
+            "method": "get",
+            "headers": {
+                "host": "localhost:3000",
+                "accept": "*/*"
+            }
+        }
+    },
+    "url": {
+        "full": "http://localhost:3000/",
+        "path": "/"
+    },
+    "client": {
+        "address": "::1",
+        "ip": "::1",
+        "port": 61969
+    },
+    "user_agent": {
+        "original": "curl/7.64.1"
+    }
+}
+```
+
+### `formatHttpResponse(obj, res)`
 
 Function that enhances an ECS object with http response data.
-The response object should be Node.js's core
-[`http.ServerResponse`](https://nodejs.org/api/all.html#http_class_http_serverresponse),
-or [Express's response object](https://expressjs.com/en/5x/api.html#res) that
-extends it.
+The given request object, `req`, must be one of the following:
+- Node.js's core [`http.ServerResponse`](https://nodejs.org/api/all.html#http_class_http_serverresponse),
+- [Express's response object](https://expressjs.com/en/5x/api.html#res) that extends ServerResponse, or
+- a [hapi **request** object](https://hapi.dev/api/#request)
 
 ```js
-const { formatHttpResponse } = require('@elastic/ecs-helpers')
-const ecs = {
-  '@timestamp': new Date().toISOString(),
-  'log.level': 'info',
-  message: 'hello world',
-  log: {
-    logger: 'test'
-  },
-  ecs: {
-    version: '1.4.0'
-  }
-}
+const http = require('http')
+const { formatHttpRequest } = require('@elastic/ecs-helpers')
 
-formatHttpResponse(ecs, request)
-console.log(ecs)
+http.createServer(function (req, res) {
+  res.setHeader('Foo', 'Bar')
+  res.end('hi')
+
+  const obj = {}
+  formatHttpResponse(obj, res)
+  console.log('obj:', JSON.stringify(obj, null, 4))
+}).listen(3000)
+```
+
+Running this and making a request via `curl http://localhost:3000/` will
+print something close to:
+
+```
+rec: {
+    "http": {
+        "response": {
+            "status_code": 200,
+            "headers": {
+                "foo": "Bar"
+            }
+        }
+    }
+}
 ```
 
 ## License

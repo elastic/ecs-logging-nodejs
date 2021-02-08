@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add support for the hapi request object being passed to `formatHttpRequest`
+  and `formatHttpResponse`.
 - Fix the setting of the remote IP and port
   [ECS client fields](https://www.elastic.co/guide/en/ecs/current/ecs-client.html):
   `client.address`, `client.ip`, `client.port`. This also supports using

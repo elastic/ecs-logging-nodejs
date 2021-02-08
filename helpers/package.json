@@ -26,6 +26,7 @@
     "fast-json-stringify": "^2.4.1"
   },
   "devDependencies": {
+    "@hapi/hapi": "^20.1.0",
     "ajv": "^7.0.3",
     "ajv-formats": "^1.5.1",
     "express": "^4.17.1",
