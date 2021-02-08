@@ -1,8 +1,6 @@
 [[intro]]
 == Introduction
 
-beta::[]
-
 Node.js ECS loggers are formatter plugins for your favorite logging libraries.
 They make it easy to format your logs into ECS-compatible JSON. In combination
 with https://www.elastic.co/products/beats/filebeat[filebeat] you can send your
@@ -19,7 +17,7 @@ popular web frameworks. A minimal log record includes the following fields:
   "@timestamp": "2021-01-13T21:32:38.095Z",
   "log.level": "info",
   "message": "hi",
-  "ecs": {"version":"1.5.0"}
+  "ecs": {"version":"1.6.0"}
 }
 ----
 

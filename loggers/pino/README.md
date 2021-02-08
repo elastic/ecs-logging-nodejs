@@ -13,13 +13,6 @@ to inspect all logs in one single place.
 
 Please see the [Node.js ECS pino documentation](https://www.elastic.co/guide/en/ecs-logging/nodejs/current/pino.html).
 
----
-
-**Please note** that this library is in **beta** and backwards-incompatible
-changes might be introduced in releases during the "0.x" series.
-A "1.0.0" version will be released when no longer in beta.
-
----
 
 ## Install
 
@@ -45,8 +38,8 @@ child.warn('From child')
 Running this will produce log output similar to the following:
 
 ```sh
-{"log.level":"info","@timestamp":"2021-01-19T22:51:12.142Z","ecs":{"version":"1.5.0"},"process":{"pid":82240},"host":{"hostname":"pink.local"},"message":"Hello world"}
-{"log.level":"warn","@timestamp":"2021-01-19T22:51:12.143Z","ecs":{"version":"1.5.0"},"process":{"pid":82240},"host":{"hostname":"pink.local"},"module":"foo","message":"From child"}
+{"log.level":"info","@timestamp":"2021-01-19T22:51:12.142Z","ecs":{"version":"1.6.0"},"process":{"pid":82240},"host":{"hostname":"pink.local"},"message":"Hello world"}
+{"log.level":"warn","@timestamp":"2021-01-19T22:51:12.143Z","ecs":{"version":"1.6.0"},"process":{"pid":82240},"host":{"hostname":"pink.local"},"module":"foo","message":"From child"}
 ```
 
 Please see the [Node.js ECS pino documentation](https://www.elastic.co/guide/en/ecs-logging/nodejs/current/pino.html) for more.

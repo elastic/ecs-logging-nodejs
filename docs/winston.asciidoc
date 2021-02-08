@@ -77,8 +77,8 @@ Running this script (available https://github.com/elastic/ecs-logging-nodejs/blo
 [source,cmd]
 ----
 % node examples/basic.js
-{"@timestamp":"2021-01-13T21:32:38.095Z","log.level":"info","message":"hi","ecs":{"version":"1.5.0"}}
-{"@timestamp":"2021-01-13T21:32:38.096Z","log.level":"error","message":"oops there is a problem","ecs":{"version":"1.5.0"},"foo":"bar"}
+{"@timestamp":"2021-01-13T21:32:38.095Z","log.level":"info","message":"hi","ecs":{"version":"1.6.0"}}
+{"@timestamp":"2021-01-13T21:32:38.096Z","log.level":"error","message":"oops there is a problem","ecs":{"version":"1.6.0"},"foo":"bar"}
 ----
 
 The formatter handles serialization to JSON, so you don't need to add the
@@ -120,7 +120,7 @@ will yield (pretty-printed for readability):
   "log.level": "info",
   "message": "oops",
   "ecs": {
-    "version": "1.5.0"
+    "version": "1.6.0"
   },
   "error": {
     "type": "Error",
@@ -192,12 +192,12 @@ For https://github.com/elastic/ecs-logging-nodejs/blob/master/loggers/winston/ex
   "log.level": "info",
   "message": "handled request",
   "ecs": {
-    "version": "1.5.0"
+    "version": "1.6.0"
   },
   "http": {
     "version": "1.1",
     "request": {
-      "method": "get",
+      "method": "GET",
       "headers": {
         "host": "localhost:3000",
         "accept": "*/*"

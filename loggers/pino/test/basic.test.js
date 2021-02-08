@@ -96,7 +96,7 @@ test('convertReqRes:true and HTTP req, res', t => {
     t.equal(ecsLoggingValidate(line, { ignoreIndex: true }), null)
     if (rec.message === 'handled request') {
       // Spot check that some of the ECS HTTP and User agent fields are there.
-      t.equal(rec.http.request.method, 'get', 'http.request.method')
+      t.equal(rec.http.request.method, 'GET', 'http.request.method')
       t.equal(rec.http.response.status_code, 200, 'http.response.status_code')
       t.equal(rec.user_agent.original, 'cool-agent', 'user_agent.original')
     }
