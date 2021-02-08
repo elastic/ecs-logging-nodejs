@@ -18,6 +18,13 @@
 'use strict'
 
 function formatHttpRequest (ecs, req) {
+  if (req.raw && req.raw.req && req.raw.req.httpVersion) {
+    // This looks like a hapi request object (https://hapi.dev/api/#request),
+    // use the raw Node.js http.IncomingMessage that it references.
+    // TODO: Use hapi's already parsed `req.url` for speed.
+    req = req.raw.req
+  }
+
   const {
     id,
     method,
@@ -100,6 +107,12 @@ function formatHttpRequest (ecs, req) {
 }
 
 function formatHttpResponse (ecs, res) {
+  if (res.raw && res.raw.res && typeof (res.raw.res.getHeaders) === 'function') {
+    // This looks like a hapi request object (https://hapi.dev/api/#request),
+    // use the raw Node.js http.ServerResponse that it references.
+    res = res.raw.res
+  }
+
   const { statusCode } = res
   ecs.http = ecs.http || {}
   ecs.http.response = ecs.http.response || {}
