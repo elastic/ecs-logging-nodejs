@@ -1,6 +1,6 @@
 # @elastic/ecs-helpers Changelog
 
-## Unreleased
+## v1.0.0
 
 - Change `formatHttpRequest` and `formatHttpResponse` to no longer exclude
   the "content-length" and "user-agent" headers for "http.request.headers"
