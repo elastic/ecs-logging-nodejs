@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Fix possible crash in `formatHttpRequest` if `req.socket` is not available.
+  ([#17](https://github.com/elastic/ecs-logging-nodejs/issues/17))
 - Add support for the hapi request object being passed to `formatHttpRequest`
   and `formatHttpResponse`.
 - Fix the setting of the remote IP and port

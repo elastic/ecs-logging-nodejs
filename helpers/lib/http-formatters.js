@@ -46,7 +46,7 @@ function formatHttpRequest (ecs, req) {
   ecs.http.request.method = method.toLowerCase()
 
   ecs.url = ecs.url || {}
-  ecs.url.full = (socket.encrypted ? 'https://' : 'http://') + headers.host + url
+  ecs.url.full = (socket && socket.encrypted ? 'https://' : 'http://') + headers.host + url
   const hasQuery = url.indexOf('?')
   const hasAnchor = url.indexOf('#')
   if (hasQuery > -1 && hasAnchor > -1) {
