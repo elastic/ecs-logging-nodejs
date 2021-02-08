@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Change `formatHttpRequest` and `formatHttpResponse` to no longer exclude
+  the "content-length" and "user-agent" headers for "http.request.headers"
+  and "http.response.headers", even though their info also rendered to
+  other specialized fields.
 - Update ECS version to "1.6.0". Relevant [ECS changes](https://github.com/elastic/ecs/blob/master/CHANGELOG.md#160):
   - "span.id" - This field is included by the loggers when integrating with APM.
   - "Deprecate guidance to lowercase http.request.method."

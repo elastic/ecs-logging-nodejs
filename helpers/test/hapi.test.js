@@ -61,6 +61,7 @@ test('hapi res/req serialization', testOpts, t => {
       request: {
         method: 'GET',
         headers: {
+          'user-agent': 'cool-agent',
           host: `localhost:${server.info.port}`,
           connection: 'close'
         }
@@ -71,6 +72,7 @@ test('hapi res/req serialization', testOpts, t => {
           foo: 'Bar',
           'content-type': 'text/html; charset=utf-8',
           'cache-control': 'no-cache',
+          'content-length': '2',
           'accept-ranges': 'bytes'
         },
         body: {

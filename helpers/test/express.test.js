@@ -52,6 +52,7 @@ test('express res/req serialization', t => {
       request: {
         method: 'GET',
         headers: {
+          'user-agent': 'cool-agent',
           host: `localhost:${server.address().port}`,
           connection: 'close'
         }

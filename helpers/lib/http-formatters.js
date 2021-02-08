@@ -90,18 +90,17 @@ function formatHttpRequest (ecs, req) {
 
   const hasHeaders = Object.keys(headers).length > 0
   if (hasHeaders === true) {
-    ecs.http.request.headers = ecs.http.request.headers || {}
-    for (const header in headers) {
-      if (header === 'content-length') {
-        ecs.http.request.body = ecs.http.request.body || {}
-        ecs.http.request.body.bytes = Number(headers[header])
-      } else if (header === 'user-agent') {
-        ecs.user_agent = ecs.user_agent || {}
-        ecs.user_agent.original = headers[header]
-      } else {
-        // `http.response.headers` is not standardized
-        ecs.http.request.headers[header] = headers[header]
-      }
+    // See https://github.com/elastic/ecs/issues/232 for discussion of
+    // specifying headers in ECS.
+    ecs.http.request.headers = Object.assign(ecs.http.request.headers || {}, headers)
+    const cLen = Number(headers['content-length'])
+    if (!isNaN(cLen)) {
+      ecs.http.request.body = ecs.http.request.body || {}
+      ecs.http.request.body.bytes = cLen
+    }
+    if (headers['user-agent']) {
+      ecs.user_agent = ecs.user_agent || {}
+      ecs.user_agent.original = headers['user-agent']
     }
   }
 }
@@ -121,15 +120,13 @@ function formatHttpResponse (ecs, res) {
   const headers = res.getHeaders()
   const hasHeaders = Object.keys(headers).length > 0
   if (hasHeaders === true) {
-    ecs.http.response.headers = ecs.http.response.headers || {}
-    for (const header in headers) {
-      if (header === 'content-length') {
-        ecs.http.response.body = ecs.http.response.body || {}
-        ecs.http.response.body.bytes = Number(headers[header])
-      } else {
-        // `http.response.headers` is not standardized
-        ecs.http.response.headers[header] = headers[header]
-      }
+    // See https://github.com/elastic/ecs/issues/232 for discussion of
+    // specifying headers in ECS.
+    ecs.http.response.headers = Object.assign(ecs.http.response.headers || {}, headers)
+    const cLen = Number(headers['content-length'])
+    if (!isNaN(cLen)) {
+      ecs.http.response.body = ecs.http.response.body || {}
+      ecs.http.response.body.bytes = cLen
     }
   }
 }

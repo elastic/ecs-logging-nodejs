@@ -163,7 +163,9 @@ test('formatHttpRequest and formatHttpResponse should return a valid ecs object'
       request: {
         method: 'POST',
         headers: {
+          'user-agent': 'cool-agent',
           'content-type': 'application/json',
+          'content-length': '17',
           host: `localhost:${server.address().port}`,
           connection: 'close'
         },
@@ -171,7 +173,10 @@ test('formatHttpRequest and formatHttpResponse should return a valid ecs object'
       },
       response: {
         status_code: 200,
-        headers: { 'content-type': 'text/plain' },
+        headers: {
+          'content-type': 'text/plain',
+          'content-length': '2'
+        },
         body: { bytes: contentLen }
       }
     })
