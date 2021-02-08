@@ -9,13 +9,6 @@ In combination with [filebeat](https://www.elastic.co/products/beats/filebeat) y
 
 Please see the [Node.js ECS logging documentation](https://www.elastic.co/guide/en/ecs-logging/nodejs/current/intro.html).
 
----
-
-**Please note** that the packages provided from this repo are in **beta** and
-backwards-incompatible changes might be introduced in releases during the
-"0.x" series. "1.0.0" versions will be released when no longer in beta.
-
----
 
 ## Supported logging frameworks
 

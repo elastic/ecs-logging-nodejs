@@ -1,6 +1,10 @@
 # @elastic/ecs-winston-format Changelog
 
-## Unreleased
+## v1.0.0
+
+- Update to @elastic/ecs-helpers@1.0.0: ecs.version is now "1.6.0",
+  http.request.method is no longer lower-cased, improvements to HTTP
+  serialization.
 
 - Add error logging feature. By default if an Error instance is passed as the
   `err` meta field, then it will be converted to

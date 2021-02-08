@@ -14,13 +14,6 @@ to inspect all logs in one single place.
 
 Please see the [Node.js ECS winston documentation](https://www.elastic.co/guide/en/ecs-logging/nodejs/current/winston.html).
 
----
-
-**Please note** that this library is in **beta** and backwards-incompatible
-changes might be introduced in releases during the "0.x" series.
-A "1.0.0" version will be released when no longer in beta.
-
----
 
 ## Install
 
@@ -50,8 +43,8 @@ Running this script will produce log output similar to the following:
 
 ```sh
 % node examples/basic.js
-{"@timestamp":"2021-01-13T21:32:38.095Z","log.level":"info","message":"hi","ecs":{"version":"1.5.0"}}
-{"@timestamp":"2021-01-13T21:32:38.096Z","log.level":"error","message":"oops there is a problem","ecs":{"version":"1.5.0"},"foo":"bar"}
+{"@timestamp":"2021-01-13T21:32:38.095Z","log.level":"info","message":"hi","ecs":{"version":"1.6.0"}}
+{"@timestamp":"2021-01-13T21:32:38.096Z","log.level":"error","message":"oops there is a problem","ecs":{"version":"1.6.0"},"foo":"bar"}
 ```
 
 Please see the [Node.js ECS winston documentation](https://www.elastic.co/guide/en/ecs-logging/nodejs/current/winston.html) for more.

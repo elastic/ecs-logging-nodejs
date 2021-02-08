@@ -210,7 +210,7 @@ test('http request and response (req, res keys)', t => {
           t.ok(validate(cap.records[1]), 'record 1 is ECS valid')
           t.equal(ecsLoggingValidate(cap.infos[1][MESSAGE]), null)
           // Spot check that some of the ECS HTTP fields are there.
-          t.equal(cap.records[0].http.request.method, 'post',
+          t.equal(cap.records[0].http.request.method, 'POST',
             'http.request.method')
           t.equal(cap.records[1].http.response.status_code, 200,
             'http.response.status_code')

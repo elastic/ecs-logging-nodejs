@@ -1,6 +1,10 @@
 # @elastic/ecs-morgan-format Changelog
 
-## Unreleased
+## v1.0.0
+
+- Update to @elastic/ecs-helpers@1.0.0: ecs.version is now "1.6.0",
+  http.request.method is no longer lower-cased, improvements to HTTP
+  serialization.
 
 - Set "service.name" and "event.dataset" log fields if Elastic APM is started.
   This helps to filter for different log streams in the same pod and the

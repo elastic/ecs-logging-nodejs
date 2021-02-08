@@ -14,13 +14,6 @@ to inspect all logs in one single place.
 
 Please see the [Node.js ECS morgan documentation](https://www.elastic.co/guide/en/ecs-logging/nodejs/current/morgan.html).
 
----
-
-**Please note** that this library is in **beta** and backwards-incompatible
-changes might be introduced in releases during the "0.x" series.
-A "1.0.0" version will be released when no longer in beta.
-
----
 
 ## Install
 
@@ -54,12 +47,12 @@ produce log output similar to the following:
   "log.level": "info",
   "message": "::1 - - [16/Jan/2021:00:03:23 +0000] \"GET / HTTP/1.1\" 200 13 \"-\" \"curl/7.64.1\"",
   "ecs": {
-    "version": "1.5.0"
+    "version": "1.6.0"
   },
   "http": {
     "version": "1.1",
     "request": {
-      "method": "get",
+      "method": "GET",
       "headers": {
         "host": "localhost:3000",
         "accept": "*/*"
