@@ -29,6 +29,7 @@
 // - exit
 
 const serverUrl = process.argv[2]
+const disableApmIntegration = process.argv[3] === 'true'
 /* eslint-disable-next-line no-unused-vars */
 const apm = require('elastic-apm-node').start({
   serverUrl,
@@ -42,7 +43,11 @@ const http = require('http')
 const ecsFormat = require('../') // @elastic/ecs-pino-format
 const pino = require('pino')
 
-const log = pino({ ...ecsFormat({ convertReqRes: true }) })
+const ecsOpts = { convertReqRes: true }
+if (disableApmIntegration) {
+  ecsOpts.apmIntegration = false
+}
+const log = pino(ecsFormat(ecsOpts))
 
 const server = http.createServer()
 

@@ -240,6 +240,14 @@ For example, running https://github.com/elastic/ecs-logging-nodejs/blob/master/l
 
 These IDs match trace data reported by the APM agent.
 
+Integration with Elastic APM can be explicitly disabled via the
+`apmIntegration: false` option, for example:
+
+[source,js]
+----
+const log = pino(ecsFormat({ apmIntegration: false }))
+----
+
 
 [float]
 [[pino-considerations]]

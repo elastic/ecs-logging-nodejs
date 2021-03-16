@@ -29,6 +29,7 @@
 // - exit
 
 const serverUrl = process.argv[2]
+const disableApmIntegration = process.argv[3] === 'true'
 /* eslint-disable-next-line no-unused-vars */
 const apm = require('elastic-apm-node').start({
   serverUrl,
@@ -42,9 +43,13 @@ const http = require('http')
 const ecsFormat = require('../') // @elastic/ecs-winston-format
 const winston = require('winston')
 
+const ecsOpts = { convertReqRes: true }
+if (disableApmIntegration) {
+  ecsOpts.apmIntegration = false
+}
 const log = winston.createLogger({
   level: 'info',
-  format: ecsFormat({ convertReqRes: true }),
+  format: ecsFormat(ecsOpts),
   transports: [
     new winston.transports.Console()
   ]
