@@ -29,6 +29,7 @@
 // - exit
 
 const serverUrl = process.argv[2]
+const disableApmIntegration = process.argv[3] === 'true'
 /* eslint-disable-next-line no-unused-vars */
 const apm = require('elastic-apm-node').start({
   serverUrl,
@@ -43,7 +44,11 @@ const http = require('http')
 const morgan = require('morgan')
 const ecsFormat = require('../') // @elastic/ecs-morgan-format
 
-app.use(morgan(ecsFormat()))
+const ecsOpts = {}
+if (disableApmIntegration) {
+  ecsOpts.apmIntegration = false
+}
+app.use(morgan(ecsFormat(ecsOpts)))
 
 app.get('/', function (req, res) {
   res.once('finish', function apmFlushAndExit () {

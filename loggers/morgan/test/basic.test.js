@@ -159,6 +159,25 @@ test('"format" argument - format function', t => {
   })
 })
 
+test('"opts.format" argument', t => {
+  t.plan(2)
+
+  // Example:
+  //  POST /?foo=bar 200 - - 0.073 ms
+  const format = 'tiny' // https://github.com/expressjs/morgan#tiny
+  const msgRe = /^POST \/\?foo=bar 200 - - \d+\.\d+ ms$/
+  const stream = split().on('data', line => {
+    const rec = JSON.parse(line)
+    t.match(rec.message, msgRe, 'rec.message')
+  })
+  const logger = morgan(ecsFormat({ format: format }), { stream })
+
+  makeExpressServerAndRequest(logger, '/?foo=bar', { method: 'POST' }, 'hi', function (err) {
+    t.ifErr(err)
+    t.end()
+  })
+})
+
 test('"log.level" for successful response is "info"', t => {
   t.plan(2)
 

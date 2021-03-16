@@ -32,16 +32,28 @@ try {
   // Silently ignore.
 }
 
+// Create options for `pino(...)` that configure it for ecs-logging output.
+//
+// @param {Object} opts - Optional.
+//    - {Boolean} opts.convertErr - Whether to convert a logged `err` field
+//      to ECS error fields. Default true, to match Pino's default of having
+//      an `err` serializer.
+//    - {Boolean} opts.convertReqRes - Whether to convert logged `req` and `res`
+//      HTTP request and response fields to ECS HTTP, User agent, and URL
+//      fields. Default false.
+//    - {Boolean} opts.apmIntegration - Whether to automatically integrate with
+//      Elastic APM (https://github.com/elastic/apm-agent-nodejs). If a started
+//      APM agent is detected, then log records will include the following
+//      fields:
+//        - "service.name" - the configured serviceName in the agent
+//        - "event.dataset" - set to "$serviceName.log" for correlation in Kibana
+//        - "trace.id", "transaction.id", and "span.id" - if there is a current
+//          active trace when the log call is made
+//      Default true.
 function createEcsPinoOptions (opts) {
-  // Boolean options for whether to specially handle some logged field names:
-  //  - `err` to ECS Error fields
-  //  - `req` and `res` to ECS HTTP, User agent, etc. fields
-  // These intentionally match the common serializers
-  // (https://getpino.io/#/docs/api?id=serializers-object). If enabled,
-  // this ECS conversion will take precedence over a serializer for the same
-  // field name.
   let convertErr = true
   let convertReqRes = false
+  let apmIntegration = true
   if (opts) {
     if (hasOwnProperty.call(opts, 'convertErr')) {
       convertErr = opts.convertErr
@@ -49,10 +61,15 @@ function createEcsPinoOptions (opts) {
     if (hasOwnProperty.call(opts, 'convertReqRes')) {
       convertReqRes = opts.convertReqRes
     }
+    if (hasOwnProperty.call(opts, 'apmIntegration')) {
+      apmIntegration = opts.apmIntegration
+    }
   }
 
-  // If there is a *started* APM agent, then use it.
-  const apm = elasticApm && elasticApm.isStarted && elasticApm.isStarted() ? elasticApm : null
+  let apm = null
+  if (apmIntegration && elasticApm && elasticApm.isStarted && elasticApm.isStarted()) {
+    apm = elasticApm
+  }
 
   const ecsPinoOptions = {
     formatters: {

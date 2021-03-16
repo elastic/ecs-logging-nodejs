@@ -134,9 +134,10 @@ const app = require('express')()
 const morgan = require('morgan')
 const ecsFormat = require('@elastic/ecs-morgan-format')
 
-app.use(morgan(ecsFormat('tiny'))) <1>
+app.use(morgan(ecsFormat({ format: 'tiny' }))) <1>
 // ...
 ----
+<1> If "format" is the only option you are using, you may pass it as `ecsFormat('tiny')`.
 
 [float]
 [[morgan-log-level]]
@@ -194,3 +195,11 @@ For example, running https://github.com/elastic/ecs-logging-nodejs/blob/master/l
 ----
 
 These IDs match trace data reported by the APM agent.
+
+Integration with Elastic APM can be explicitly disabled via the
+`apmIntegration: false` option, for example:
+
+[source,js]
+----
+app.use(morgan(ecsFormat({ apmIntegration: false })))
+----

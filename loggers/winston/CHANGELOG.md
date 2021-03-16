@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Add `apmIntegration: false` option to all ecs-logging formatters to
+  enable explicitly disabling Elastic APM integration.
+  ([#62](https://github.com/elastic/ecs-logging-nodejs/pull/62))
+
 - Fix "elasticApm.isStarted is not a function" crash on startup.
   ([#60](https://github.com/elastic/ecs-logging-nodejs/issues/60))
 

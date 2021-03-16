@@ -33,17 +33,55 @@ try {
   // Silently ignore.
 }
 
-function ecsFormat (format = morgan.combined) {
-  // `format` is a format *name* (e.g. 'combined'), format function (e.g.
-  // `morgan.combined`), or a format string (e.g. ':method :url :status')
-  // Resolve this to a format function a la morgan's own `getFormatFunction`.
+// Return a Morgan formatter function for ecs-logging output.
+//
+// @param {Object} opts - Optional.
+//    - {String || Function} opts.format - A format *name* (e.g. 'combined'),
+//      format function (e.g. `morgan.combined`), or a format string
+//      (e.g. ':method :url :status'). This is used to format the "message"
+//      field. Defaults to `morgan.combined`.
+//    - {Boolean} opts.apmIntegration - Whether to automatically integrate with
+//      Elastic APM (https://github.com/elastic/apm-agent-nodejs). If a started
+//      APM agent is detected, then log records will include the following
+//      fields:
+//        - "service.name" - the configured serviceName in the agent
+//        - "event.dataset" - set to "$serviceName.log" for correlation in Kibana
+//        - "trace.id", "transaction.id", and "span.id" - if there is a current
+//          active trace when the log call is made
+//      Default true.
+//
+// For backwards compatibility, the first argument can be a String or Function
+// to specify `opts.format`. For example, the following are equivalent:
+//    ecsFormat({format: 'combined'})
+//    ecsFormat('combined')
+// The former allows specifying other options.
+function ecsFormat (opts) {
+  let format = morgan.combined
+  let apmIntegration = true
+  if (opts && typeof opts === 'object') {
+    // Usage: ecsFormat({ /* opts */ })
+    if (hasOwnProperty.call(opts, 'format')) {
+      format = opts.format
+    }
+    if (hasOwnProperty.call(opts, 'apmIntegration')) {
+      apmIntegration = opts.apmIntegration
+    }
+  } else if (opts) {
+    // Usage: ecsFormat(format)
+    format = opts
+  }
+
+  // Resolve to a format function a la morgan's own `getFormatFunction`.
   let fmt = morgan[format] || format
   if (typeof fmt !== 'function') {
     fmt = morgan.compile(fmt)
   }
 
-  // If there is a *started* APM agent, then use it.
-  const apm = elasticApm && elasticApm.isStarted && elasticApm.isStarted() ? elasticApm : null
+  let apm = null
+  if (apmIntegration && elasticApm && elasticApm.isStarted && elasticApm.isStarted()) {
+    apm = elasticApm
+  }
+
   let serviceField
   let eventField
   if (apm) {
