@@ -20,12 +20,14 @@
 // Test everything that doesn't fit in a separate file.
 
 const http = require('http')
+const os = require('os')
 
 const addFormats = require('ajv-formats').default
 const Ajv = require('ajv').default
 const pino = require('pino')
 const split = require('split2')
 const test = require('tap').test
+const ecsVersion = require('@elastic/ecs-helpers').version
 
 const ecsFormat = require('../')
 const { ecsLoggingValidate } = require('../../../utils/lib/ecs-logging-validate')
@@ -37,54 +39,90 @@ const ajv = new Ajv({
 addFormats(ajv)
 const validate = ajv.compile(require('../../../utils/schema.json'))
 
-test('Should produce valid ecs logs', t => {
-  const stream = split().once('data', line => {
-    const rec = JSON.parse(line)
-    t.deepEqual(rec['log.level'], 'info')
-    t.ok(validate(rec))
-    t.equal(ecsLoggingValidate(line, { ignoreIndex: true }), null)
-    t.end()
+test('ecsPinoFormat cases', suite => {
+  const formatCases = [
+    {
+      name: 'hello world',
+      pinoOpts: ecsFormat(),
+      loggingFn: (log) => {
+        log.info('Hello, world!')
+      },
+      rec: {
+        'log.level': 'info',
+        ecs: { version: ecsVersion },
+        process: { pid: process.pid },
+        host: { hostname: os.hostname },
+        message: 'Hello, world!'
+      }
+    },
+    {
+      name: 'should map "name" to "log.logger"',
+      pinoOpts: { name: 'myName', ...ecsFormat() },
+      loggingFn: (log) => {
+        log.info('hi')
+      },
+      rec: {
+        'log.level': 'info',
+        ecs: { version: ecsVersion },
+        process: { pid: process.pid },
+        host: { hostname: os.hostname },
+        log: { logger: 'myName' },
+        message: 'hi'
+      }
+    },
+    {
+      name: 'should add fields to the record',
+      pinoOpts: ecsFormat(),
+      loggingFn: (log) => {
+        log.info({ foo: 'bar' }, 'hi')
+      },
+      rec: {
+        'log.level': 'info',
+        ecs: { version: ecsVersion },
+        process: { pid: process.pid },
+        host: { hostname: os.hostname },
+        message: 'hi',
+        foo: 'bar'
+      }
+    },
+    {
+      name: 'can log non-HTTP res & req fields',
+      pinoOpts: ecsFormat(),
+      loggingFn: (log) => {
+        log.info({ req: { id: 42 }, res: { status: 'OK' } }, 'hi')
+      },
+      rec: {
+        'log.level': 'info',
+        ecs: { version: ecsVersion },
+        process: { pid: process.pid },
+        host: { hostname: os.hostname },
+        message: 'hi',
+        req: { id: 42 },
+        res: { status: 'OK' }
+      }
+    }
+  ]
+
+  formatCases.forEach((fc) => {
+    suite.test('ecsPinoFormat case: ' + fc.name, t => {
+      const lines = []
+      const capture = split().on('data', line => { lines.push(line) })
+      const log = pino(fc.pinoOpts, capture)
+
+      fc.loggingFn(log)
+
+      const rec = JSON.parse(lines[0])
+      t.ok(validate(rec))
+      t.equal(ecsLoggingValidate(lines[0], { ignoreIndex: true }), null)
+
+      delete rec['@timestamp'] // normalize before comparison
+      t.deepEqual(rec, fc.rec, 'logged record matches expected record')
+
+      t.end()
+    })
   })
 
-  const log = pino({ ...ecsFormat() }, stream)
-  log.info('Hello world')
-})
-
-test('Should map "name" to "log.logger"', t => {
-  const stream = split().once('data', line => {
-    const rec = JSON.parse(line)
-    t.deepEqual(rec.log, { logger: 'myName' })
-    t.ok(validate(rec))
-    t.equal(ecsLoggingValidate(line, { ignoreIndex: true }), null)
-    t.end()
-  })
-
-  // Pass in empty opts object to ecsFormat() for coverage.
-  const log = pino({ name: 'myName', ...ecsFormat({}) }, stream)
-  log.info('Hello world')
-})
-
-test('Should append any additional property to the log message', t => {
-  const stream = split().once('data', line => {
-    const rec = JSON.parse(line)
-    t.equal(rec.foo, 'bar')
-    t.ok(validate(rec))
-    t.equal(ecsLoggingValidate(line, { ignoreIndex: true }), null)
-    t.end()
-  })
-
-  const log = pino({ ...ecsFormat() }, stream)
-  log.info({ foo: 'bar' }, 'Hello world')
-})
-
-test('can log non-HTTP res & req fields', t => {
-  const recs = []
-  const stream = split(JSON.parse).on('data', rec => { recs.push(rec) })
-  const log = pino({ ...ecsFormat() }, stream)
-  log.info({ req: { id: 42 }, res: { status: 'OK' } }, 'hi')
-  t.equal(recs[0].req.id, 42)
-  t.equal(recs[0].res.status, 'OK')
-  t.end()
+  suite.end()
 })
 
 test('convertReqRes:true and HTTP req, res', t => {
