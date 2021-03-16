@@ -43,7 +43,7 @@ function ecsFormat (format = morgan.combined) {
   }
 
   // If there is a *started* APM agent, then use it.
-  const apm = elasticApm && elasticApm.isStarted() ? elasticApm : null
+  const apm = elasticApm && elasticApm.isStarted && elasticApm.isStarted() ? elasticApm : null
   let serviceField
   let eventField
   if (apm) {
