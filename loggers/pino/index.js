@@ -52,7 +52,7 @@ function createEcsPinoOptions (opts) {
   }
 
   // If there is a *started* APM agent, then use it.
-  const apm = elasticApm && elasticApm.isStarted() ? elasticApm : null
+  const apm = elasticApm && elasticApm.isStarted && elasticApm.isStarted() ? elasticApm : null
 
   const ecsPinoOptions = {
     formatters: {

@@ -1,5 +1,10 @@
 # @elastic/ecs-pino-format Changelog
 
+## Unreleased
+
+- Fix "elasticApm.isStarted is not a function" crash on startup.
+  ([#60](https://github.com/elastic/ecs-logging-nodejs/issues/60))
+
 ## v1.0.0
 
 - Update to @elastic/ecs-helpers@1.0.0: ecs.version is now "1.6.0",
