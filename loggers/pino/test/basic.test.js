@@ -136,7 +136,7 @@ test('ecsPinoFormat cases', suite => {
       name: 'no message in log call should result in empty string message',
       pinoOpts: ecsFormat(),
       loggingFn: (log) => {
-        log.info({foo: 'bar'})
+        log.info({ foo: 'bar' })
       },
       rec: {
         'log.level': 'info',
