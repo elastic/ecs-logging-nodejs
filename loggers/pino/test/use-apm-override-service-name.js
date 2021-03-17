@@ -26,6 +26,7 @@
 // - flush APM and exit
 
 const serviceName = process.argv[2] || ''
+const pinoServiceName = process.argv[3] || ''
 /* eslint-disable-next-line no-unused-vars */
 const apm = require('elastic-apm-node').start({
   // Use default serverUrl (fire and forget)
@@ -38,10 +39,12 @@ const apm = require('elastic-apm-node').start({
 const ecsFormat = require('../') // @elastic/ecs-pino-format
 const pino = require('pino')
 
-const log = pino({ ...ecsFormat() })
-log.info({
-  foo: 'bar',
-  service: { name: 'myname' },
-  event: { dataset: 'mydataset' }
-}, 'hi')
-log.info({ foo: 'bar' }, 'bye')
+const pinoOpts = ecsFormat()
+if (pinoServiceName) {
+  pinoOpts.base = { service: { name: pinoServiceName }, event: { dataset: pinoServiceName } }
+}
+const log = pino(pinoOpts)
+log.info({ service: { name: 'myname' }, event: { dataset: 'mydataset' } }, 'override values')
+log.info({ service: { name: 42 }, event: { dataset: 42 } }, 'override values with nums')
+log.info({ service: 'myname', event: 'myevent' }, 'override top-level keys with invalid ECS type')
+log.info('bye')

@@ -67,130 +67,173 @@ function createEcsPinoOptions (opts) {
   }
 
   let apm = null
+  let apmServiceName = null
   if (apmIntegration && elasticApm && elasticApm.isStarted && elasticApm.isStarted()) {
     apm = elasticApm
+    // Elastic APM v3.11.0 added getServiceName(). Fallback to private `apm._conf`.
+    // istanbul ignore next
+    apmServiceName = apm.getServiceName
+      ? apm.getServiceName()
+      : apm._conf.serviceName
   }
 
+  let isServiceNameInBindings = false
+  let isEventDatasetInBindings = false
+
   const ecsPinoOptions = {
+    messageKey: 'message',
+    timestamp: () => `,"@timestamp":"${new Date().toISOString()}"`,
     formatters: {
       level (label, number) {
         return { 'log.level': label }
       },
 
-      // Add the following ECS fields:
-      // - https://www.elastic.co/guide/en/ecs/current/ecs-process.html#field-process-pid
-      // - https://www.elastic.co/guide/en/ecs/current/ecs-host.html#field-host-hostname
-      // - https://www.elastic.co/guide/en/ecs/current/ecs-log.html#field-log-logger
-      //
-      // This is called once at logger creation, and for each child logger creation.
       bindings (bindings) {
         const {
-          // We assume the default `pid` and `hostname` bindings
-          // (https://getpino.io/#/docs/api?id=bindings) will be always be
-          // defined because currently one cannot use this package *and*
-          // pass a custom `formatters` to a pino logger.
+          // `pid` and `hostname` are default bindings, unless overriden by
+          // a `base: {...}` passed to logger creation.
           pid,
           hostname,
           // name is defined if `log = pino({name: 'my name', ...})`
-          name
+          name,
+          // Warning: silently drop any "ecs" value from `base`. See
+          // "ecs.version" comment below.
+          ecs,
+          ...ecsBindings
         } = bindings
 
-        const ecsBindings = {
-          ecs: {
-            version
-          },
-          process: {
-            pid: pid
-          },
-          host: {
-            hostname: hostname
-          }
+        if (pid !== undefined) {
+          // https://www.elastic.co/guide/en/ecs/current/ecs-process.html#field-process-pid
+          ecsBindings.process = { pid: pid }
+        }
+        if (hostname !== undefined) {
+          // https://www.elastic.co/guide/en/ecs/current/ecs-host.html#field-host-hostname
+          ecsBindings.host = { hostname: hostname }
         }
         if (name !== undefined) {
+          // https://www.elastic.co/guide/en/ecs/current/ecs-log.html#field-log-logger
           ecsBindings.log = { logger: name }
         }
 
-        if (apm) {
-          // https://github.com/elastic/apm-agent-nodejs/pull/1949 is adding
-          // getServiceName() in v3.11.0. Fallback to private `apm._conf`.
-          // istanbul ignore next
-          const serviceName = apm.getServiceName
-            ? apm.getServiceName()
-            : apm._conf.serviceName
-          // A mis-configured APM Agent can be "started" but not have a
-          // "serviceName".
-          if (serviceName) {
-            ecsBindings.service = { name: serviceName }
-            ecsBindings.event = { dataset: serviceName + '.log' }
-          }
+        // Note if service.name & event.dataset are set, to not do so again below.
+        if (bindings.service && bindings.service.name) {
+          isServiceNameInBindings = true
+        }
+        if (bindings.event && bindings.event.dataset) {
+          isEventDatasetInBindings = true
         }
 
         return ecsBindings
-      }
-    },
-    messageKey: 'message',
-    timestamp: () => `,"@timestamp":"${new Date().toISOString()}"`
-  }
+      },
 
-  // For performance, avoid adding the `formatters.log` pino option unless we
-  // know we'll do some processing in it.
-  if (convertErr || convertReqRes || apm) {
-    ecsPinoOptions.formatters.log = function (obj) {
-      const {
-        req,
-        res,
-        err,
-        ...ecsObj
-      } = obj
+      log (obj) {
+        const {
+          req,
+          res,
+          err,
+          ...ecsObj
+        } = obj
 
-      // istanbul ignore else
-      if (apm) {
-        // https://www.elastic.co/guide/en/ecs/current/ecs-tracing.html
-        const tx = apm.currentTransaction
-        if (tx) {
-          ecsObj.trace = ecsObj.trace || {}
-          ecsObj.trace.id = tx.traceId
-          ecsObj.transaction = ecsObj.transaction || {}
-          ecsObj.transaction.id = tx.id
-          const span = apm.currentSpan
-          // istanbul ignore else
-          if (span) {
-            ecsObj.span = ecsObj.span || {}
-            ecsObj.span.id = span.id
+        // https://www.elastic.co/guide/en/ecs/current/ecs-ecs.html
+        // For "ecs.version" we take a heavier-handed approach, because it is
+        // a require ecs-logging field: overwrite any possible "ecs" value from
+        // the log statement. This means we don't need to spend the time
+        // guarding against "ecs" being null, Array, Buffer, Date, etc.
+        ecsObj.ecs = { version }
+
+        if (apm) {
+          // A mis-configured APM Agent can be "started" but not have a
+          // "serviceName".
+          if (apmServiceName) {
+            // Per https://github.com/elastic/ecs-logging/blob/master/spec/spec.json
+            // "service.name" and "event.dataset" should be automatically set
+            // if not already by the user.
+            if (!isServiceNameInBindings) {
+              const service = ecsObj.service
+              if (service === undefined) {
+                ecsObj.service = { name: apmServiceName }
+              } else if (!isVanillaObject(service)) {
+                // Warning: "service" type conflicts with ECS spec. Overwriting.
+                ecsObj.service = { name: apmServiceName }
+              } else if (typeof service.name !== 'string') {
+                ecsObj.service.name = apmServiceName
+              }
+            }
+            if (!isEventDatasetInBindings) {
+              const event = ecsObj.event
+              if (event === undefined) {
+                ecsObj.event = { dataset: apmServiceName + '.log' }
+              } else if (!isVanillaObject(event)) {
+                // Warning: "event" type conflicts with ECS spec. Overwriting.
+                ecsObj.event = { dataset: apmServiceName + '.log' }
+              } else if (typeof event.dataset !== 'string') {
+                ecsObj.event.dataset = apmServiceName + '.log'
+              }
+            }
+          }
+
+          // https://www.elastic.co/guide/en/ecs/current/ecs-tracing.html
+          const tx = apm.currentTransaction
+          if (tx) {
+            ecsObj.trace = ecsObj.trace || {}
+            ecsObj.trace.id = tx.traceId
+            ecsObj.transaction = ecsObj.transaction || {}
+            ecsObj.transaction.id = tx.id
+            const span = apm.currentSpan
+            // istanbul ignore else
+            if (span) {
+              ecsObj.span = ecsObj.span || {}
+              ecsObj.span.id = span.id
+            }
           }
         }
-      }
 
-      // https://www.elastic.co/guide/en/ecs/current/ecs-http.html
-      if (err !== undefined) {
-        if (!convertErr) {
-          ecsObj.err = err
-        } else {
-          formatError(ecsObj, err)
+        // https://www.elastic.co/guide/en/ecs/current/ecs-http.html
+        if (err !== undefined) {
+          if (!convertErr) {
+            ecsObj.err = err
+          } else {
+            formatError(ecsObj, err)
+          }
         }
-      }
 
-      // https://www.elastic.co/guide/en/ecs/current/ecs-http.html
-      if (req !== undefined) {
-        if (!convertReqRes) {
-          ecsObj.req = req
-        } else {
-          formatHttpRequest(ecsObj, req)
+        // https://www.elastic.co/guide/en/ecs/current/ecs-http.html
+        if (req !== undefined) {
+          if (!convertReqRes) {
+            ecsObj.req = req
+          } else {
+            formatHttpRequest(ecsObj, req)
+          }
         }
-      }
-      if (res !== undefined) {
-        if (!convertReqRes) {
-          ecsObj.res = res
-        } else {
-          formatHttpResponse(ecsObj, res)
+        if (res !== undefined) {
+          if (!convertReqRes) {
+            ecsObj.res = res
+          } else {
+            formatHttpResponse(ecsObj, res)
+          }
         }
-      }
 
-      return ecsObj
+        return ecsObj
+      }
     }
   }
 
   return ecsPinoOptions
+}
+
+// Return true if the given arg is a "vanilla" object. Roughly the intent is
+// whether this is basic mapping of string keys to values that will serialize
+// as a JSON object.
+//
+// Currently, it excludes Map. The uses above don't really expect a user to:
+//     service = new Map([["foo", "bar"]])
+//     log.info({ service }, '...')
+//
+// There are many ways tackle this. See some attempts and benchmarks at:
+// https://gist.github.com/trentm/34131a92eede80fd2109f8febaa56f5a
+function isVanillaObject (o) {
+  return (typeof o === 'object' &&
+    (!o.constructor || o.constructor.name === 'Object'))
 }
 
 module.exports = createEcsPinoOptions
