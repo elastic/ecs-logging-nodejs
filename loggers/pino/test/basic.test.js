@@ -131,6 +131,21 @@ test('ecsPinoFormat cases', suite => {
         ecs: { version: ecsVersion },
         message: 'hi'
       }
+    },
+    {
+      name: 'no message in log call should result in empty string message',
+      pinoOpts: ecsFormat(),
+      loggingFn: (log) => {
+        log.info({foo: 'bar'})
+      },
+      rec: {
+        'log.level': 'info',
+        ecs: { version: ecsVersion },
+        process: { pid: process.pid },
+        host: { hostname: os.hostname },
+        foo: 'bar',
+        message: ''
+      }
     }
   ]
 

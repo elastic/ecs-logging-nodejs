@@ -213,6 +213,12 @@ function createEcsPinoOptions (opts) {
           }
         }
 
+        // If no message (https://getpino.io/#/docs/api?id=message-string) is
+        // given in the log statement, then pino will not emit a message field.
+        // However, the ecs-logging spec requires a message field, so we set
+        // a fallback empty string.
+        ecsObj.message = ''
+
         return ecsObj
       }
     }

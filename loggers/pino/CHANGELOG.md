@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Set the "message" to the empty string for logger calls that provide no
+  message, e.g. `log.info({foo: 'bar'})`. In this case pino will not add a
+  message field, which breaks ecs-logging spec.
+
 - Fix handling when the [`base`](https://getpino.io/#/docs/api?id=base-object)
   option is used to the pino constructor.
 
