@@ -2,6 +2,22 @@
 
 ## Unreleased
 
+- Fix handling when the [`base`](https://getpino.io/#/docs/api?id=base-object)
+  option is used to the pino constructor.
+
+  Before this change, using, for example:
+        const log = pino({base: {foo: "bar"}, ...ecsFormat()})
+  would result in two issues:
+  1. The log records would not include the "foo" field.
+  2. The log records would include `"process": {}, "host": {}` for the
+     expected process.pid and os.hostname.
+
+  Further, if the following is used:
+        const log = pino({base: null, ...ecsFormat()})
+  pino does not call `formatters.bindings()` at all, resulting in log
+  records that were missing "ecs.version" (making them invalid ecs-logging
+  records) and part of the APM integration.
+
 - Add `apmIntegration: false` option to all ecs-logging formatters to
   enable explicitly disabling Elastic APM integration.
   ([#62](https://github.com/elastic/ecs-logging-nodejs/pull/62))

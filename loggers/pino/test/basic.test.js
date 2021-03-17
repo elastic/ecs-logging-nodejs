@@ -100,6 +100,37 @@ test('ecsPinoFormat cases', suite => {
         req: { id: 42 },
         res: { status: 'OK' }
       }
+    },
+    {
+      name: '`base: {}` should avoid "process" and "host" fields',
+      pinoOpts: { base: {}, ...ecsFormat() },
+      loggingFn: (log) => {
+        log.info('hi')
+      },
+      rec: {
+        'log.level': 'info',
+        ecs: { version: ecsVersion },
+        message: 'hi'
+      }
+    },
+    {
+      // The pino docs suggest:
+      // > `base`
+      // > Set to `null` to avoid adding `pid`, `hostname` and `name` properties to each log.
+      //
+      // This results in a given `formatters.bindings` **not getting called** at
+      // all. In earlier versions of this package, that `formatters.bindings`
+      // was used to add fields like "ecs.version".
+      name: '`base: null` should not break ecs-logging format',
+      pinoOpts: { base: null, ...ecsFormat() },
+      loggingFn: (log) => {
+        log.info('hi')
+      },
+      rec: {
+        'log.level': 'info',
+        ecs: { version: ecsVersion },
+        message: 'hi'
+      }
     }
   ]
 
