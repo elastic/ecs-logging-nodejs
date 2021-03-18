@@ -1,6 +1,6 @@
 # @elastic/ecs-winston-format Changelog
 
-## Unreleased
+## v1.1.0
 
 - Fix a crash ([#58](https://github.com/elastic/ecs-logging-nodejs/issues/58))
   when using APM integration and logging a record with an "event" or

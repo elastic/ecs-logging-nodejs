@@ -1,6 +1,6 @@
 # @elastic/ecs-pino-format Changelog
 
-## Unreleased
+## v1.1.0
 
 - Fix a "TypeError: Cannot read property 'host' of undefined" crash when using
   `convertReqRes: true` and logging a `req` field that is not an HTTP request
