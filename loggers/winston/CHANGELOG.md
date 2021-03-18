@@ -2,6 +2,40 @@
 
 ## Unreleased
 
+- Add `ecsFields` and `ecsStringify` exports that are winston formatters
+  that separate the gathering of ECS fields (`ecsFields`) and the
+  stringification of a log record to an ecs-logging JSON object
+  (`ecsStringify`). This allows for better composability using
+  [`winston.format.combine`](https://github.com/winstonjs/logform#combine).
+  ([#65](https://github.com/elastic/ecs-logging-nodejs/pull/65))
+
+  The preferred way to import now changes. However, the old way is still
+  supported for backward compatibility.
+
+        const ecsFormat = require('@elastic/ecs-winston-format') // OLD
+        const { ecsFormat } = require('@elastic/ecs-winston-format') // NEW
+
+  Common usage will still use `ecsFormat` in the same way:
+
+        const { ecsFormat } = require('@elastic/ecs-winston-format')
+        const log = winston.createLogger({
+            format: ecsFormat(<options>),
+            // ...
+
+  However, one can use the separated formatters as follows:
+
+        const { ecsFields, ecsStringify } = require('@elastic/ecs-winston-format')
+        const log = winston.createLogger({
+            format: winston.format.combine(
+                ecsFields(<options>),
+                // Add a custom formatter to redact fields here.
+                ecsStringify()
+            ),
+            // ...
+
+  One good use case is for redaction of sensitive fields in the log record
+  as in [#57](https://github.com/elastic/ecs-logging-nodejs/issues/57).
+
 - Add `apmIntegration: false` option to all ecs-logging formatters to
   enable explicitly disabling Elastic APM integration.
   ([#62](https://github.com/elastic/ecs-logging-nodejs/pull/62))
