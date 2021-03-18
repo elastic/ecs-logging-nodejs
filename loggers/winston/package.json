@@ -43,6 +43,7 @@
     "autocannon": "^7.0.1",
     "elastic-apm-node": "^3.10.0",
     "express": "^4.17.1",
+    "fast-redact": "^3.0.0",
     "split2": "^3.2.2",
     "standard": "16.x",
     "tap": "^14.x",

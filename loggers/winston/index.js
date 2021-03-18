@@ -35,17 +35,8 @@ try {
   // Silently ignore.
 }
 
-const reservedFields = {
-  level: true,
-  'log.level': true,
-  ecs: true,
-  '@timestamp': true,
-  err: true,
-  req: true,
-  res: true
-}
-
-// Create a Winston format for ecs-logging output.
+// Winston format transform to mutate `info` into an object with ecs-logging
+// fields.
 //
 // @param {Object} opts - Optional.
 //    - {Boolean} opts.convertErr - Whether to convert a logged `err` field
@@ -62,7 +53,7 @@ const reservedFields = {
 //        - "trace.id", "transaction.id", and "span.id" - if there is a current
 //          active trace when the log call is made
 //      Default true.
-function ecsTransform (info, opts) {
+function ecsFieldsTransform (info, opts) {
   let convertErr = true
   let convertReqRes = false
   let apmIntegration = true
@@ -79,21 +70,16 @@ function ecsTransform (info, opts) {
     }
   }
 
-  const ecsFields = {
-    '@timestamp': new Date().toISOString(),
-    'log.level': info.level,
-    message: info.message,
-    ecs: { version }
-  }
-
-  // Add all unreserved fields.
-  const keys = Object.keys(info)
-  for (let i = 0, len = keys.length; i < len; i++) {
-    const key = keys[i]
-    if (!reservedFields[key]) {
-      ecsFields[key] = info[key]
-    }
-  }
+  info['@timestamp'] = new Date().toISOString()
+  info['log.level'] = info.level
+  // Removing 'level' might cause trouble for downstream winston formatters
+  // given that https://github.com/winstonjs/logform#info-objects says:
+  //
+  // > Every info must have at least the level and message properties:
+  //
+  // However info still has a `info[Symbol.for('level')]` for more reliable use.
+  delete info.level
+  info.ecs = { version }
 
   let apm = null
   if (apmIntegration && elasticApm && elasticApm.isStarted && elasticApm.isStarted()) {
@@ -103,7 +89,7 @@ function ecsTransform (info, opts) {
   // istanbul ignore else
   if (apm) {
     // Set "service.name" and "event.dataset" from APM conf, if not already set.
-    let serviceName = ecsFields.service && ecsFields.service.name
+    let serviceName = info.service && info.service.name
     if (!serviceName) {
       // https://github.com/elastic/apm-agent-nodejs/pull/1949 is adding
       // getServiceName() in v3.11.0. Fallback to private `apm._conf`.
@@ -114,58 +100,68 @@ function ecsTransform (info, opts) {
       // A mis-configured APM Agent can be "started" but not have a
       // "serviceName".
       if (serviceName) {
-        ecsFields.service = ecsFields.service || {}
-        ecsFields.service.name = serviceName
+        info.service = info.service || {}
+        info.service.name = serviceName
       }
     }
-    if (serviceName && !(ecsFields.event && ecsFields.event.dataset)) {
-      ecsFields.event = ecsFields.event || {}
-      ecsFields.event.dataset = serviceName + '.log'
+    if (serviceName && !(info.event && info.event.dataset)) {
+      info.event = info.event || {}
+      info.event.dataset = serviceName + '.log'
     }
 
     // https://www.elastic.co/guide/en/ecs/current/ecs-tracing.html
     const tx = apm.currentTransaction
     if (tx) {
-      ecsFields.trace = ecsFields.trace || {}
-      ecsFields.trace.id = tx.traceId
-      ecsFields.transaction = ecsFields.transaction || {}
-      ecsFields.transaction.id = tx.id
+      info.trace = info.trace || {}
+      info.trace.id = tx.traceId
+      info.transaction = info.transaction || {}
+      info.transaction.id = tx.id
       const span = apm.currentSpan
       // istanbul ignore else
       if (span) {
-        ecsFields.span = ecsFields.span || {}
-        ecsFields.span.id = span.id
+        info.span = info.span || {}
+        info.span.id = span.id
       }
     }
   }
 
   // https://www.elastic.co/guide/en/ecs/current/ecs-error.html
-  if (info.err !== undefined) {
-    if (convertErr) {
-      formatError(ecsFields, info.err)
-    } else {
-      ecsFields.err = info.err
-    }
+  if (info.err !== undefined && convertErr && info.err instanceof Error) {
+    formatError(info, info.err)
+    delete info.err
   }
 
   // https://www.elastic.co/guide/en/ecs/current/ecs-http.html
-  if (info.req !== undefined) {
-    if (convertReqRes) {
-      formatHttpRequest(ecsFields, info.req)
-    } else {
-      ecsFields.req = info.req
-    }
+  if (info.req !== undefined && convertReqRes) {
+    formatHttpRequest(info, info.req)
+    delete info.req
   }
-  if (info.res !== undefined) {
-    if (convertReqRes) {
-      formatHttpResponse(ecsFields, info.res)
-    } else {
-      ecsFields.res = info.res
-    }
+  if (info.res !== undefined && convertReqRes) {
+    formatHttpResponse(info, info.res)
+    delete info.res
   }
 
-  info[MESSAGE] = stringify(ecsFields)
   return info
 }
+const ecsFields = format(ecsFieldsTransform)
 
-module.exports = format(ecsTransform)
+function ecsStringifyTransform (info, opts) {
+  info[MESSAGE] = stringify(info)
+  return info
+}
+const ecsStringify = format(ecsStringifyTransform)
+
+// The combination of ecsFields and ecsStringify.
+function ecsFormatTransform (info, opts) {
+  info = ecsFieldsTransform(info, opts)
+  info[MESSAGE] = stringify(info)
+  return info
+}
+const ecsFormat = format(ecsFormatTransform)
+
+// For backwards compatibility with v1.0.0, the top-level export is `ecsFormat`,
+// though using the separate exports is preferred.
+module.exports = ecsFormat
+module.exports.ecsFormat = ecsFormat
+module.exports.ecsFields = ecsFields
+module.exports.ecsStringify = ecsStringify
