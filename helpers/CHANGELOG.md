@@ -1,5 +1,15 @@
 # @elastic/ecs-helpers Changelog
 
+## Unreleased
+
+- Fix `formatHttpRequest` and `formatHttpResponse` to be more defensive. If
+  the given request or response object, respectively, is not one they know
+  how to process (for example if a user logs a `req` or `res` field that
+  is not a Node.js http request or response object), then processing is skipped.
+  The functions now return true if the given object could be processed,
+  false otherwise. `formatError` was similarly changed to return true/false for
+  whether the given `err` could be processed.
+
 ## v1.0.0
 
 - Change `formatHttpRequest` and `formatHttpResponse` to no longer exclude

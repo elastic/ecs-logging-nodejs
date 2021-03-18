@@ -17,12 +17,22 @@
 
 'use strict'
 
+// Write ECS fields for the given HTTP request (expected to be
+// `http.IncomingMessage`-y) into the `ecs` object. This returns true iff
+// the given `req` was a request object it could process.
 function formatHttpRequest (ecs, req) {
+  if (req === undefined || req === null || typeof req !== 'object') {
+    return false
+  }
   if (req.raw && req.raw.req && req.raw.req.httpVersion) {
     // This looks like a hapi request object (https://hapi.dev/api/#request),
     // use the raw Node.js http.IncomingMessage that it references.
     // TODO: Use hapi's already parsed `req.url` for speed.
     req = req.raw.req
+  }
+  // Use duck-typing to check this is a `http.IncomingMessage`-y object.
+  if (!('httpVersion' in req && 'headers' in req && 'method' in req)) {
+    return false
   }
 
   const {
@@ -103,13 +113,25 @@ function formatHttpRequest (ecs, req) {
       ecs.user_agent.original = headers['user-agent']
     }
   }
+
+  return true
 }
 
+// Write ECS fields for the given HTTP response (expected to be
+// `http.ServiceResponse`-y) into the `ecs` object. This returns true iff
+// the given `res` was a response object it could process.
 function formatHttpResponse (ecs, res) {
+  if (res === undefined || res === null || typeof res !== 'object') {
+    return false
+  }
   if (res.raw && res.raw.res && typeof (res.raw.res.getHeaders) === 'function') {
     // This looks like a hapi request object (https://hapi.dev/api/#request),
     // use the raw Node.js http.ServerResponse that it references.
     res = res.raw.res
+  }
+  // Use duck-typing to check this is a `http.ServerResponse`-y object.
+  if (!('statusCode' in res && typeof res.getHeaders === 'function')) {
+    return false
   }
 
   const { statusCode } = res
@@ -129,6 +151,8 @@ function formatHttpResponse (ecs, res) {
       ecs.http.response.body.bytes = cLen
     }
   }
+
+  return true
 }
 
 module.exports = { formatHttpRequest, formatHttpResponse }

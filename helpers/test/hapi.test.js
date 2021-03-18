@@ -48,8 +48,10 @@ test('hapi res/req serialization', testOpts, t => {
 
   server.events.on('response', (request) => {
     const rec = {}
-    formatHttpRequest(rec, request)
-    formatHttpResponse(rec, request)
+    let rv = formatHttpRequest(rec, request)
+    t.ok(rv, 'formatHttpRequest processed request')
+    rv = formatHttpResponse(rec, request)
+    t.ok(rv, 'formatHttpResponse processed request')
 
     t.deepEqual(rec.user_agent, { original: 'cool-agent' })
     t.deepEqual(rec.url, {
