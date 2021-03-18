@@ -1,6 +1,6 @@
 # @elastic/ecs-helpers Changelog
 
-## Unreleased
+## v1.1.0
 
 - Fix `formatHttpRequest` and `formatHttpResponse` to be more defensive. If
   the given request or response object, respectively, is not one they know
