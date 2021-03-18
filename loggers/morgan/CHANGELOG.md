@@ -1,6 +1,6 @@
 # @elastic/ecs-morgan-format Changelog
 
-## Unreleased
+## v1.1.0
 
 - Update @elastic/ecs-helpers@1.1.0 to get more robust HTTP req and res
   formatting.
