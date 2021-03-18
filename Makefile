@@ -35,6 +35,20 @@ fmt:
 test:
 	./.ci/run-test.sh
 
+# For local dev, setup each logger to use the local helpers, rather than
+# a version published to npm. Need to be careful to not *push* with that
+# tweak to each package.json.
+.PHONY: install-local-helpers undo-install-local-helpers
+install-local-helpers:
+       (cd loggers/winston && npm install ../../helpers)
+       (cd loggers/morgan && npm install ../../helpers)
+       (cd loggers/pino && npm install ../../helpers)
+undo-install-local-helpers:
+       export HELPERS_VER=$(shell cd helpers && npm info . version) && \
+               (cd loggers/winston && npm install @elastic/ecs-helpers@v$$HELPERS_VER) && \
+               (cd loggers/morgan && npm install @elastic/ecs-helpers@v$$HELPERS_VER) && \
+               (cd loggers/pino && npm install @elastic/ecs-helpers@v$$HELPERS_VER)
+
 # Build and open the rendered docs for testing.
 #
 # Requirements:
