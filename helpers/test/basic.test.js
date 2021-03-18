@@ -18,6 +18,7 @@
 'use strict'
 
 const http = require('http')
+const { inspect } = require('util')
 
 const addFormats = require('ajv-formats').default
 const Ajv = require('ajv').default
@@ -144,8 +145,10 @@ test('formatHttpRequest and formatHttpResponse should return a valid ecs object'
     // add anchor
     req.url += '#anchor'
 
-    formatHttpRequest(ecs, req)
-    formatHttpResponse(ecs, res)
+    let rv = formatHttpRequest(ecs, req)
+    t.ok(rv, 'formatHttpRequest processed req')
+    rv = formatHttpResponse(ecs, res)
+    t.ok(rv, 'formatHttpResponse processed res')
 
     const line = JSON.parse(stringify(ecs))
     t.ok(validate(line))
@@ -190,6 +193,36 @@ test('formatHttpRequest and formatHttpResponse should return a valid ecs object'
 
     res.end(resBody)
   }
+})
+
+test('format* should not process non-req/res/err values', t => {
+  const inputs = [
+    null,
+    'hi',
+    42,
+    {},
+    []
+  ]
+  let obj
+  let rv
+  inputs.forEach(input => {
+    obj = {}
+    rv = formatError(obj, input)
+    t.strictEqual(rv, false, `formatError did not process input: ${inspect(input)}`)
+    // Cannot test that obj is unmodified because `formatError` sets obj.err.
+    // See https://github.com/elastic/ecs-logging-nodejs/issues/66 to change that.
+
+    obj = {}
+    rv = formatHttpRequest(obj, input)
+    t.strictEqual(rv, false, `formatHttpRequest did not process input: ${inspect(input)}`)
+    t.equal(Object.keys(obj).length, 0, `obj was not modified: ${inspect(obj)}`)
+
+    obj = {}
+    rv = formatHttpResponse(obj, input)
+    t.strictEqual(rv, false, `formatHttpResponse did not process input: ${inspect(input)}`)
+    t.equal(Object.keys(obj).length, 0, `obj was not modified: ${inspect(obj)}`)
+  })
+  t.end()
 })
 
 test('Should export a valid version', t => {

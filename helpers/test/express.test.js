@@ -38,8 +38,10 @@ test('express res/req serialization', t => {
     res.write('hi')
     res.end()
 
-    formatHttpRequest(rec, req)
-    formatHttpResponse(rec, res)
+    let rv = formatHttpRequest(rec, req)
+    t.ok(rv, 'formatHttpRequest processed req')
+    rv = formatHttpResponse(rec, res)
+    t.ok(rv, 'formatHttpResponse processed res')
 
     t.deepEqual(rec.user_agent, { original: 'cool-agent' })
     t.deepEqual(rec.url, {

@@ -46,10 +46,11 @@ of objects with circular references. This generally means that ecs-logging-nodej
 libraries will throw a "Converting circular structure to JSON" exception if an
 attempt is made to log an object with circular references.
 
-### `formatError(obj, err)`
+### `formatError(obj, err) -> bool`
 
 A function that adds [ECS Error fields](https://www.elastic.co/guide/en/ecs/current/ecs-error.html)
-for a given `Error` object.
+for a given `Error` object. It returns true iff the given `err` was an Error
+object it could process.
 
 ```js
 const { formatError } = require('@elastic/ecs-helpers')
@@ -79,13 +80,18 @@ metadata field passed to a logging statement. E.g.
 `log.warn({err: myErr}, '...')` for pino, `log.warn('...', {err: myErr})`
 for winston.
 
-### `formatHttpRequest(obj, req)`
+### `formatHttpRequest(obj, req) -> bool`
 
 Function that enhances an ECS object with http request data.
 The given request object, `req`, must be one of the following:
 - Node.js's core [`http.IncomingMessage`](https://nodejs.org/api/all.html#http_class_http_incomingmessage),
 - [Express's request object](https://expressjs.com/en/5x/api.html#req) that extends IncomingMessage, or
 - a [hapi request object](https://hapi.dev/api/#request).
+
+The function returns true iff the given `req` was a request object it could
+process. Note that currently this notably does not process a
+[`http.ClientRequest`](https://nodejs.org/api/all.html#http_class_http_clientrequest)
+as returned from `http.request()`.
 
 ```js
 const http = require('http')
@@ -137,6 +143,13 @@ The given request object, `req`, must be one of the following:
 - Node.js's core [`http.ServerResponse`](https://nodejs.org/api/all.html#http_class_http_serverresponse),
 - [Express's response object](https://expressjs.com/en/5x/api.html#res) that extends ServerResponse, or
 - a [hapi **request** object](https://hapi.dev/api/#request)
+
+The function returns true iff the given `res` was a response object it could
+process. Note that currently this notably does not process a
+[`http.IncomingMessage`](https://nodejs.org/api/all.html#http_class_http_incomingmessage)
+that is the argument to the
+["response" event](https://nodejs.org/api/all.html#http_event_response) of a
+[client `http.request()`](https://nodejs.org/api/all.html#http_http_request_options_callback)
 
 ```js
 const http = require('http')

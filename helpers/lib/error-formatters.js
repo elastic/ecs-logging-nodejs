@@ -21,10 +21,11 @@ const { toString } = Object.prototype
 
 // Format an Error instance into ECS-compatible fields on the `ecs` object.
 // https://www.elastic.co/guide/en/ecs/current/ecs-error.html
+// Return true iff the given `err` was an Error object that could be processed.
 function formatError (ecsFields, err) {
   if (!(err instanceof Error)) {
     ecsFields.err = err
-    return
+    return false
   }
 
   ecsFields.error = {
@@ -34,6 +35,8 @@ function formatError (ecsFields, err) {
     message: err.message,
     stack_trace: err.stack
   }
+
+  return true
 }
 
 module.exports = { formatError }
