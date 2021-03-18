@@ -26,7 +26,7 @@ const addFormats = require('ajv-formats').default
 const Ajv = require('ajv').default
 const { version } = require('@elastic/ecs-helpers')
 
-const ecsFormat = require('../')
+const { ecsFields, ecsFormat, ecsStringify } = require('../')
 const { ecsLoggingValidate } = require('../../../utils/lib/ecs-logging-validate')
 
 const ajv = new Ajv({
@@ -59,6 +59,29 @@ test('Should produce valid ecs logs', t => {
   const cap = new CaptureTransport()
   const logger = winston.createLogger({
     format: ecsFormat(),
+    transports: [cap]
+  })
+  logger.info('ecs is cool!')
+  logger.error('ecs is cool!', { hello: 'world' })
+
+  cap.records.forEach((rec) => {
+    t.ok(validate(rec))
+  })
+  cap.infos.forEach((info) => {
+    t.equal(ecsLoggingValidate(info[MESSAGE]), null)
+  })
+  t.end()
+})
+
+test('basic test with separate ecsFields + ecsStringify', t => {
+  t.plan(4)
+
+  const cap = new CaptureTransport()
+  const logger = winston.createLogger({
+    format: winston.format.combine(
+      ecsFields(),
+      ecsStringify()
+    ),
     transports: [cap]
   })
   logger.info('ecs is cool!')
