@@ -103,7 +103,9 @@ function ecsTransform (info, opts) {
   // istanbul ignore else
   if (apm) {
     // Set "service.name" and "event.dataset" from APM conf, if not already set.
-    let serviceName = ecsFields.service && ecsFields.service.name
+    let serviceName = (ecsFields.service && ecsFields.service.name && typeof ecsFields.service.name === 'string'
+      ? ecsFields.service.name
+      : undefined)
     if (!serviceName) {
       // https://github.com/elastic/apm-agent-nodejs/pull/1949 is adding
       // getServiceName() in v3.11.0. Fallback to private `apm._conf`.
@@ -114,13 +116,27 @@ function ecsTransform (info, opts) {
       // A mis-configured APM Agent can be "started" but not have a
       // "serviceName".
       if (serviceName) {
-        ecsFields.service = ecsFields.service || {}
-        ecsFields.service.name = serviceName
+        if (ecsFields.service === undefined) {
+          ecsFields.service = { name: serviceName }
+        } else if (!isVanillaObject(ecsFields.service)) {
+          // Warning: "service" type conflicts with ECS spec. Overwriting.
+          ecsFields.service = { name: serviceName }
+        } else {
+          ecsFields.service.name = serviceName
+        }
       }
     }
-    if (serviceName && !(ecsFields.event && ecsFields.event.dataset)) {
-      ecsFields.event = ecsFields.event || {}
-      ecsFields.event.dataset = serviceName + '.log'
+    if (serviceName &&
+        !(ecsFields.event && ecsFields.event.dataset &&
+          typeof ecsFields.event.dataset === 'string')) {
+      if (ecsFields.event === undefined) {
+        ecsFields.event = { dataset: serviceName + '.log' }
+      } else if (!isVanillaObject(ecsFields.event)) {
+        // Warning: "event" type conflicts with ECS spec. Overwriting.
+        ecsFields.event = { dataset: serviceName + '.log' }
+      } else {
+        ecsFields.event.dataset = serviceName + '.log'
+      }
     }
 
     // https://www.elastic.co/guide/en/ecs/current/ecs-tracing.html
@@ -166,6 +182,21 @@ function ecsTransform (info, opts) {
 
   info[MESSAGE] = stringify(ecsFields)
   return info
+}
+
+// Return true if the given arg is a "vanilla" object. Roughly the intent is
+// whether this is basic mapping of string keys to values that will serialize
+// as a JSON object.
+//
+// Currently, it excludes Map. The uses above don't really expect a user to:
+//     service = new Map([["foo", "bar"]])
+//     log.info({ service }, '...')
+//
+// There are many ways tackle this. See some attempts and benchmarks at:
+// https://gist.github.com/trentm/34131a92eede80fd2109f8febaa56f5a
+function isVanillaObject (o) {
+  return (typeof o === 'object' &&
+    (!o.constructor || o.constructor.name === 'Object'))
 }
 
 module.exports = format(ecsTransform)

@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Update @elastic/ecs-helpers@1.1.0 to get more robust HTTP req and res
+  formatting.
+
 - Add `apmIntegration: false` option to all ecs-logging formatters to
   enable explicitly disabling Elastic APM integration.
   ([#62](https://github.com/elastic/ecs-logging-nodejs/pull/62))

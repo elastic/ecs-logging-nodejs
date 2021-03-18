@@ -335,8 +335,17 @@ test('can override service.name, event.dataset', t => {
     const recs = stdout.trim().split(/\n/g).map(JSON.parse)
     t.equal(recs[0].service.name, 'myname')
     t.equal(recs[0].event.dataset, 'mydataset')
+
+    // If integrating with APM and the log record sets "service.name" to a
+    // non-string or "service" to a non-object, then ecs-winston-format will
+    // overwrite it because it conflicts with the ECS specified type.
     t.equal(recs[1].service.name, 'test-apm')
     t.equal(recs[1].event.dataset, 'test-apm.log')
+    t.equal(recs[2].service.name, 'test-apm')
+    t.equal(recs[2].event.dataset, 'test-apm.log')
+
+    t.equal(recs[3].service.name, 'test-apm')
+    t.equal(recs[3].event.dataset, 'test-apm.log')
     t.end()
   })
 })
@@ -355,8 +364,8 @@ test('unset APM serviceName does not set service.name, event.dataset, but also d
     const recs = stdout.trim().split(/\n/g).map(JSON.parse)
     t.equal(recs[0].service.name, 'myname')
     t.equal(recs[0].event.dataset, 'mydataset')
-    t.equal(recs[1].service, undefined)
-    t.equal(recs[1].event, undefined)
+    t.equal(recs[3].service, undefined)
+    t.equal(recs[3].event, undefined)
     t.end()
   })
 })
