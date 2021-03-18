@@ -45,9 +45,10 @@ const log = winston.createLogger({
   ]
 })
 
-log.info('hi', {
-  foo: 'bar',
-  service: { name: 'myname' },
-  event: { dataset: 'mydataset' }
-})
-log.info('bye', { foo: 'bar' })
+log.info('override values',
+  { service: { name: 'myname' }, event: { dataset: 'mydataset' } })
+log.info('override values with nums',
+  { service: { name: 42 }, event: { dataset: 42 } })
+log.info('override top-level keys with invalid ECS type',
+  { service: 'myname', event: 'myevent' })
+log.info('bye')

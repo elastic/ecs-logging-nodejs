@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Fix a "TypeError: Cannot read property 'host' of undefined" crash when using
+  `convertReqRes: true` and logging a `req` field that is not an HTTP request
+  object.
+
 - Set the "message" to the empty string for logger calls that provide no
   message, e.g. `log.info({foo: 'bar'})`. In this case pino will not add a
   message field, which breaks ecs-logging spec.

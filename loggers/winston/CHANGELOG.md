@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+- Fix a crash ([#58](https://github.com/elastic/ecs-logging-nodejs/issues/58))
+  when using APM integration and logging a record with an "event" or
+  "service" top-level field that isn't an object. The "fix" here is to
+  silently discard that "event" or "service" field because a non-object
+  conflicts with the ECS spec for those fields. (See
+  [#68](https://github.com/elastic/ecs-logging-nodejs/issues/68) for a
+  discussion of the general ECS type conflict issue.)
+
+- Fix a crash ([#59](https://github.com/elastic/ecs-logging-nodejs/issues/59))
+  when using `convertReqRes: true` and logging a `res` field that is not an
+  HTTP response object.
+
 - Add `apmIntegration: false` option to all ecs-logging formatters to
   enable explicitly disabling Elastic APM integration.
   ([#62](https://github.com/elastic/ecs-logging-nodejs/pull/62))
