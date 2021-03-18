@@ -40,14 +40,14 @@ test:
 # tweak to each package.json.
 .PHONY: install-local-helpers undo-install-local-helpers
 install-local-helpers:
-       (cd loggers/winston && npm install ../../helpers)
-       (cd loggers/morgan && npm install ../../helpers)
-       (cd loggers/pino && npm install ../../helpers)
+	(cd loggers/winston && npm install ../../helpers)
+	(cd loggers/morgan && npm install ../../helpers)
+	(cd loggers/pino && npm install ../../helpers)
 undo-install-local-helpers:
-       export HELPERS_VER=$(shell cd helpers && npm info . version) && \
-               (cd loggers/winston && npm install @elastic/ecs-helpers@v$$HELPERS_VER) && \
-               (cd loggers/morgan && npm install @elastic/ecs-helpers@v$$HELPERS_VER) && \
-               (cd loggers/pino && npm install @elastic/ecs-helpers@v$$HELPERS_VER)
+	export HELPERS_VER=$(shell cd helpers && npm info . version) && \
+		(cd loggers/winston && npm install @elastic/ecs-helpers@v$$HELPERS_VER) && \
+		(cd loggers/morgan && npm install @elastic/ecs-helpers@v$$HELPERS_VER) && \
+		(cd loggers/pino && npm install @elastic/ecs-helpers@v$$HELPERS_VER)
 
 # Build and open the rendered docs for testing.
 #
