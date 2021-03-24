@@ -1,6 +1,6 @@
 # @elastic/ecs-pino-format Changelog
 
-## Unreleased
+## v1.1.1
 
 - The ecs-logging spec was [updated to allow "message" to be
   optional](https://github.com/elastic/ecs-logging/pull/55). This allows the
@@ -8,6 +8,7 @@
   to be removed -- which is cleaner and fixes a
   [side-effect bug](https://github.com/elastic/ecs-logging-nodejs/issues/73)
   where usage of pino's `prettyPrint: true` was broken.
+  ([#75](https://github.com/elastic/ecs-logging-nodejs/pull/75))
 
 ## v1.1.0
 
