@@ -41,7 +41,7 @@
     "ajv": "^7.0.3",
     "ajv-formats": "^1.5.1",
     "autocannon": "^7.0.1",
-    "elastic-apm-node": "^3.10.0",
+    "elastic-apm-node": "^3.14.0",
     "express": "^4.17.1",
     "split2": "^3.2.2",
     "standard": "16.x",

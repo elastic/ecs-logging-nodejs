@@ -33,7 +33,8 @@ const apm = require('elastic-apm-node').start({
   serviceName,
   centralConfig: false,
   captureExceptions: false,
-  metricsInterval: 0
+  metricsInterval: 0,
+  logLevel: 'off'
 })
 
 const ecsFormat = require('../') // @elastic/ecs-pino-format

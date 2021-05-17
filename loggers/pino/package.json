@@ -39,7 +39,7 @@
   "devDependencies": {
     "ajv": "^7.0.3",
     "ajv-formats": "^1.5.1",
-    "elastic-apm-node": "^3.10.0",
+    "elastic-apm-node": "^3.14.0",
     "express": "^4.17.1",
     "pino": "^6.0.0",
     "pino-http": "^5.3.0",
