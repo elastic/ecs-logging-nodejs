@@ -25,12 +25,8 @@ const {
 } = require('@elastic/ecs-helpers')
 
 const { hasOwnProperty } = Object.prototype
+let triedElasticApmImport = false
 let elasticApm = null
-try {
-  elasticApm = require('elastic-apm-node')
-} catch (ex) {
-  // Silently ignore.
-}
 
 // Create options for `pino(...)` that configure it for ecs-logging output.
 //
@@ -68,13 +64,27 @@ function createEcsPinoOptions (opts) {
 
   let apm = null
   let apmServiceName = null
-  if (apmIntegration && elasticApm && elasticApm.isStarted && elasticApm.isStarted()) {
-    apm = elasticApm
-    // Elastic APM v3.11.0 added getServiceName(). Fallback to private `apm._conf`.
-    // istanbul ignore next
-    apmServiceName = apm.getServiceName
-      ? apm.getServiceName()
-      : apm._conf.serviceName
+  if (apmIntegration) {
+    if (!triedElasticApmImport) {
+      triedElasticApmImport = true
+      // We lazily require this module here instead of at the top-level to
+      // avoid a possible circular-require if the user code does
+      // `require('@elastic/ecs-pino-format')` and has a "node_modules/"
+      // where 'elastic-apm-node' shares the same ecs-pino-format install.
+      try {
+        elasticApm = require('elastic-apm-node')
+      } catch (ex) {
+        // Silently ignore.
+      }
+    }
+    if (elasticApm && elasticApm.isStarted && elasticApm.isStarted()) {
+      apm = elasticApm
+      // Elastic APM v3.11.0 added getServiceName(). Fallback to private `apm._conf`.
+      // istanbul ignore next
+      apmServiceName = apm.getServiceName
+        ? apm.getServiceName()
+        : apm._conf.serviceName
+    }
   }
 
   let isServiceNameInBindings = false

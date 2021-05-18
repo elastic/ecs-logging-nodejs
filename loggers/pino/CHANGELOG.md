@@ -1,5 +1,12 @@
 # @elastic/ecs-pino-format Changelog
 
+## Unreleased
+
+- Fix a circular-require for code that uses both this package and
+  'elastic-apm-node'.
+  ([#79](https://github.com/elastic/ecs-logging-nodejs/issues/79))
+
+
 ## v1.1.1
 
 - The ecs-logging spec was [updated to allow "message" to be
