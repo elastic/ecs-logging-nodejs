@@ -1,6 +1,6 @@
 # @elastic/ecs-pino-format Changelog
 
-## Unreleased
+## v1.1.2
 
 - Fix a circular-require for code that uses both this package and
   'elastic-apm-node'.
