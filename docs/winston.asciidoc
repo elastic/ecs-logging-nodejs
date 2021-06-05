@@ -162,7 +162,6 @@ const logger = winston.createLogger({
   format: ecsFormat({ convertReqRes: true }), <1>
   transports:
     new winston.transports.Console()
-  ]
 })
 
 const server = http.createServer(handler)
