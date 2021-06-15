@@ -66,3 +66,4 @@ html_docs
 .ecs
 .DS_Store
 /tmp
+.vscode
