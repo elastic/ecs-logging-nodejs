@@ -128,9 +128,10 @@ test('tracing integration works', t => {
     }
     if (traceObjs.length >= 3 && logObjs.length >= 1) {
       t.ok(traceObjs[0].metadata, 'traceObjs[0] is metadata')
-      t.ok(traceObjs[1].transaction, 'traceObjs[1] is transaction')
-      t.ok(traceObjs[2].span, 'traceObjs[2] is span')
-      const span = traceObjs[2].span
+      const trans = traceObjs[1].transaction || traceObjs[2].transaction
+      const span = traceObjs[1].span || traceObjs[2].span
+      t.ok(trans, 'got transaction')
+      t.ok(span, 'got span')
       t.equal(logObjs[0].trace.id, span.trace_id, 'trace.id matches')
       t.equal(logObjs[0].transaction.id, span.transaction_id, 'transaction.id matches')
       t.equal(logObjs[0].span.id, span.id, 'span.id matches')
@@ -273,8 +274,10 @@ test('apmIntegration=false disables tracing integration', t => {
     }
     if (traceObjs.length >= 3 && logObjs.length >= 1) {
       t.ok(traceObjs[0].metadata, 'traceObjs[0] is metadata')
-      t.ok(traceObjs[1].transaction, 'traceObjs[1] is transaction')
-      t.ok(traceObjs[2].span, 'traceObjs[2] is span')
+      const trans = traceObjs[1].transaction || traceObjs[2].transaction
+      const span = traceObjs[1].span || traceObjs[2].span
+      t.ok(trans, 'got transaction')
+      t.ok(span, 'got span')
       t.notOk(logObjs[0].trace, 'log record does *not* have "trace" object')
       t.notOk(logObjs[0].transaction, 'log record does *not* have "transaction" object')
       t.notOk(logObjs[0].span, 'log record does *not* have "span" object')
