@@ -6,6 +6,7 @@
   "files": [
     "index.js"
   ],
+  "types": "index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/elastic/ecs-logging-nodejs.git"
@@ -34,7 +35,8 @@
     "node": ">=10"
   },
   "dependencies": {
-    "@elastic/ecs-helpers": "^1.1.0"
+    "@elastic/ecs-helpers": "^1.1.0",
+    "@types/pino": "^6.3.8"
   },
   "devDependencies": {
     "ajv": "^7.0.3",
