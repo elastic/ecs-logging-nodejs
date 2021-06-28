@@ -65,6 +65,7 @@ function createEcsPinoOptions (opts) {
   let apm = null
   let apmServiceName = null
   if (apmIntegration) {
+    // istanbul ignore if
     if (opts && opts._elasticApm) {
       // `opts._elasticApm` is an internal/testing-only option to be used
       // for testing in the APM agent where the import is a local path
