@@ -1,5 +1,13 @@
 # @elastic/ecs-pino-format Changelog
 
+## v1.2.0
+
+- Add an *internal testing-only* option (`opts._elasticApm`) to pass in the
+  current loaded "elastic-apm-node" module for use in APM tracing integration.
+  This option will be used by tests in the APM agent where the current agent
+  import name is a local path rather than "elastic-apm-node" that this code
+  normally uses.
+
 ## v1.1.2
 
 - Fix a circular-require for code that uses both this package and
