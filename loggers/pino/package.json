@@ -35,10 +35,10 @@
     "node": ">=10"
   },
   "dependencies": {
-    "@elastic/ecs-helpers": "^1.1.0",
-    "@types/pino": "^6.3.8"
+    "@elastic/ecs-helpers": "^1.1.0"
   },
   "devDependencies": {
+    "@types/pino": "^6.3.8",
     "ajv": "^7.0.3",
     "ajv-formats": "^1.5.1",
     "elastic-apm-node": "^3.14.0",
