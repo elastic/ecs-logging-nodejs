@@ -65,7 +65,13 @@ function createEcsPinoOptions (opts) {
   let apm = null
   let apmServiceName = null
   if (apmIntegration) {
-    if (!triedElasticApmImport) {
+    // istanbul ignore if
+    if (opts && opts._elasticApm) {
+      // `opts._elasticApm` is an internal/testing-only option to be used
+      // for testing in the APM agent where the import is a local path
+      // rather than "elastic-apm-node".
+      elasticApm = opts._elasticApm
+    } else if (!triedElasticApmImport) {
       triedElasticApmImport = true
       // We lazily require this module here instead of at the top-level to
       // avoid a possible circular-require if the user code does
