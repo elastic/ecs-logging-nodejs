@@ -1,5 +1,9 @@
 # @elastic/ecs-pino-format Changelog
 
+## v1.3.0
+
+- TypeScript types. ([#82](https://github.com/elastic/ecs-logging-nodejs/pull/82))
+
 ## v1.2.0
 
 - Add an *internal testing-only* option (`opts._elasticApm`) to pass in the
