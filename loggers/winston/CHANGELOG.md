@@ -1,5 +1,9 @@
 # @elastic/ecs-winston-format Changelog
 
+## v1.3.0
+
+- TypeScript types. ([#88](https://github.com/elastic/ecs-logging-nodejs/pull/88))
+
 ## v1.1.0
 
 - Fix a crash ([#58](https://github.com/elastic/ecs-logging-nodejs/issues/58))
