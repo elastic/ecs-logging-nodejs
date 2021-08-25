@@ -27,4 +27,8 @@ interface Config {
   apmIntegration?: boolean;
 }
 
-export = (opts?: Config) => Format
+declare function createEcsWinstonOptions(opts?: Config): Format;
+
+declare namespace createEcsWinstonOptions {}
+
+export = createEcsWinstonOptions;

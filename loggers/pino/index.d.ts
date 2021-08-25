@@ -29,4 +29,6 @@ interface Config {
 
 declare function createEcsPinoOptions(config?: Config): LoggerOptions;
 
+declare namespace createEcsPinoOptions {}
+
 export = createEcsPinoOptions;
