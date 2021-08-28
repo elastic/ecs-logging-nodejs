@@ -27,4 +27,6 @@ interface Config {
   apmIntegration?: boolean;
 }
 
-export default function(opts?: Config): Logform.Format;
+declare function ecsFormat(opts?: Config): Logform.Format;
+
+export = ecsFormat;
