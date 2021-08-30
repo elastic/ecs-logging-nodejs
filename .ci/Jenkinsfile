@@ -55,11 +55,11 @@ pipeline {
             buildWithGitHubNotification('14')
           }
         }
-        stage('Test - Node.js v15') {
+        stage('Test - Node.js v16') {
           agent { label 'linux && immutable' }
           options { skipDefaultCheckout() }
           steps {
-            buildWithGitHubNotification('15')
+            buildWithGitHubNotification('16')
           }
         }
       }
