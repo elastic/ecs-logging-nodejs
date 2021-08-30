@@ -1,4 +1,4 @@
-import type { Format } from "winston";
+import type { Logform } from "winston";
 
 interface Config {
   /**
@@ -27,4 +27,6 @@ interface Config {
   apmIntegration?: boolean;
 }
 
-export = (opts?: Config) => Format
+declare function ecsFormat(opts?: Config): Logform.Format;
+
+export = ecsFormat;
