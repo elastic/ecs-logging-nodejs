@@ -43,7 +43,14 @@ test('import cases', suite => {
   const importCases = [
     { file: 'fixtures/js-require-default.js' },
     { file: 'fixtures/js-require-destructuring.js' },
-    { file: 'fixtures/js-esm-import.mjs' },
+    {
+      file: 'fixtures/js-esm-import.mjs',
+      testOpts: {
+        skip: Number(process.versions.node.split('.')[0]) <= 10
+          ? 'ESM does not work with node <=10'
+          : false
+      }
+    },
     // TypeScript using esModuleInterop:true (the default setting from
     // `tsc --init`).
     {
@@ -82,18 +89,22 @@ test('import cases', suite => {
   ]
 
   importCases.forEach((ic) => {
-    suite.test('import case: ' + ic.file, t => {
+    suite.test('import case: ' + ic.file, ic.testOpts || {}, t => {
       if (ic.build) {
         execSync(ic.build, {
           cwd: __dirname,
-          timeout: 5000
+          encoding: 'utf8'
         })
       }
 
+      let args = [path.join(__dirname, ic.file)]
+      if (ic.nodeOptions) {
+        args = ic.nodeOptions.concat(args)
+      }
       execFile(
         process.execPath,
-        [path.join(__dirname, ic.file)],
-        { timeout: 5000 },
+        args,
+        { timeout: 5000 }, // A guard in case the script hangs.
         function (err, stdout, stderr) {
           t.error(err)
           const rec = JSON.parse(stdout)

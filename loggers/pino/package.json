@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/elastic/ecs-logging-nodejs/blob/master/loggers/pino/README.md",
   "scripts": {
-    "test": "standard && tap --100 --timeout ${TAP_TIMEOUT:-40} test/*.test.js"
+    "test": "standard && tap --100 --timeout ${TAP_TIMEOUT:-60} test/*.test.js"
   },
   "engines": {
     "node": ">=10"
