@@ -46,7 +46,7 @@ let elasticApm = null
 //        - "trace.id", "transaction.id", and "span.id" - if there is a current
 //          active trace when the log call is made
 //      Default true.
-function createEcsPinoOptions (opts) {
+function ecsFormat (opts) {
   let convertErr = true
   let convertReqRes = false
   let apmIntegration = true
@@ -252,4 +252,18 @@ function isVanillaObject (o) {
     (!o.constructor || o.constructor.name === 'Object'))
 }
 
-module.exports = createEcsPinoOptions
+// Exports to support the following import-styles from JS and TS code:
+// 1. `const { ecsFormat } = require('@elastic/ecs-pino-format)` in JS and TS.
+//    The preferred import style for JS code using CommonJS.
+// 2. `import { ecsFormat } from '@elastic/ecs-pino-format'` in JS and TS.
+//    ES module (ESM) import style. This is the preferred style for TypeScript
+//    code and for JS developers using ESM.
+// 3. `const ecsFormat = require('@elastic/ecs-pino-format')` in JS.
+//    The old, deprecated import method. Still supported for backward compat.
+// 4. `import ecsFormat from '@elastic/ecs-pino-format'` in JS and TS.
+//    This works, but is deprecated. Prefer #2 style.
+// 5. `import * as EcsPinoFormat from '@elastic/ecs-pino-format'` is TS.
+//    One must then use `EcsPinoFormat.ecsFormat()`.
+module.exports = ecsFormat // Required to support style 3.
+module.exports.ecsFormat = ecsFormat
+module.exports.default = ecsFormat // Required to support style 4.

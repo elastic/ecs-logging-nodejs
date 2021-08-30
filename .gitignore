@@ -67,3 +67,4 @@ html_docs
 .DS_Store
 /tmp
 .vscode
+/loggers/pino/test/fixtures/ts-*/*.js

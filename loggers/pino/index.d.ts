@@ -27,6 +27,7 @@ interface Config {
   apmIntegration?: boolean;
 }
 
-declare function createEcsPinoOptions(config?: Config): LoggerOptions;
+declare function ecsFormat(config?: Config): LoggerOptions;
 
-export = createEcsPinoOptions;
+export default ecsFormat;
+export { ecsFormat }
