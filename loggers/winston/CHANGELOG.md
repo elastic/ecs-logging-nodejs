@@ -1,5 +1,10 @@
 # @elastic/ecs-winston-format Changelog
 
+## v1.3.1
+
+- Fix types expression in ambient context error.
+  ([#93](https://github.com/elastic/ecs-logging-nodejs/pull/93))
+
 ## v1.3.0
 
 - TypeScript types. ([#88](https://github.com/elastic/ecs-logging-nodejs/pull/88))
