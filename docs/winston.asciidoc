@@ -265,3 +265,5 @@ const logger = winston.createLogger({
   // ...
 })
 ----
+
+To learn more, try out our tutorial using Node.js ECS logging with winston: {cloud}/ec-getting-started-search-use-cases-node-logs.html[Ingest logs from a Node.js web application using Filebeat].
