@@ -50,6 +50,7 @@ The best way to collect the logs once they are ECS-formatted is with {filebeat-r
 
 include::{ecs-repo-dir}/setup.asciidoc[tag=configure-filebeat]
 
+NOTE: You might like to try out our tutorial using Node.js ECS logging with winston: {cloud}/ec-getting-started-search-use-cases-node-logs.html[Ingest logs from a Node.js web application using Filebeat].
 
 [float]
 [[winston-usage]]
@@ -265,3 +266,4 @@ const logger = winston.createLogger({
   // ...
 })
 ----
+
