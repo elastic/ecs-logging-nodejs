@@ -17,7 +17,7 @@
 
 'use strict'
 
-const build = require('fast-json-stringify')
+const build = require('fast-safe-stringify')
 
 const string = { type: 'string' }
 const number = { type: 'number' }

@@ -40,11 +40,8 @@ const ecs = {
 console.log(stringify(ecs))
 ```
 
-Note: This uses [fast-json-stringify](https://github.com/fastify/fast-json-stringify)
-for serialization. By design this chooses speed over supporting serialization
-of objects with circular references. This generally means that ecs-logging-nodejs
-libraries will throw a "Converting circular structure to JSON" exception if an
-attempt is made to log an object with circular references.
+Note: This uses [fast-safe-stringify](https://github.com/davidmarkclements/fast-safe-stringify)
+for serialization.
 
 ### `formatError(obj, err) -> bool`
 
