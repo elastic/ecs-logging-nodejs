@@ -40,7 +40,7 @@
   "devDependencies": {
     "ajv": "^7.0.3",
     "ajv-formats": "^1.5.1",
-    "elastic-apm-node": "^3.10.0",
+    "elastic-apm-node": "^3.23.0",
     "express": "^4.17.1",
     "morgan": "^1.9.1",
     "split2": "^3.1.1",
