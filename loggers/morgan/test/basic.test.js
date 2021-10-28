@@ -74,13 +74,13 @@ test('Should produce valid ecs logs', t => {
 
   const stream = split().on('data', line => {
     const rec = JSON.parse(line)
-    t.true(validate(rec))
+    t.ok(validate(rec))
     t.equal(ecsLoggingValidate(line), null)
   })
   const logger = morgan(ecsFormat(), { stream })
 
   makeExpressServerAndRequest(logger, '/?foo=bar', { method: 'POST' }, 'hi', function (err) {
-    t.ifErr(err)
+    t.error(err)
     t.end()
   })
 })
@@ -97,7 +97,7 @@ test('Keys order', t => {
   const logger = morgan(ecsFormat(), { stream })
 
   makeExpressServerAndRequest(logger, '/?foo=bar', { method: 'POST' }, 'hi', function (err) {
-    t.ifErr(err)
+    t.error(err)
     t.end()
   })
 })
@@ -116,7 +116,7 @@ test('"format" argument - format name', t => {
   const logger = morgan(ecsFormat(format), { stream })
 
   makeExpressServerAndRequest(logger, '/?foo=bar', { method: 'POST' }, 'hi', function (err) {
-    t.ifErr(err)
+    t.error(err)
     t.end()
   })
 })
@@ -135,7 +135,7 @@ test('"format" argument - format string', t => {
   const logger = morgan(ecsFormat(format), { stream })
 
   makeExpressServerAndRequest(logger, '/?foo=bar', { method: 'POST' }, 'hi', function (err) {
-    t.ifErr(err)
+    t.error(err)
     t.end()
   })
 })
@@ -154,7 +154,7 @@ test('"format" argument - format function', t => {
   const logger = morgan(ecsFormat(format), { stream })
 
   makeExpressServerAndRequest(logger, '/?foo=bar', { method: 'POST' }, 'hi', function (err) {
-    t.ifErr(err)
+    t.error(err)
     t.end()
   })
 })
@@ -173,7 +173,7 @@ test('"opts.format" argument', t => {
   const logger = morgan(ecsFormat({ format: format }), { stream })
 
   makeExpressServerAndRequest(logger, '/?foo=bar', { method: 'POST' }, 'hi', function (err) {
-    t.ifErr(err)
+    t.error(err)
     t.end()
   })
 })
@@ -188,7 +188,7 @@ test('"log.level" for successful response is "info"', t => {
   const logger = morgan(ecsFormat(), { stream })
 
   makeExpressServerAndRequest(logger, '/', {}, null, function (err) {
-    t.ifErr(err)
+    t.error(err)
     t.end()
   })
 })
@@ -203,7 +203,7 @@ test('"log.level" for failing response is "error"', t => {
   const logger = morgan(ecsFormat(), { stream })
 
   makeExpressServerAndRequest(logger, '/error', {}, null, function (err) {
-    t.ifErr(err)
+    t.error(err)
     t.end()
   })
 })

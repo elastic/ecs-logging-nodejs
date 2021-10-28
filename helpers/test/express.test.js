@@ -43,13 +43,13 @@ test('express res/req serialization', t => {
     rv = formatHttpResponse(rec, res)
     t.ok(rv, 'formatHttpResponse processed res')
 
-    t.deepEqual(rec.user_agent, { original: 'cool-agent' })
-    t.deepEqual(rec.url, {
+    t.same(rec.user_agent, { original: 'cool-agent' })
+    t.same(rec.url, {
       path: '/',
       full: `http://localhost:${server.address().port}/`,
       domain: 'localhost'
     })
-    t.deepEqual(rec.http, {
+    t.same(rec.http, {
       version: '1.1',
       request: {
         method: 'GET',

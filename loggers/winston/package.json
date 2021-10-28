@@ -31,7 +31,7 @@
   "homepage": "https://github.com/elastic/ecs-logging-nodejs/blob/master/loggers/winston/README.md",
   "scripts": {
     "bench": "./benchmarks/bench",
-    "test": "standard && tap --100 --timeout ${TAP_TIMEOUT:-10} test/*.test.js"
+    "test": "standard && tap --timeout ${TAP_TIMEOUT:-10} test/*.test.js"
   },
   "engines": {
     "node": ">=10"
@@ -47,7 +47,7 @@
     "express": "^4.17.1",
     "split2": "^3.2.2",
     "standard": "16.x",
-    "tap": "^14.x",
+    "tap": "^15.0.10",
     "winston": "^3.3.3"
   }
 }

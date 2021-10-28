@@ -161,7 +161,7 @@ test('ecsPinoFormat cases', suite => {
       t.equal(ecsLoggingValidate(lines[0], { ignoreIndex: true }), null)
 
       delete rec['@timestamp'] // normalize before comparison
-      t.deepEqual(rec, fc.rec, 'logged record matches expected record')
+      t.same(rec, fc.rec, 'logged record matches expected record')
 
       t.end()
     })
@@ -241,7 +241,7 @@ test('convertErr does not blow up on non-Errors', t => {
   t.equal(recs[0].err, 42)
   t.equal(recs[1].err, false)
   t.equal(recs[2].err, null)
-  t.deepEqual(recs[3].err, { foo: 'bar' })
+  t.same(recs[3].err, { foo: 'bar' })
   t.end()
 })
 

@@ -53,12 +53,12 @@ test('hapi res/req serialization', testOpts, t => {
     rv = formatHttpResponse(rec, request)
     t.ok(rv, 'formatHttpResponse processed request')
 
-    t.deepEqual(rec.user_agent, { original: 'cool-agent' })
-    t.deepEqual(rec.url, {
+    t.same(rec.user_agent, { original: 'cool-agent' })
+    t.same(rec.url, {
       path: '/',
       full: `http://localhost:${server.info.port}/`
     })
-    t.deepEqual(rec.http, {
+    t.same(rec.http, {
       version: '1.1',
       request: {
         method: 'GET',

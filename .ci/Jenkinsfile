@@ -62,6 +62,13 @@ pipeline {
             buildWithGitHubNotification('16')
           }
         }
+        stage('Test - Node.js v17') {
+          agent { label 'linux && immutable' }
+          options { skipDefaultCheckout() }
+          steps {
+            buildWithGitHubNotification('17')
+          }
+        }
       }
     }
   }
