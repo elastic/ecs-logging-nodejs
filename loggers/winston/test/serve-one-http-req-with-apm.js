@@ -25,8 +25,7 @@
 // - log once when it is listening (with its address)
 // - handle a single HTTP request
 // - log that request
-// - flush APM (i.e. ensure it has sent its data to its configured APM server)
-// - exit
+// - exit (the APM agent should flush trace data on exit)
 
 const serverUrl = process.argv[2]
 const disableApmIntegration = process.argv[3] === 'true'
@@ -63,9 +62,7 @@ server.once('request', function handler (req, res) {
     span.end()
     res.end('ok')
     log.info('handled request', { req, res })
-    apm.flush(function onFlushed () {
-      server.close()
-    })
+    server.close()
   })
 })
 

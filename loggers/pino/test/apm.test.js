@@ -85,7 +85,7 @@ test('tracing integration works', t => {
     app.stdout.pipe(split(JSON.parse)).on('data', function (logObj) {
       if (!handledFirstLogLine) {
         handledFirstLogLine = true
-        t.equal(logObj.message, 'listening')
+        t.equal(logObj.message, 'listening', 'got "listening" log message')
         t.ok(logObj.address, 'first listening log line has "address"')
         cb(null, logObj.address)
       } else {
@@ -121,7 +121,7 @@ test('tracing integration works', t => {
     }
     if (logObj) {
       t.ok(validate(logObj), 'logObj is ECS valid')
-      t.equal(ecsLoggingValidate(logObj), null)
+      t.equal(ecsLoggingValidate(logObj), null, 'logObj is ecs-logging valid')
       logObjs.push(logObj)
     }
     if (traceObjs.length >= 3 && logObjs.length >= 1) {
@@ -154,7 +154,7 @@ test('tracing integration works', t => {
   }
 
   step1StartMockApmServer(function onListening (apmServerErr, apmServerUrl) {
-    t.ifErr(apmServerErr)
+    t.error(apmServerErr, 'no error starting mock APM server')
     if (apmServerErr) {
       finish()
       return
@@ -162,7 +162,7 @@ test('tracing integration works', t => {
     t.ok(apmServerUrl, 'apmServerUrl: ' + apmServerUrl)
 
     step2StartApp(apmServerUrl, function onReady (appErr, appUrl) {
-      t.ifErr(appErr)
+      t.error(appErr, 'no error starting app')
       if (appErr) {
         finish()
         return
@@ -170,7 +170,7 @@ test('tracing integration works', t => {
       t.ok(appUrl, 'appUrl: ' + appUrl)
 
       step3CallApp(appUrl, function (clientErr) {
-        t.ifErr(clientErr)
+        t.error(clientErr, 'no error calling app')
 
         // The thread of control now is expected to be in
         // `collectTracesLogsAndCheck()`.
