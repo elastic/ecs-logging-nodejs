@@ -298,7 +298,7 @@ test('apmIntegration=false disables tracing integration', t => {
   }
 
   step1StartMockApmServer(function onListening (apmServerErr, apmServerUrl) {
-    t.ifErr(apmServerErr)
+    t.error(apmServerErr)
     if (apmServerErr) {
       finish()
       return
@@ -306,7 +306,7 @@ test('apmIntegration=false disables tracing integration', t => {
     t.ok(apmServerUrl, 'apmServerUrl: ' + apmServerUrl)
 
     step2StartApp(apmServerUrl, function onReady (appErr, appUrl) {
-      t.ifErr(appErr)
+      t.error(appErr)
       if (appErr) {
         finish()
         return
@@ -314,7 +314,7 @@ test('apmIntegration=false disables tracing integration', t => {
       t.ok(appUrl, 'appUrl: ' + appUrl)
 
       step3CallApp(appUrl, function (clientErr) {
-        t.ifErr(clientErr)
+        t.error(clientErr)
 
         // The thread of control now is expected to be in
         // `collectTracesLogsAndCheck()`.
@@ -330,7 +330,7 @@ test('can override service.name, event.dataset', t => {
   ], {
     timeout: 5000
   }, function (err, stdout, stderr) {
-    t.ifErr(err)
+    t.error(err)
     const recs = stdout.trim().split(/\n/g).map(JSON.parse)
     t.equal(recs[0].service.name, 'myname')
     t.equal(recs[0].event.dataset, 'mydataset')
@@ -357,7 +357,7 @@ test('can override service.name, event.dataset in base arg to constructor', t =>
   ], {
     timeout: 5000
   }, function (err, stdout, stderr) {
-    t.ifErr(err)
+    t.error(err)
     const recs = stdout.trim().split(/\n/g).map(JSON.parse)
     t.equal(recs[0].service.name, 'myname')
     t.equal(recs[0].event.dataset, 'mydataset')
@@ -378,7 +378,7 @@ test('unset APM serviceName does not set service.name, event.dataset, but also d
     // up dirs for a package.json, does *not* work by execing from the root dir.
     cwd: '/'
   }, function (err, stdout, stderr) {
-    t.ifErr(err)
+    t.error(err)
     const recs = stdout.trim().split(/\n/g).map(JSON.parse)
     t.equal(recs[0].service.name, 'myname')
     t.equal(recs[0].event.dataset, 'mydataset')

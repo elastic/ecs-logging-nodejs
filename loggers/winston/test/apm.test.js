@@ -156,7 +156,7 @@ test('tracing integration works', t => {
   }
 
   step1StartMockApmServer(function onListening (apmServerErr, apmServerUrl) {
-    t.ifErr(apmServerErr, 'no error from starting the mock APM server')
+    t.error(apmServerErr, 'no error from starting the mock APM server')
     if (apmServerErr) {
       finish()
       return
@@ -164,7 +164,7 @@ test('tracing integration works', t => {
     t.ok(apmServerUrl, 'apmServerUrl: ' + apmServerUrl)
 
     step2StartApp(apmServerUrl, function onReady (appErr, appUrl) {
-      t.ifErr(appErr, 'no error from starting the app')
+      t.error(appErr, 'no error from starting the app')
       if (appErr) {
         finish()
         return
@@ -172,7 +172,7 @@ test('tracing integration works', t => {
       t.ok(appUrl, 'appUrl: ' + appUrl)
 
       step3CallApp(appUrl, function (clientErr) {
-        t.ifErr(clientErr, 'no error from calling the app')
+        t.error(clientErr, 'no error from calling the app')
 
         // The thread of control now is expected to be in
         // `collectTracesLogsAndCheck()`.
@@ -302,7 +302,7 @@ test('apmIntegration=false disables tracing integration', t => {
   }
 
   step1StartMockApmServer(function onListening (apmServerErr, apmServerUrl) {
-    t.ifErr(apmServerErr, 'no error from starting the mock APM server')
+    t.error(apmServerErr, 'no error from starting the mock APM server')
     if (apmServerErr) {
       finish()
       return
@@ -310,7 +310,7 @@ test('apmIntegration=false disables tracing integration', t => {
     t.ok(apmServerUrl, 'apmServerUrl: ' + apmServerUrl)
 
     step2StartApp(apmServerUrl, function onReady (appErr, appUrl) {
-      t.ifErr(appErr, 'no error from starting the app')
+      t.error(appErr, 'no error from starting the app')
       if (appErr) {
         finish()
         return
@@ -318,7 +318,7 @@ test('apmIntegration=false disables tracing integration', t => {
       t.ok(appUrl, 'appUrl: ' + appUrl)
 
       step3CallApp(appUrl, function (clientErr) {
-        t.ifErr(clientErr, 'no error from calling the app')
+        t.error(clientErr, 'no error from calling the app')
 
         // The thread of control now is expected to be in
         // `collectTracesLogsAndCheck()`.
@@ -334,7 +334,7 @@ test('can override service.name, event.dataset', t => {
   ], {
     timeout: 5000
   }, function (err, stdout, stderr) {
-    t.ifErr(err)
+    t.error(err)
     const recs = stdout.trim().split(/\n/g).map(JSON.parse)
     t.equal(recs[0].service.name, 'myname')
     t.equal(recs[0].event.dataset, 'mydataset')
@@ -363,7 +363,7 @@ test('unset APM serviceName does not set service.name, event.dataset, but also d
     // up dirs for a package.json, does *not* work by execing from the root dir.
     cwd: '/'
   }, function (err, stdout, stderr) {
-    t.ifErr(err)
+    t.error(err)
     const recs = stdout.trim().split(/\n/g).map(JSON.parse)
     t.equal(recs[0].service.name, 'myname')
     t.equal(recs[0].event.dataset, 'mydataset')

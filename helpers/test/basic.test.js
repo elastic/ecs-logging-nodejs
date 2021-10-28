@@ -154,14 +154,14 @@ test('formatHttpRequest and formatHttpResponse should return a valid ecs object'
     t.ok(validate(line))
     t.equal(ecsLoggingValidate(line), null)
 
-    t.deepEqual(line.user_agent, { original: 'cool-agent' })
-    t.deepEqual(line.url, {
+    t.same(line.user_agent, { original: 'cool-agent' })
+    t.same(line.url, {
       path: '/hello/world',
       query: 'foo=bar',
       full: `http://localhost:${server.address().port}/hello/world?foo=bar#anchor`,
       fragment: 'anchor'
     })
-    t.deepEqual(line.http, {
+    t.same(line.http, {
       version: '1.1',
       request: {
         method: 'POST',
@@ -208,18 +208,18 @@ test('format* should not process non-req/res/err values', t => {
   inputs.forEach(input => {
     obj = {}
     rv = formatError(obj, input)
-    t.strictEqual(rv, false, `formatError did not process input: ${inspect(input)}`)
+    t.equal(rv, false, `formatError did not process input: ${inspect(input)}`)
     // Cannot test that obj is unmodified because `formatError` sets obj.err.
     // See https://github.com/elastic/ecs-logging-nodejs/issues/66 to change that.
 
     obj = {}
     rv = formatHttpRequest(obj, input)
-    t.strictEqual(rv, false, `formatHttpRequest did not process input: ${inspect(input)}`)
+    t.equal(rv, false, `formatHttpRequest did not process input: ${inspect(input)}`)
     t.equal(Object.keys(obj).length, 0, `obj was not modified: ${inspect(obj)}`)
 
     obj = {}
     rv = formatHttpResponse(obj, input)
-    t.strictEqual(rv, false, `formatHttpResponse did not process input: ${inspect(input)}`)
+    t.equal(rv, false, `formatHttpResponse did not process input: ${inspect(input)}`)
     t.equal(Object.keys(obj).length, 0, `obj was not modified: ${inspect(obj)}`)
   })
   t.end()
@@ -246,9 +246,9 @@ test('stringify should emit valid tracing fields', t => {
   const after = JSON.parse(stringify(before))
   t.ok(validate(after))
   t.equal(ecsLoggingValidate(after), null)
-  t.deepEqual(after.trace, { id: '1' }, 'trace.id is stringified')
-  t.deepEqual(after.transaction, { id: '2' }, 'transaction.id is stringified')
-  t.deepEqual(after.span, { id: '3' },
+  t.same(after.trace, { id: '1' }, 'trace.id is stringified')
+  t.same(after.transaction, { id: '2' }, 'transaction.id is stringified')
+  t.same(after.span, { id: '3' },
     'span.id is stringified, extra fields are excluded')
   t.end()
 })

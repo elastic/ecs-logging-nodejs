@@ -155,7 +155,7 @@ test('tracing integration works', t => {
   }
 
   step1StartMockApmServer(function onListening (apmServerErr, apmServerUrl) {
-    t.ifErr(apmServerErr)
+    t.error(apmServerErr)
     if (apmServerErr) {
       finish()
       return
@@ -163,7 +163,7 @@ test('tracing integration works', t => {
     t.ok(apmServerUrl, 'apmServerUrl: ' + apmServerUrl)
 
     step2StartApp(apmServerUrl, function onReady (appErr, appUrl) {
-      t.ifErr(appErr)
+      t.error(appErr)
       if (appErr) {
         finish()
         return
@@ -171,7 +171,7 @@ test('tracing integration works', t => {
       t.ok(appUrl, 'appUrl: ' + appUrl)
 
       step3CallApp(appUrl, function (clientErr) {
-        t.ifErr(clientErr)
+        t.error(clientErr)
 
         // The thread of control now is expected to be in
         // `collectTracesLogsAndCheck()`.
@@ -300,7 +300,7 @@ test('apmIntegration=false disables tracing integration', t => {
   }
 
   step1StartMockApmServer(function onListening (apmServerErr, apmServerUrl) {
-    t.ifErr(apmServerErr)
+    t.error(apmServerErr)
     if (apmServerErr) {
       finish()
       return
@@ -308,7 +308,7 @@ test('apmIntegration=false disables tracing integration', t => {
     t.ok(apmServerUrl, 'apmServerUrl: ' + apmServerUrl)
 
     step2StartApp(apmServerUrl, function onReady (appErr, appUrl) {
-      t.ifErr(appErr)
+      t.error(appErr)
       if (appErr) {
         finish()
         return
@@ -316,7 +316,7 @@ test('apmIntegration=false disables tracing integration', t => {
       t.ok(appUrl, 'appUrl: ' + appUrl)
 
       step3CallApp(appUrl, function (clientErr) {
-        t.ifErr(clientErr)
+        t.error(clientErr)
 
         // The thread of control now is expected to be in
         // `collectTracesLogsAndCheck()`.

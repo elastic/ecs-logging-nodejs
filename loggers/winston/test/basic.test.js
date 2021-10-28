@@ -85,7 +85,7 @@ test('Bad ecs log (on purpose)', t => {
 
   cap.records.forEach((rec) => {
     rec['@timestamp'] = true // Intentionally break it
-    t.false(validate(rec))
+    t.notOk(validate(rec))
     t.notOk(ecsLoggingValidate(rec))
   })
   t.end()
@@ -144,7 +144,7 @@ test('Should not be able to override ECS fields with additional fields', t => {
   const rec = cap.records[0]
   t.equal(rec['log.level'], 'info', '"log.level"')
   t.equal(rec.ecs.version, version, 'ecs.version')
-  t.notEqual(rec['@timestamp'], 'boom', '@timestamp')
+  t.not(rec['@timestamp'], 'boom', '@timestamp')
   t.end()
 })
 
@@ -258,7 +258,7 @@ test('convertErr does not blow up on non-Errors', t => {
   t.equal(cap.records[0].err, 42)
   t.equal(cap.records[1].err, false)
   t.equal(cap.records[2].err, null)
-  t.deepEqual(cap.records[3].err, { foo: 'bar' })
+  t.same(cap.records[3].err, { foo: 'bar' })
   t.end()
 })
 
