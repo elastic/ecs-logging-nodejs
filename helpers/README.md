@@ -40,7 +40,7 @@ const ecs = {
 console.log(stringify(ecs))
 ```
 
-Note: This uses [fast-safe-stringify](https://github.com/davidmarkclements/fast-safe-stringify)
+Note: This uses [safe-stable-stringify](https://github.com/BridgeAR/safe-stable-stringify)
 for serialization.
 
 ### `formatError(obj, err) -> bool`
