@@ -107,12 +107,10 @@ function ecsTransform (info, opts) {
       ? ecsFields.service.name
       : undefined)
     if (!serviceName) {
-      // https://github.com/elastic/apm-agent-nodejs/pull/1949 is adding
-      // getServiceName() in v3.11.0. Fallback to private `apm._conf`.
       // istanbul ignore next
       serviceName = apm.getServiceName
-        ? apm.getServiceName()
-        : apm._conf.serviceName
+        ? apm.getServiceName() // added in elastic-apm-node@3.11.0
+        : apm._conf.serviceName // fallback to private `_conf`
       // A mis-configured APM Agent can be "started" but not have a
       // "serviceName".
       if (serviceName) {

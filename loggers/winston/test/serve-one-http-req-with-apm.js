@@ -59,9 +59,9 @@ const server = http.createServer()
 server.once('request', function handler (req, res) {
   const span = apm.startSpan('auth')
   setImmediate(function doneAuth () {
-    span.end()
     res.end('ok')
     log.info('handled request', { req, res })
+    span.end()
     server.close()
   })
 })
