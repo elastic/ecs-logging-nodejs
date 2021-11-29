@@ -36,7 +36,7 @@
             ignore-tags-newer-than: -1
         - regular-branches: true
         - change-request:
-            ignore-target-only-changes: false
+            ignore-target-only-changes: true
         clean:
           after: true
           before: true
@@ -52,7 +52,6 @@
         timeout: '15'
         use-author: true
         wipe-workspace: 'True'
-    periodic-folder-trigger: 1w
     prune-dead-branches: true
     publishers:
     - email:
