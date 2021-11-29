@@ -368,15 +368,12 @@ test('can override service.name, event.dataset in base arg to constructor', t =>
   })
 })
 
-test('unset APM serviceName does not set service.name, event.dataset, but also does not break', t => {
+test('invalid APM serviceName does not set service.name or event.dataset, but also does not break', t => {
   execFile(process.execPath, [
-    path.join(__dirname, 'use-apm-override-service-name.js')
-    // Leave <serviceName> arg empty.
+    path.join(__dirname, 'use-apm-override-service-name.js'),
+    'foo☃bar' // Use an invalid <serviceName>.
   ], {
-    timeout: 5000,
-    // Ensure the APM Agent's auto-configuration of `serviceName`, via looking
-    // up dirs for a package.json, does *not* work by execing from the root dir.
-    cwd: '/'
+    timeout: 5000
   }, function (err, stdout, stderr) {
     t.error(err)
     const recs = stdout.trim().split(/\n/g).map(JSON.parse)
