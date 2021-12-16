@@ -28,7 +28,7 @@
   "bugs": {
     "url": "https://github.com/elastic/ecs-logging-nodejs/issues"
   },
-  "homepage": "https://github.com/elastic/ecs-logging-nodejs/blob/master/loggers/winston/README.md",
+  "homepage": "https://github.com/elastic/ecs-logging-nodejs/blob/main/loggers/winston/README.md",
   "scripts": {
     "bench": "./benchmarks/bench",
     "test": "standard && tap --timeout ${TAP_TIMEOUT:-10} test/*.test.js"

@@ -161,7 +161,7 @@ function createEcsPinoOptions (opts) {
           // A mis-configured APM Agent can be "started" but not have a
           // "serviceName".
           if (apmServiceName) {
-            // Per https://github.com/elastic/ecs-logging/blob/master/spec/spec.json
+            // Per https://github.com/elastic/ecs-logging/blob/main/spec/spec.json
             // "service.name" and "event.dataset" should be automatically set
             // if not already by the user.
             if (!isServiceNameInBindings) {

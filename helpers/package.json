@@ -15,7 +15,7 @@
   "bugs": {
     "url": "https://github.com/elastic/ecs-logging-nodejs/issues"
   },
-  "homepage": "https://github.com/elastic/ecs-logging-nodejs/blob/master/helpers/README.md",
+  "homepage": "https://github.com/elastic/ecs-logging-nodejs/blob/main/helpers/README.md",
   "scripts": {
     "test": "standard && tap --no-check-coverage --timeout ${TAP_TIMEOUT:-10} test/*.test.js"
   },

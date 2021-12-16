@@ -74,7 +74,7 @@ app.get('/error', function (req, res, next) {
 app.listen(3000)
 ----
 
-Running this script (the full example is https://github.com/elastic/ecs-logging-nodejs/blob/master/loggers/morgan/examples/express.js[here])
+Running this script (the full example is https://github.com/elastic/ecs-logging-nodejs/blob/main/loggers/morgan/examples/express.js[here])
 and making a request (via `curl -i localhost:3000/`) will produce log output
 similar to the following:
 
@@ -144,7 +144,7 @@ app.use(morgan(ecsFormat({ format: 'tiny' }))) <1>
 === log.level
 
 The `log.level` field will be "error" for response codes >= 500, otherwise
-"info". For example, running  https://github.com/elastic/ecs-logging-nodejs/blob/master/loggers/morgan/examples/express.js[examples/express.js]
+"info". For example, running  https://github.com/elastic/ecs-logging-nodejs/blob/main/loggers/morgan/examples/express.js[examples/express.js]
 again, a `curl -i localhost:3000/error` will yield:
 
 [source,cmd]
@@ -172,7 +172,7 @@ then fields are added to log records that {ecs-ref}/ecs-tracing.html[identify an
 These fields allow cross linking between traces and logs in Kibana and support
 log anomaly detection.
 
-For example, running https://github.com/elastic/ecs-logging-nodejs/blob/master/loggers/morgan/examples/express-with-apm.js[examples/express-with-apm.js] and `curl -i localhost:3000/` results in a log record with the following:
+For example, running https://github.com/elastic/ecs-logging-nodejs/blob/main/loggers/morgan/examples/express-with-apm.js[examples/express-with-apm.js] and `curl -i localhost:3000/` results in a log record with the following:
 
 [source,cmd]
 ----
