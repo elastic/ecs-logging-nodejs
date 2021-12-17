@@ -73,7 +73,7 @@ logger.info('hi')
 logger.error('oops there is a problem', { foo: 'bar' })
 ----
 
-Running this script (available https://github.com/elastic/ecs-logging-nodejs/blob/master/loggers/winston/examples/basic.js[here]) will produce log output similar to the following:
+Running this script (available https://github.com/elastic/ecs-logging-nodejs/blob/main/loggers/winston/examples/basic.js[here]) will produce log output similar to the following:
 
 [source,cmd]
 ----
@@ -94,7 +94,7 @@ the https://github.com/winstonjs/logform#timestamp[timestamp] formatter.
 
 By default, the formatter will convert an `err` meta field that is an Error instance
 to {ecs-ref}/ecs-error.html[ECS Error fields].
-For https://github.com/elastic/ecs-logging-nodejs/blob/master/loggers/winston/examples/error.js[example]:
+For https://github.com/elastic/ecs-logging-nodejs/blob/main/loggers/winston/examples/error.js[example]:
 
 [source,js]
 ----
@@ -182,7 +182,7 @@ function handler (req, res) {
 
 This will produce logs with request and response info using
 {ecs-ref}/ecs-http.html[ECS HTTP fields].
-For https://github.com/elastic/ecs-logging-nodejs/blob/master/loggers/winston/examples/http.js[example]:
+For https://github.com/elastic/ecs-logging-nodejs/blob/main/loggers/winston/examples/http.js[example]:
 
 [source,cmd]
 ----
@@ -233,7 +233,7 @@ then fields are added to log records that {ecs-ref}/ecs-tracing.html[identify an
 These fields allow cross linking between traces and logs in Kibana and support
 log anomaly detection.
 
-For example, running https://github.com/elastic/ecs-logging-nodejs/blob/master/loggers/winston/examples/http-with-elastic-apm.js[examples/http-with-elastic-apm.js] and `curl -i localhost:3000/` results in a log record with the following:
+For example, running https://github.com/elastic/ecs-logging-nodejs/blob/main/loggers/winston/examples/http-with-elastic-apm.js[examples/http-with-elastic-apm.js] and `curl -i localhost:3000/` results in a log record with the following:
 
 [source,cmd]
 ----

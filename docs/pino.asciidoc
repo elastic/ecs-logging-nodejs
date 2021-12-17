@@ -196,10 +196,10 @@ For example:
 }
 ----
 
-The https://github.com/elastic/ecs-logging-nodejs/tree/master/loggers/pino/examples[examples/ directory]
+The https://github.com/elastic/ecs-logging-nodejs/tree/main/loggers/pino/examples[examples/ directory]
 shows sample programs using request and response logging:
-https://github.com/elastic/ecs-logging-nodejs/tree/master/loggers/pino/examples/express-simple.js[with Express],
-https://github.com/elastic/ecs-logging-nodejs/tree/master/loggers/pino/examples/express-with-pino-http.js[with the pino-http middleware package],
+https://github.com/elastic/ecs-logging-nodejs/tree/main/loggers/pino/examples/express-simple.js[with Express],
+https://github.com/elastic/ecs-logging-nodejs/tree/main/loggers/pino/examples/express-with-pino-http.js[with the pino-http middleware package],
 etc.
 
 
@@ -214,7 +214,7 @@ then fields are added to log records that {ecs-ref}/ecs-tracing.html[identify an
 These fields allow cross linking between traces and logs in Kibana and support
 log anomaly detection.
 
-For example, running https://github.com/elastic/ecs-logging-nodejs/blob/master/loggers/pino/examples/http-with-elastic-apm.js[examples/http-with-elastic-apm.js] and `curl -i localhost:3000/` results in a log record with the following:
+For example, running https://github.com/elastic/ecs-logging-nodejs/blob/main/loggers/pino/examples/http-with-elastic-apm.js[examples/http-with-elastic-apm.js] and `curl -i localhost:3000/` results in a log record with the following:
 
 [source,cmd]
 ----
@@ -253,7 +253,7 @@ const log = pino(ecsFormat({ apmIntegration: false }))
 [[pino-considerations]]
 === Limitations and Considerations
 
-The https://github.com/elastic/ecs-logging/tree/master/spec[ecs-logging spec]
+The https://github.com/elastic/ecs-logging/tree/main/spec[ecs-logging spec]
 suggests that the first three fields in log records must be `@timestamp`,
 `log.level`, and `message`. Pino does not provide a mechanism to put
 the `message` field near the front. Given that ordering of ecs-logging fields
