@@ -82,8 +82,9 @@ pipeline {
 def runTest(version){
   deleteDir()
   unstash 'source'
-  sh(label: 'Debug docker images', script: 'docker images | grep node')
-  sh(label: 'Debug docker inspect', script: "docker inspect node:${version} || true")
+  sh(label: 'Debug docker images', script: "docker images | grep node > docker-${version}-image.txt")
+  sh(label: 'Debug docker inspect', script: "docker inspect node:${version} || true > docker-${version}-inspect.txt")
+  archiveArtifacts "docker-*.txt"
   dir("${BASE_DIR}"){
     docker.image("node:${version}").inside("-e HOME=${WORKSPACE}/${BASE_DIR}") {
       sh(label: 'Install dependencies', script: '.ci/run-install.sh')
