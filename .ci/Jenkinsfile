@@ -86,6 +86,7 @@ def runTest(version){
   sh(label: 'Debug docker inspect', script: "docker inspect node:${version} || true > docker-${version}-inspect.txt")
   archiveArtifacts "docker-*.txt"
   dir("${BASE_DIR}"){
+    sh(label: 'Docker pull', script: "docker pull node:${version}")
     docker.image("node:${version}").inside("-e HOME=${WORKSPACE}/${BASE_DIR}") {
       sh(label: 'Install dependencies', script: '.ci/run-install.sh')
       sh(label: 'Debug node version', script: 'node --version')
