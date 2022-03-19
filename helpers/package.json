@@ -23,7 +23,7 @@
     "node": ">=10"
   },
   "dependencies": {
-    "safe-stable-stringify": "^2.2.0"
+    "fast-json-stringify": "^3.0.3"
   },
   "devDependencies": {
     "@hapi/hapi": "^20.1.0",
