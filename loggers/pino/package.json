@@ -39,13 +39,13 @@
     "@elastic/ecs-helpers": "^1.1.0"
   },
   "devDependencies": {
-    "@types/pino": "^6.3.9",
+    "@types/pino": "^7.0.4",
     "ajv": "^7.0.3",
     "ajv-formats": "^1.5.1",
     "elastic-apm-node": "^3.23.0",
     "express": "^4.17.1",
-    "pino": "^6.0.0",
-    "pino-http": "^5.3.0",
+    "pino": "^8.7.0",
+    "pino-http": "^8.2.1",
     "split2": "^3.1.1",
     "standard": "16.x",
     "tap": "^15.0.10"
