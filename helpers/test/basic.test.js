@@ -100,10 +100,10 @@ test('bad ECS json on purpose: message type, ecs.version missing', t => {
 
 test('formatHttpRequest and formatHttpResponse should return a valid ecs object', t => {
   const server = http.createServer(handler)
-  server.listen(0, () => {
+  server.listen(0, '127.0.0.1', () => {
     const body = JSON.stringify({ hello: 'world' })
     const req = http.request(
-      `http://localhost:${server.address().port}/hello/world?foo=bar`,
+      `http://127.0.0.1:${server.address().port}/hello/world?foo=bar`,
       {
         method: 'POST',
         body,
@@ -158,7 +158,7 @@ test('formatHttpRequest and formatHttpResponse should return a valid ecs object'
     t.same(line.url, {
       path: '/hello/world',
       query: 'foo=bar',
-      full: `http://localhost:${server.address().port}/hello/world?foo=bar#anchor`,
+      full: `http://127.0.0.1:${server.address().port}/hello/world?foo=bar#anchor`,
       fragment: 'anchor'
     })
     t.same(line.http, {
@@ -169,7 +169,7 @@ test('formatHttpRequest and formatHttpResponse should return a valid ecs object'
           'user-agent': 'cool-agent',
           'content-type': 'application/json',
           'content-length': '17',
-          host: `localhost:${server.address().port}`,
+          host: `127.0.0.1:${server.address().port}`,
           connection: 'close'
         },
         body: { bytes: 17 }
@@ -185,8 +185,7 @@ test('formatHttpRequest and formatHttpResponse should return a valid ecs object'
     })
     // https://www.elastic.co/guide/en/ecs/current/ecs-client.html fields
     t.ok(line.client, 'client fields are set')
-    t.ok(line.client.address === '127.0.0.1' || line.client.address === '::ffff:127.0.0.1',
-      'client.address is set')
+    t.ok(line.client.address === '127.0.0.1', 'client.address is set')
     t.ok(line.client.ip === line.client.address,
       'client.address duplicated to client.ip')
     t.equal(typeof (line.client.port), 'number')
