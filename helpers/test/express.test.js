@@ -46,8 +46,8 @@ test('express res/req serialization', t => {
     t.same(rec.user_agent, { original: 'cool-agent' })
     t.same(rec.url, {
       path: '/',
-      full: `http://localhost:${server.address().port}/`,
-      domain: 'localhost'
+      full: `http://127.0.0.1:${server.address().port}/`,
+      domain: '127.0.0.1'
     })
     t.same(rec.http, {
       version: '1.1',
@@ -55,7 +55,7 @@ test('express res/req serialization', t => {
         method: 'GET',
         headers: {
           'user-agent': 'cool-agent',
-          host: `localhost:${server.address().port}`,
+          host: `127.0.0.1:${server.address().port}`,
           connection: 'close'
         }
       },
@@ -69,17 +69,16 @@ test('express res/req serialization', t => {
     })
     // https://www.elastic.co/guide/en/ecs/current/ecs-client.html fields
     t.ok(rec.client, 'client fields are set')
-    t.ok(rec.client.address === '127.0.0.1' || rec.client.address === '::ffff:127.0.0.1',
-      'client.address is set')
+    t.ok(rec.client.address === '127.0.0.1', 'client.address is set')
     t.ok(rec.client.ip === rec.client.address,
       'client.address duplicated to client.ip')
     t.equal(typeof (rec.client.port), 'number')
   })
 
-  app.listen(0, function () {
+  app.listen(0, '127.0.0.1', function () {
     server = this
     const req = http.get(
-      `http://localhost:${server.address().port}/`,
+      `http://127.0.0.1:${server.address().port}/`,
       {
         headers: { 'user-agent': 'cool-agent' }
       },
