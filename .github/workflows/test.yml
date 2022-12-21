@@ -18,12 +18,12 @@ jobs:
     strategy:
       matrix:
         node-version: [10, 12, 14, 16, 17]
-  steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: Install dependencies
-      run: .ci/run-install.sh
-    - name: Test Node.js v${{ matrix.node-version }}
-      run: .ci/run-test.sh
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install dependencies
+        run: .ci/run-install.sh
+      - name: Test Node.js v${{ matrix.node-version }}
+        run: .ci/run-test.sh
