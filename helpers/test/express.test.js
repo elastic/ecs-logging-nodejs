@@ -80,7 +80,7 @@ test('express res/req serialization', t => {
     const req = http.get(
       `http://127.0.0.1:${server.address().port}/`,
       {
-        headers: { 'user-agent': 'cool-agent' }
+        headers: { 'user-agent': 'cool-agent', connection: 'close' }
       },
       function (res) {
         res.on('data', function () {})

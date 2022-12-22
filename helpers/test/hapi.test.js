@@ -99,7 +99,7 @@ test('hapi res/req serialization', testOpts, t => {
 
     // Make a request so we trigger a 'response' event above.
     const req = http.get(`http://127.0.0.1:${server.info.port}/`,
-      { headers: { 'user-agent': 'cool-agent' } })
+      { headers: { 'user-agent': 'cool-agent', connection: 'close' } })
     req.on('error', t.ifErr)
   })
 })
