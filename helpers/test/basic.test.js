@@ -109,6 +109,7 @@ test('formatHttpRequest and formatHttpResponse should return a valid ecs object'
         body,
         headers: {
           'user-agent': 'cool-agent',
+          'connection': 'close',
           'content-type': 'application/json',
           'content-length': Buffer.byteLength(body)
         }
@@ -122,7 +123,6 @@ test('formatHttpRequest and formatHttpResponse should return a valid ecs object'
         })
       }
     )
-    req.setHeader('connection', 'close')
     req.on('error', t.ifErr)
     req.write(body)
     req.end()
