@@ -109,7 +109,7 @@ test('formatHttpRequest and formatHttpResponse should return a valid ecs object'
         body,
         headers: {
           'user-agent': 'cool-agent',
-          'connection': 'close',
+          connection: 'close',
           'content-type': 'application/json',
           'content-length': Buffer.byteLength(body)
         }
