@@ -35,7 +35,7 @@ const testOpts = {
 
 test('hapi res/req serialization', testOpts, t => {
   const Hapi = require('@hapi/hapi')
-  const server = Hapi.server({ host: 'localhost' })
+  const server = Hapi.server({ host: '127.0.0.1' })
 
   server.route({
     method: 'GET',
@@ -56,7 +56,7 @@ test('hapi res/req serialization', testOpts, t => {
     t.same(rec.user_agent, { original: 'cool-agent' })
     t.same(rec.url, {
       path: '/',
-      full: `http://localhost:${server.info.port}/`
+      full: `http://127.0.0.1:${server.info.port}/`
     })
     t.same(rec.http, {
       version: '1.1',
@@ -64,7 +64,7 @@ test('hapi res/req serialization', testOpts, t => {
         method: 'GET',
         headers: {
           'user-agent': 'cool-agent',
-          host: `localhost:${server.info.port}`,
+          host: `127.0.0.1:${server.info.port}`,
           connection: 'close'
         }
       },
@@ -84,8 +84,7 @@ test('hapi res/req serialization', testOpts, t => {
     })
     // https://www.elastic.co/guide/en/ecs/current/ecs-client.html fields
     t.ok(rec.client, 'client fields are set')
-    t.ok(rec.client.address === '127.0.0.1' || rec.client.address === '::ffff:127.0.0.1',
-      'client.address is set')
+    t.ok(rec.client.address === '127.0.0.1', 'client.address is set')
     t.ok(rec.client.ip === rec.client.address,
       'client.address duplicated to client.ip')
     t.equal(typeof (rec.client.port), 'number')
@@ -99,8 +98,8 @@ test('hapi res/req serialization', testOpts, t => {
     t.comment('hapi server running on %s', server.info.uri)
 
     // Make a request so we trigger a 'response' event above.
-    const req = http.get(`http://localhost:${server.info.port}/`,
-      { headers: { 'user-agent': 'cool-agent' } })
+    const req = http.get(`http://127.0.0.1:${server.info.port}/`,
+      { headers: { 'user-agent': 'cool-agent', connection: 'close' } })
     req.on('error', t.ifErr)
   })
 })
