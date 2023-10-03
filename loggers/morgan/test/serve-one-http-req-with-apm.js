@@ -36,8 +36,9 @@ const apm = require('elastic-apm-node').start({
   serviceName: 'test-apm',
   centralConfig: false,
   captureExceptions: false,
-  metricsInterval: 0,
-  apmServerVersion: '8.2.0' // avoid APM server version check request
+  metricsInterval: '0s',
+  apmServerVersion: '8.9.0', // avoid APM server version check request
+  logLevel: 'warn' // avoid APM agent log preamble
 })
 
 const app = require('express')()
