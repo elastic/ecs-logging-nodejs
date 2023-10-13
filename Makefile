@@ -15,21 +15,17 @@ clean:
 	(cd loggers/pino && rm -rf node_modules)
 	(cd utils && rm -rf node_modules)
 
-.PHONY: check
-check: check-license-headers
-	(cd helpers && npx standard)
-	(cd loggers/winston && npx standard)
-	(cd loggers/morgan && npx standard)
-	(cd loggers/pino && npx standard)
-	(cd utils && npx standard)
+.PHONY: lint
+lint: check-license-headers
+	./.ci/run-lint.sh
 
 .PHONY: fmt
 fmt:
-	(cd helpers && npx standard --fix)
-	(cd loggers/winston && npx standard --fix)
-	(cd loggers/morgan && npx standard --fix)
-	(cd loggers/pino && npx standard --fix)
-	(cd utils && npx standard --fix)
+	(cd helpers && npm run lint:fix)
+	(cd loggers/winston && npm run lint:fix)
+	(cd loggers/morgan && npm run lint:fix)
+	(cd loggers/pino && npm run lint:fix)
+	(cd utils && npm run lint:fix)
 
 .PHONY: test
 test:

@@ -5,4 +5,4 @@
 set -o errexit
 set -o pipefail
 
-make check
+make lint

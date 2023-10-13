@@ -17,7 +17,9 @@
   },
   "homepage": "https://github.com/elastic/ecs-logging-nodejs/blob/main/helpers/README.md",
   "scripts": {
-    "test": "standard && tap --no-check-coverage --timeout ${TAP_TIMEOUT:-10} test/*.test.js"
+    "lint": "standard",
+    "lint:fix": "standard --fix",
+    "test": "tap --no-check-coverage --timeout ${TAP_TIMEOUT:-10} test/*.test.js"
   },
   "engines": {
     "node": ">=10"
