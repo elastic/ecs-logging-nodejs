@@ -22,9 +22,9 @@
 //
 // If usage of Elastic APM is detected (i.e. the "elastic-apm-node" package
 // is being used), then log records will include trace identifiers, e.g.:
-//       "trace": { "id": "678f2a0189f259baf2ea17db8af5a4d0" },
-//       "transaction": { "id": "1cc6339964575165" },
-//       "span": { "id": "f72c52ceda81777a" },
+//       "trace.id": "678f2a0189f259baf2ea17db8af5a4d0",
+//       "transaction.id": "1cc6339964575165",
+//       "span.id": "f72c52ceda81777a",
 // to correlate log and trace data in Kibana.
 
 /* eslint-disable-next-line no-unused-vars */
@@ -32,7 +32,8 @@ const apm = require('elastic-apm-node').start({
   serviceName: 'http-with-elastic-apm',
   centralConfig: false,
   captureExceptions: false,
-  metricsInterval: 0
+  metricsInterval: '0s',
+  logLevel: 'warn' // avoid APM agent log preamble
 })
 
 const http = require('http')

@@ -49,9 +49,9 @@ test('ecsPinoFormat cases', suite => {
       },
       rec: {
         'log.level': 'info',
-        ecs: { version: ecsVersion },
-        process: { pid: process.pid },
-        host: { hostname: os.hostname },
+        'process.pid': process.pid,
+        'host.hostname': os.hostname(),
+        'ecs.version': ecsVersion,
         message: 'Hello, world!'
       }
     },
@@ -63,10 +63,10 @@ test('ecsPinoFormat cases', suite => {
       },
       rec: {
         'log.level': 'info',
-        ecs: { version: ecsVersion },
-        process: { pid: process.pid },
-        host: { hostname: os.hostname },
-        log: { logger: 'myName' },
+        'process.pid': process.pid,
+        'host.hostname': os.hostname(),
+        'log.logger': 'myName',
+        'ecs.version': ecsVersion,
         message: 'hi'
       }
     },
@@ -78,9 +78,9 @@ test('ecsPinoFormat cases', suite => {
       },
       rec: {
         'log.level': 'info',
-        ecs: { version: ecsVersion },
-        process: { pid: process.pid },
-        host: { hostname: os.hostname },
+        'process.pid': process.pid,
+        'host.hostname': os.hostname(),
+        'ecs.version': ecsVersion,
         message: 'hi',
         foo: 'bar'
       }
@@ -93,9 +93,9 @@ test('ecsPinoFormat cases', suite => {
       },
       rec: {
         'log.level': 'info',
-        ecs: { version: ecsVersion },
-        process: { pid: process.pid },
-        host: { hostname: os.hostname },
+        'process.pid': process.pid,
+        'host.hostname': os.hostname(),
+        'ecs.version': ecsVersion,
         message: 'hi',
         req: { id: 42 },
         res: { status: 'OK' }
@@ -109,7 +109,7 @@ test('ecsPinoFormat cases', suite => {
       },
       rec: {
         'log.level': 'info',
-        ecs: { version: ecsVersion },
+        'ecs.version': ecsVersion,
         message: 'hi'
       }
     },
@@ -128,7 +128,7 @@ test('ecsPinoFormat cases', suite => {
       },
       rec: {
         'log.level': 'info',
-        ecs: { version: ecsVersion },
+        'ecs.version': ecsVersion,
         message: 'hi'
       }
     },
@@ -140,9 +140,9 @@ test('ecsPinoFormat cases', suite => {
       },
       rec: {
         'log.level': 'info',
-        ecs: { version: ecsVersion },
-        process: { pid: process.pid },
-        host: { hostname: os.hostname },
+        'process.pid': process.pid,
+        'host.hostname': os.hostname(),
+        'ecs.version': ecsVersion,
         foo: 'bar'
       }
     }
@@ -161,7 +161,7 @@ test('ecsPinoFormat cases', suite => {
       t.equal(ecsLoggingValidate(lines[0], { ignoreIndex: true }), null)
 
       delete rec['@timestamp'] // normalize before comparison
-      t.same(rec, fc.rec, 'logged record matches expected record')
+      t.strictSame(rec, fc.rec, 'logged record matches expected record')
 
       t.end()
     })
@@ -241,7 +241,7 @@ test('convertErr does not blow up on non-Errors', t => {
   t.equal(recs[0].err, 42)
   t.equal(recs[1].err, false)
   t.equal(recs[2].err, null)
-  t.same(recs[3].err, { foo: 'bar' })
+  t.strictSame(recs[3].err, { foo: 'bar' })
   t.end()
 })
 

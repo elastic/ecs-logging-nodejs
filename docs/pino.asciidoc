@@ -68,8 +68,8 @@ Running this will produce log output similar to the following:
 
 [source,cmd]
 ----
-{"log.level":"info","@timestamp":"2021-01-19T22:51:12.142Z","ecs":{"version":"1.6.0"},"process":{"pid":82240},"host":{"hostname":"pink.local"},"message":"Hello world"}
-{"log.level":"warn","@timestamp":"2021-01-19T22:51:12.143Z","ecs":{"version":"1.6.0"},"process":{"pid":82240},"host":{"hostname":"pink.local"},"module":"foo","message":"From child"}
+{"log.level":"info","@timestamp":"2023-10-14T02:07:47.901Z","process.pid":56645,"host.hostname":"pink.local","ecs.version":"1.6.0","message":"Hello world"}
+{"log.level":"warn","@timestamp":"2023-10-14T02:07:47.901Z","process.pid":56645,"host.hostname":"pink.local","ecs.version":"1.6.0","module":"foo","message":"From child"}
 ----
 
 [float]
@@ -159,22 +159,17 @@ For example:
 ...                               # run 'curl http://localhost:3000/'
 {
   "log.level": "info",
-  "@timestamp": "2021-01-19T22:58:59.649Z",
-  "ecs": {
-    "version": "1.6.0"
-  },
-  "process": {
-    "pid": 82670
-  },
-  "host": {
-    "hostname": "pink.local"
-  },
+  "@timestamp": "2023-10-14T02:10:14.477Z",
+  "process.pid": 56697,
+  "host.hostname": "pink.local",
+  "ecs.version": "1.6.0",
   "http": {
     "version": "1.1",
     "request": {
       "method": "GET",
       "headers": {
         "host": "localhost:3000",
+        "user-agent": "curl/8.1.2",
         "accept": "*/*"
       }
     },
@@ -189,8 +184,13 @@ For example:
     "full": "http://localhost:3000/",
     "path": "/"
   },
+  "client": {
+    "address": "::ffff:127.0.0.1",
+    "ip": "::ffff:127.0.0.1",
+    "port": 49504
+  },
   "user_agent": {
-    "original": "curl/7.64.1"
+    "original": "curl/8.1.2"
   },
   "message": "handled request"
 }
@@ -220,21 +220,10 @@ For example, running https://github.com/elastic/ecs-logging-nodejs/blob/main/log
 ----
 % node examples/http-with-elastic-apm.js | jq .
 ...
-  "service": {
-    "name": "http-with-elastic-apm"
-  },
-  "event": {
-    "dataset": "http-with-elastic-apm.log"
-  },
-  "trace": {
-    "id": "a1c23e04d7174462f330f5921c8f036d"
-  },
-  "transaction": {
-    "id": "2550c4c267d4dd53"
-  },
-  "span": {
-    "id": "16a8704258dbc328"
-  },
+  "service.name": "http-with-elastic-apm",
+  "event.dataset": "http-with-elastic-apm",
+  "trace.id": "79de6da334efae17ad43758573d57f1c",
+  "transaction.id": "8bf944f94b72c54d",
 ...
 ----
 

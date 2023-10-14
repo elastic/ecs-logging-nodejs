@@ -78,8 +78,8 @@ Running this script (available https://github.com/elastic/ecs-logging-nodejs/blo
 [source,cmd]
 ----
 % node examples/basic.js
-{"@timestamp":"2021-01-13T21:32:38.095Z","log.level":"info","message":"hi","ecs":{"version":"1.6.0"}}
-{"@timestamp":"2021-01-13T21:32:38.096Z","log.level":"error","message":"oops there is a problem","ecs":{"version":"1.6.0"},"foo":"bar"}
+{"@timestamp":"2023-10-14T02:14:17.302Z","log.level":"info","message":"hi","ecs.version":"1.6.0"}
+{"@timestamp":"2023-10-14T02:14:17.304Z","log.level":"error","message":"oops there is a problem","ecs.version":"1.6.0","foo":"bar"}
 ----
 
 The formatter handles serialization to JSON, so you don't need to add the
@@ -120,14 +120,12 @@ will yield (pretty-printed for readability):
   "@timestamp": "2021-01-26T17:25:07.983Z",
   "log.level": "info",
   "message": "oops",
-  "ecs": {
-    "version": "1.6.0"
-  },
   "error": {
     "type": "Error",
     "message": "boom",
     "stack_trace": "Error: boom\n    at Object.<anonymous> (..."
-  }
+  },
+  "ecs.version": "1.6.0"
 }
 ----
 
@@ -189,18 +187,16 @@ For https://github.com/elastic/ecs-logging-nodejs/blob/main/loggers/winston/exam
 % node examples/http.js | jq .    # using jq for pretty printing
 ...                               # run 'curl http://localhost:3000/'
 {
-  "@timestamp": "2021-01-13T22:00:07.442Z",
+  "@timestamp": "2023-10-14T02:15:54.768Z",
   "log.level": "info",
   "message": "handled request",
-  "ecs": {
-    "version": "1.6.0"
-  },
   "http": {
     "version": "1.1",
     "request": {
       "method": "GET",
       "headers": {
         "host": "localhost:3000",
+        "user-agent": "curl/8.1.2",
         "accept": "*/*"
       }
     },
@@ -215,9 +211,15 @@ For https://github.com/elastic/ecs-logging-nodejs/blob/main/loggers/winston/exam
     "path": "/",
     "full": "http://localhost:3000/"
   },
+  "client": {
+    "address": "::ffff:127.0.0.1",
+    "ip": "::ffff:127.0.0.1",
+    "port": 49538
+  },
   "user_agent": {
-    "original": "curl/7.64.1"
-  }
+    "original": "curl/8.1.2"
+  },
+  "ecs.version": "1.6.0"
 }
 ----
 
@@ -239,19 +241,11 @@ For example, running https://github.com/elastic/ecs-logging-nodejs/blob/main/log
 ----
 % node examples/http-with-elastic-apm.js | jq .
 ...
-  "event": {
-    "dataset": "http-with-elastic-apm.log"
-  },
-  "trace": {
-    "id": "74631535a02bbe6a07c298b28c7443f4"
-  },
-  "transaction": {
-    "id": "505400b77aba4d9a"
-  },
-  "service": {
-    "name": "http-with-elastic-apm"
-  }
-...
+  "service.name": "http-with-elastic-apm",
+  "event.dataset": "http-with-elastic-apm",
+  "trace.id": "7fd75f0f33ff49aba85d060b46dcad7e",
+  "transaction.id": "6c97c7c1b468fa05"
+}
 ----
 
 These IDs match trace data reported by the APM agent.
