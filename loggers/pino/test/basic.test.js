@@ -263,6 +263,33 @@ test('convertErr=false allows passing through err=<non-Error>', t => {
   t.end()
 })
 
+test('can configure correlation fields', t => {
+  const lines = []
+  const stream = split().on('data', line => { lines.push(line) })
+  const log = pino(
+    ecsFormat({
+      serviceName: 'override-serviceName',
+      serviceVersion: 'override-serviceVersion',
+      serviceEnvironment: 'override-serviceEnvironment',
+      serviceNodeName: 'override-serviceNodeName',
+      eventDataset: 'override-eventDataset'
+    }),
+    stream
+  )
+  log.info('hi')
+
+  log.info({ err: 42 }, 'hi')
+  const rec = JSON.parse(lines[0])
+  t.ok(validate(rec))
+  t.equal(ecsLoggingValidate(lines[0], { ignoreIndex: true }), null)
+  t.equal(rec['service.name'], 'override-serviceName')
+  t.equal(rec['service.version'], 'override-serviceVersion')
+  t.equal(rec['service.environment'], 'override-serviceEnvironment')
+  t.equal(rec['service.node.name'], 'override-serviceNodeName')
+  t.equal(rec['event.dataset'], 'override-eventDataset')
+  t.end()
+})
+
 test('createEcsPinoOptions with no formatters.log', t => {
   // There is a supposed fast path in createEcsPinoOptions where formatters.log
   // is excluded. Since convertErr is true by default, this case is rare.

@@ -79,7 +79,12 @@ test('tracing integration works', t => {
       [
         path.join(__dirname, 'serve-one-http-req-with-apm.js'),
         apmServerUrl
-      ]
+      ],
+      {
+        env: Object.assign({}, process.env, {
+          ELASTIC_APM_SERVICE_NODE_NAME: 'serviceNodeNameFromEnv'
+        })
+      }
     )
     let handledFirstLogLine = false
     app.stdout.pipe(split(JSON.parse)).on('data', function (logObj) {
@@ -133,8 +138,11 @@ test('tracing integration works', t => {
       t.equal(logObjs[0]['trace.id'], span.trace_id, 'trace.id matches')
       t.equal(logObjs[0]['transaction.id'], span.transaction_id, 'transaction.id matches')
       t.equal(logObjs[0]['span.id'], span.id, 'span.id matches')
-      t.equal(logObjs[0]['service.name'], 'test-apm')
-      t.equal(logObjs[0]['event.dataset'], 'test-apm')
+      t.equal(logObjs[0]['service.name'], 'test-apm', 'service.name')
+      t.equal(logObjs[0]['service.version'], 'override-serviceVersion', 'service.version')
+      t.equal(logObjs[0]['service.environment'], 'development', 'service.environment')
+      t.equal(logObjs[0]['service.node.name'], 'serviceNodeNameFromEnv', 'service.node.name')
+      t.equal(logObjs[0]['event.dataset'], 'test-apm', 'event.dataset')
       finish()
     }
   }
