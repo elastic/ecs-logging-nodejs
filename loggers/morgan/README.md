@@ -28,7 +28,7 @@ const app = require('express')()
 const morgan = require('morgan')
 const ecsFormat = require('@elastic/ecs-morgan-format')
 
-app.use(morgan(ecsFormat()))
+app.use(morgan(ecsFormat(/* options */)))
 
 app.get('/', function (req, res) {
   res.send('hello, world!')
@@ -43,18 +43,16 @@ produce log output similar to the following:
 ```sh
 % node examples/express.js | jq .  # piping to jq for pretty-printing
 {
-  "@timestamp": "2021-01-16T00:03:23.279Z",
+  "@timestamp": "2023-10-16T22:00:33.782Z",
   "log.level": "info",
-  "message": "::1 - - [16/Jan/2021:00:03:23 +0000] \"GET / HTTP/1.1\" 200 13 \"-\" \"curl/7.64.1\"",
-  "ecs": {
-    "version": "1.6.0"
-  },
+  "message": "::ffff:127.0.0.1 - - [16/Oct/2023:22:00:33 +0000] \"GET / HTTP/1.1\" 200 13 \"-\" \"curl/8.1.2\"",
   "http": {
     "version": "1.1",
     "request": {
       "method": "GET",
       "headers": {
         "host": "localhost:3000",
+        "user-agent": "curl/8.1.2",
         "accept": "*/*"
       }
     },
@@ -63,6 +61,7 @@ produce log output similar to the following:
       "headers": {
         "x-powered-by": "Express",
         "content-type": "text/html; charset=utf-8",
+        "content-length": "13",
         "etag": "W/\"d-HwnTDHB9U/PRbFMN1z1wps51lqk\""
       },
       "body": {
@@ -75,9 +74,15 @@ produce log output similar to the following:
     "domain": "localhost",
     "full": "http://localhost:3000/"
   },
+  "client": {
+    "address": "::ffff:127.0.0.1",
+    "ip": "::ffff:127.0.0.1",
+    "port": 60455
+  },
   "user_agent": {
-    "original": "curl/7.64.1"
-  }
+    "original": "curl/8.1.2"
+  },
+  "ecs.version": "1.6.0"
 }
 ```
 

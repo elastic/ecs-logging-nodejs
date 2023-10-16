@@ -46,7 +46,7 @@ const http = require('http')
 const morgan = require('morgan')
 const ecsFormat = require('../') // @elastic/ecs-morgan-format
 
-const ecsOpts = {}
+const ecsOpts = { serviceVersion: 'override-serviceVersion' }
 if (disableApmIntegration) {
   ecsOpts.apmIntegration = false
 }

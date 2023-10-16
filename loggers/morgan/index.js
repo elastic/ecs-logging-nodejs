@@ -49,6 +49,11 @@ try {
 //        - "trace.id", "transaction.id", and "span.id" - if there is a current
 //          active trace when the log call is made
 //      Default true.
+//    - {String} serviceName - override `service.name` field from APM agent
+//    - {String} serviceVersion - override `service.version` field from APM agent
+//    - {String} serviceEnvironment - override `service.environment` field from APM agent
+//    - {String} serviceNodeName - override `service.name` field from APM agent
+//    - {String} eventDataset - override `event.dataset` field
 //
 // For backwards compatibility, the first argument can be a String or Function
 // to specify `opts.format`. For example, the following are equivalent:
@@ -60,15 +65,19 @@ function ecsFormat (opts) {
   let apmIntegration = true
   if (opts && typeof opts === 'object') {
     // Usage: ecsFormat({ /* opts */ })
-    if (hasOwnProperty.call(opts, 'format')) {
+    if (opts.format != null) {
       format = opts.format
     }
-    if (hasOwnProperty.call(opts, 'apmIntegration')) {
+    if (opts.apmIntegration != null) {
       apmIntegration = opts.apmIntegration
     }
   } else if (opts) {
     // Usage: ecsFormat(format)
     format = opts
+    opts = {}
+  } else {
+    // Usage: ecsFormat()
+    opts = {}
   }
 
   // Resolve to a format function a la morgan's own `getFormatFunction`.
@@ -83,17 +92,59 @@ function ecsFormat (opts) {
   }
 
   const extraFields = {}
-  if (apm) {
+
+  // Set a number of correlation fields from (a) the given options or (b) an
+  // APM agent, if there is one running.
+  let serviceName = opts.serviceName
+  if (serviceName == null && apm) {
     // istanbul ignore next
-    const serviceName = apm.getServiceName
+    serviceName = (apm.getServiceName
       ? apm.getServiceName() // added in elastic-apm-node@3.11.0
-      : apm._conf.serviceName
-    // A mis-configured APM Agent can be "started" but not have a "serviceName".
-    // istanbul ignore else
-    if (serviceName) {
-      extraFields['service.name'] = serviceName
-      extraFields['event.dataset'] = serviceName
-    }
+      : apm._conf.serviceName) // fallback to private `_conf`
+  }
+  if (serviceName) {
+    extraFields['service.name'] = serviceName
+  }
+
+  let serviceVersion = opts.serviceVersion
+  // istanbul ignore next
+  if (serviceVersion == null && apm) {
+    serviceVersion = (apm.getServiceVersion
+      ? apm.getServiceVersion() // added in elastic-apm-node@...
+      : apm._conf.serviceVersion) // fallback to private `_conf`
+  }
+  if (serviceVersion) {
+    extraFields['service.version'] = serviceVersion
+  }
+
+  let serviceEnvironment = opts.serviceEnvironment
+  if (serviceEnvironment == null && apm) {
+    // istanbul ignore next
+    serviceEnvironment = (apm.getServiceEnvironment
+      ? apm.getServiceEnvironment() // added in elastic-apm-node@...
+      : apm._conf.environment) // fallback to private `_conf`
+  }
+  if (serviceEnvironment) {
+    extraFields['service.environment'] = serviceEnvironment
+  }
+
+  let serviceNodeName = opts.serviceNodeName
+  if (serviceNodeName == null && apm) {
+    // istanbul ignore next
+    serviceNodeName = (apm.getServiceNodeName
+      ? apm.getServiceNodeName() // added in elastic-apm-node@...
+      : apm._conf.serviceNodeName) // fallback to private `_conf`
+  }
+  if (serviceNodeName) {
+    extraFields['service.node.name'] = serviceNodeName
+  }
+
+  let eventDataset = opts.eventDataset
+  if (eventDataset == null && serviceName) {
+    eventDataset = serviceName
+  }
+  if (eventDataset) {
+    extraFields['event.dataset'] = eventDataset
   }
 
   return function formatter (token, req, res) {

@@ -207,3 +207,31 @@ test('"log.level" for failing response is "error"', t => {
     t.end()
   })
 })
+
+test('can configure correlation fields', t => {
+  t.plan(6)
+
+  const stream = split().on('data', line => {
+    const rec = JSON.parse(line)
+    t.equal(rec['service.name'], 'override-serviceName')
+    t.equal(rec['service.version'], 'override-serviceVersion')
+    t.equal(rec['service.environment'], 'override-serviceEnvironment')
+    t.equal(rec['service.node.name'], 'override-serviceNodeName')
+    t.equal(rec['event.dataset'], 'override-eventDataset')
+  })
+  const logger = morgan(
+    ecsFormat({
+      serviceName: 'override-serviceName',
+      serviceVersion: 'override-serviceVersion',
+      serviceEnvironment: 'override-serviceEnvironment',
+      serviceNodeName: 'override-serviceNodeName',
+      eventDataset: 'override-eventDataset'
+    }),
+    { stream }
+  )
+
+  makeExpressServerAndRequest(logger, '/error', {}, null, function (err) {
+    t.error(err)
+    t.end()
+  })
+})
