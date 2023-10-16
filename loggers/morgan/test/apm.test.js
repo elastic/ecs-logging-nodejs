@@ -132,10 +132,10 @@ test('tracing integration works', t => {
       t.ok(traceObjs[0].metadata, 'traceObjs[0] is metadata')
       t.ok(traceObjs[1].transaction, 'traceObjs[1] is transaction')
       const tx = traceObjs[1].transaction
-      t.equal(logObjs[0].trace.id, tx.trace_id, 'trace.id matches')
-      t.equal(logObjs[0].transaction.id, tx.id, 'transaction.id matches')
-      t.equal(logObjs[0].service.name, 'test-apm')
-      t.equal(logObjs[0].event.dataset, 'test-apm.log')
+      t.equal(logObjs[0]['trace.id'], tx.trace_id, 'trace.id matches')
+      t.equal(logObjs[0]['transaction.id'], tx.id, 'transaction.id matches')
+      t.equal(logObjs[0]['service.name'], 'test-apm')
+      t.equal(logObjs[0]['event.dataset'], 'test-apm')
       finish()
     }
   }

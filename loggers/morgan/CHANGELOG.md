@@ -1,5 +1,16 @@
 # @elastic/ecs-morgan-format Changelog
 
+## Unreleased
+
+- Change to adding dotted field names (`"ecs.version": "1.6.0"`), rather than
+  namespaced fields (`"ecs": {"version": "1.6.0"}`) for most fields. This is
+  supported by the ecs-logging spec, and arguably preferred in the ECS logging
+  docs. It is also what the ecs-logging-java libraries do. The resulting output
+  is slightly shorter, and accidental collisions with user fields is less
+  likely.
+- Stop adding ".log" suffix to `event.dataset` field.
+  ([#95](https://github.com/elastic/ecs-logging-nodejs/issues/95))
+
 ## v1.1.0
 
 - Update @elastic/ecs-helpers@1.1.0 to get more robust HTTP req and res

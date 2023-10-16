@@ -18,7 +18,7 @@ interface Config {
    * fields:
    *
    * - "service.name" - the configured serviceName in the agent
-   * - "event.dataset" - set to "$serviceName.log" for correlation in Kibana
+   * - "event.dataset" - set to "$serviceName" for correlation in Kibana
    * - "trace.id", "transaction.id", and "span.id" - if there is a current
    *   active trace when the log call is made
    *

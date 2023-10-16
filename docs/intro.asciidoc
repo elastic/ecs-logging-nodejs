@@ -17,7 +17,7 @@ popular web frameworks. A minimal log record includes the following fields:
   "@timestamp": "2021-01-13T21:32:38.095Z",
   "log.level": "info",
   "message": "hi",
-  "ecs": {"version":"1.6.0"}
+  "ecs.version": "1.6.0"
 }
 ----
 

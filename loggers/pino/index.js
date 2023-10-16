@@ -42,7 +42,7 @@ let elasticApm = null
 //      APM agent is detected, then log records will include the following
 //      fields:
 //        - "service.name" - the configured serviceName in the agent
-//        - "event.dataset" - set to "$serviceName.log" for correlation in Kibana
+//        - "event.dataset" - set to "$serviceName" for correlation in Kibana
 //        - "trace.id", "transaction.id", and "span.id" - if there is a current
 //          active trace when the log call is made
 //      Default true.
@@ -85,16 +85,21 @@ function createEcsPinoOptions (opts) {
     }
     if (elasticApm && elasticApm.isStarted && elasticApm.isStarted()) {
       apm = elasticApm
-      // Elastic APM v3.11.0 added getServiceName(). Fallback to private `apm._conf`.
       // istanbul ignore next
       apmServiceName = apm.getServiceName
-        ? apm.getServiceName()
+        ? apm.getServiceName() // added in elastic-apm-node@3.11.0
         : apm._conf.serviceName
     }
   }
 
-  let isServiceNameInBindings = false
-  let isEventDatasetInBindings = false
+  let wasBindingsCalled = false
+  function addStaticEcsBindings (obj) {
+    obj['ecs.version'] = version
+    if (apmServiceName) {
+      obj['service.name'] = apmServiceName
+      obj['event.dataset'] = apmServiceName
+    }
+  }
 
   const ecsPinoOptions = {
     messageKey: 'message',
@@ -112,32 +117,27 @@ function createEcsPinoOptions (opts) {
           hostname,
           // name is defined if `log = pino({name: 'my name', ...})`
           name,
-          // Warning: silently drop any "ecs" value from `base`. See
-          // "ecs.version" comment below.
-          ecs,
           ...ecsBindings
         } = bindings
 
         if (pid !== undefined) {
           // https://www.elastic.co/guide/en/ecs/current/ecs-process.html#field-process-pid
-          ecsBindings.process = { pid: pid }
+          ecsBindings['process.pid'] = pid
         }
         if (hostname !== undefined) {
           // https://www.elastic.co/guide/en/ecs/current/ecs-host.html#field-host-hostname
-          ecsBindings.host = { hostname: hostname }
+          ecsBindings['host.hostname'] = hostname
         }
         if (name !== undefined) {
           // https://www.elastic.co/guide/en/ecs/current/ecs-log.html#field-log-logger
-          ecsBindings.log = { logger: name }
+          ecsBindings['log.logger'] = name
         }
 
-        // Note if service.name & event.dataset are set, to not do so again below.
-        if (bindings.service && bindings.service.name) {
-          isServiceNameInBindings = true
-        }
-        if (bindings.event && bindings.event.dataset) {
-          isEventDatasetInBindings = true
-        }
+        // With `pino({base: null, ...})` the `formatters.bindings` is *not*
+        // called. In this case we need to make sure to add our static bindings
+        // in `log()` below.
+        wasBindingsCalled = true
+        addStaticEcsBindings(ecsBindings)
 
         return ecsBindings
       },
@@ -150,56 +150,20 @@ function createEcsPinoOptions (opts) {
           ...ecsObj
         } = obj
 
-        // https://www.elastic.co/guide/en/ecs/current/ecs-ecs.html
-        // For "ecs.version" we take a heavier-handed approach, because it is
-        // a require ecs-logging field: overwrite any possible "ecs" value from
-        // the log statement. This means we don't need to spend the time
-        // guarding against "ecs" being null, Array, Buffer, Date, etc.
-        ecsObj.ecs = { version }
+        if (!wasBindingsCalled) {
+          addStaticEcsBindings(ecsObj)
+        }
 
         if (apm) {
-          // A mis-configured APM Agent can be "started" but not have a
-          // "serviceName".
-          if (apmServiceName) {
-            // Per https://github.com/elastic/ecs-logging/blob/main/spec/spec.json
-            // "service.name" and "event.dataset" should be automatically set
-            // if not already by the user.
-            if (!isServiceNameInBindings) {
-              const service = ecsObj.service
-              if (service === undefined) {
-                ecsObj.service = { name: apmServiceName }
-              } else if (!isVanillaObject(service)) {
-                // Warning: "service" type conflicts with ECS spec. Overwriting.
-                ecsObj.service = { name: apmServiceName }
-              } else if (typeof service.name !== 'string') {
-                ecsObj.service.name = apmServiceName
-              }
-            }
-            if (!isEventDatasetInBindings) {
-              const event = ecsObj.event
-              if (event === undefined) {
-                ecsObj.event = { dataset: apmServiceName + '.log' }
-              } else if (!isVanillaObject(event)) {
-                // Warning: "event" type conflicts with ECS spec. Overwriting.
-                ecsObj.event = { dataset: apmServiceName + '.log' }
-              } else if (typeof event.dataset !== 'string') {
-                ecsObj.event.dataset = apmServiceName + '.log'
-              }
-            }
-          }
-
           // https://www.elastic.co/guide/en/ecs/current/ecs-tracing.html
           const tx = apm.currentTransaction
           if (tx) {
-            ecsObj.trace = ecsObj.trace || {}
-            ecsObj.trace.id = tx.traceId
-            ecsObj.transaction = ecsObj.transaction || {}
-            ecsObj.transaction.id = tx.id
+            ecsObj['trace.id'] = tx.traceId
+            ecsObj['transaction.id'] = tx.id
             const span = apm.currentSpan
             // istanbul ignore else
             if (span) {
-              ecsObj.span = ecsObj.span || {}
-              ecsObj.span.id = span.id
+              ecsObj['span.id'] = span.id
             }
           }
         }
@@ -235,21 +199,6 @@ function createEcsPinoOptions (opts) {
   }
 
   return ecsPinoOptions
-}
-
-// Return true if the given arg is a "vanilla" object. Roughly the intent is
-// whether this is basic mapping of string keys to values that will serialize
-// as a JSON object.
-//
-// Currently, it excludes Map. The uses above don't really expect a user to:
-//     service = new Map([["foo", "bar"]])
-//     log.info({ service }, '...')
-//
-// There are many ways tackle this. See some attempts and benchmarks at:
-// https://gist.github.com/trentm/34131a92eede80fd2109f8febaa56f5a
-function isVanillaObject (o) {
-  return (typeof o === 'object' &&
-    (!o.constructor || o.constructor.name === 'Object'))
 }
 
 module.exports = createEcsPinoOptions

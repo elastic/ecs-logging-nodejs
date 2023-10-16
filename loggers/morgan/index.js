@@ -45,7 +45,7 @@ try {
 //      APM agent is detected, then log records will include the following
 //      fields:
 //        - "service.name" - the configured serviceName in the agent
-//        - "event.dataset" - set to "$serviceName.log" for correlation in Kibana
+//        - "event.dataset" - set to "$serviceName" for correlation in Kibana
 //        - "trace.id", "transaction.id", and "span.id" - if there is a current
 //          active trace when the log call is made
 //      Default true.
@@ -82,21 +82,17 @@ function ecsFormat (opts) {
     apm = elasticApm
   }
 
-  let serviceField
-  let eventField
+  const extraFields = {}
   if (apm) {
-    // https://github.com/elastic/apm-agent-nodejs/pull/1949 is adding
-    // getServiceName() in v3.11.0. Fallback to private `apm._conf`.
     // istanbul ignore next
     const serviceName = apm.getServiceName
-      ? apm.getServiceName()
+      ? apm.getServiceName() // added in elastic-apm-node@3.11.0
       : apm._conf.serviceName
-    // A mis-configured APM Agent can be "started" but not have a
-    // "serviceName".
+    // A mis-configured APM Agent can be "started" but not have a "serviceName".
     // istanbul ignore else
     if (serviceName) {
-      serviceField = { name: serviceName }
-      eventField = { dataset: serviceName + '.log' }
+      extraFields['service.name'] = serviceName
+      extraFields['event.dataset'] = serviceName
     }
   }
 
@@ -105,14 +101,8 @@ function ecsFormat (opts) {
       '@timestamp': new Date().toISOString(),
       'log.level': res.statusCode < 500 ? 'info' : 'error',
       message: fmt(token, req, res),
-      ecs: { version }
-    }
-
-    if (serviceField) {
-      ecsFields.service = serviceField
-    }
-    if (eventField) {
-      ecsFields.event = eventField
+      'ecs.version': version,
+      ...extraFields
     }
 
     // https://www.elastic.co/guide/en/ecs/current/ecs-tracing.html
@@ -120,10 +110,8 @@ function ecsFormat (opts) {
       const tx = apm.currentTransaction
       // istanbul ignore else
       if (tx) {
-        ecsFields.trace = ecsFields.trace || {}
-        ecsFields.trace.id = tx.traceId
-        ecsFields.transaction = ecsFields.transaction || {}
-        ecsFields.transaction.id = tx.id
+        ecsFields['trace.id'] = tx.traceId
+        ecsFields['transaction.id'] = tx.id
         // Not including `span.id` because the way morgan logs (on the HTTP
         // Response "finished" event), any spans during the request handler
         // are no longer active.

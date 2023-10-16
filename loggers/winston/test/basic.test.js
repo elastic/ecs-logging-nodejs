@@ -142,8 +142,8 @@ test('Should not be able to override ECS fields with additional fields', t => {
   })
 
   const rec = cap.records[0]
-  t.equal(rec['log.level'], 'info', '"log.level"')
-  t.equal(rec.ecs.version, version, 'ecs.version')
+  t.equal(rec['log.level'], 'info', 'log.level')
+  t.equal(rec['ecs.version'], version, 'ecs.version')
   t.not(rec['@timestamp'], 'boom', '@timestamp')
   t.end()
 })

@@ -18,22 +18,6 @@
 'use strict'
 
 // This script is used by "apm.test.js".
-//
-// It will:
-// - use the APM agent (using serviceName from argv[2])
-// - log, setting service.name and event.dataset
-// - log, without setting service.name and event.dataset
-// - flush APM and exit
-
-const serviceName = process.argv[2] || ''
-require('elastic-apm-node').start({
-  // Use default serverUrl (fire and forget)
-  serviceName,
-  centralConfig: false,
-  captureExceptions: false,
-  metricsInterval: 0,
-  logLevel: 'off'
-})
 
 const ecsFormat = require('../') // @elastic/ecs-winston-format
 const winston = require('winston')
@@ -46,10 +30,4 @@ const log = winston.createLogger({
   ]
 })
 
-log.info('override values',
-  { service: { name: 'myname' }, event: { dataset: 'mydataset' } })
-log.info('override values with nums',
-  { service: { name: 42 }, event: { dataset: 42 } })
-log.info('override top-level keys with invalid ECS type',
-  { service: 'myname', event: 'myevent' })
-log.info('bye')
+log.info('hi')

@@ -58,7 +58,7 @@ const reservedFields = {
 //      APM agent is detected, then log records will include the following
 //      fields:
 //        - "service.name" - the configured serviceName in the agent
-//        - "event.dataset" - set to "$serviceName.log" for correlation in Kibana
+//        - "event.dataset" - set to "$serviceName" for correlation in Kibana
 //        - "trace.id", "transaction.id", and "span.id" - if there is a current
 //          active trace when the log call is made
 //      Default true.
@@ -83,7 +83,7 @@ function ecsTransform (info, opts) {
     '@timestamp': new Date().toISOString(),
     'log.level': info.level,
     message: info.message,
-    ecs: { version }
+    'ecs.version': version
   }
 
   // Add all unreserved fields.
@@ -102,53 +102,26 @@ function ecsTransform (info, opts) {
 
   // istanbul ignore else
   if (apm) {
-    // Set "service.name" and "event.dataset" from APM conf, if not already set.
-    let serviceName = (ecsFields.service && ecsFields.service.name && typeof ecsFields.service.name === 'string'
-      ? ecsFields.service.name
-      : undefined)
-    if (!serviceName) {
-      // istanbul ignore next
-      serviceName = apm.getServiceName
-        ? apm.getServiceName() // added in elastic-apm-node@3.11.0
-        : apm._conf.serviceName // fallback to private `_conf`
-      // A mis-configured APM Agent can be "started" but not have a
-      // "serviceName".
-      if (serviceName) {
-        if (ecsFields.service === undefined) {
-          ecsFields.service = { name: serviceName }
-        } else if (!isVanillaObject(ecsFields.service)) {
-          // Warning: "service" type conflicts with ECS spec. Overwriting.
-          ecsFields.service = { name: serviceName }
-        } else {
-          ecsFields.service.name = serviceName
-        }
-      }
-    }
-    if (serviceName &&
-        !(ecsFields.event && ecsFields.event.dataset &&
-          typeof ecsFields.event.dataset === 'string')) {
-      if (ecsFields.event === undefined) {
-        ecsFields.event = { dataset: serviceName + '.log' }
-      } else if (!isVanillaObject(ecsFields.event)) {
-        // Warning: "event" type conflicts with ECS spec. Overwriting.
-        ecsFields.event = { dataset: serviceName + '.log' }
-      } else {
-        ecsFields.event.dataset = serviceName + '.log'
-      }
+    // Set "service.name" and "event.dataset" from APM conf.
+    // istanbul ignore next
+    const serviceName = apm.getServiceName
+      ? apm.getServiceName() // added in elastic-apm-node@3.11.0
+      : apm._conf.serviceName // fallback to private `_conf`
+    // A mis-configured APM Agent can be "started" but not have a "serviceName".
+    if (serviceName) {
+      ecsFields['service.name'] = serviceName
+      ecsFields['event.dataset'] = serviceName
     }
 
     // https://www.elastic.co/guide/en/ecs/current/ecs-tracing.html
     const tx = apm.currentTransaction
     if (tx) {
-      ecsFields.trace = ecsFields.trace || {}
-      ecsFields.trace.id = tx.traceId
-      ecsFields.transaction = ecsFields.transaction || {}
-      ecsFields.transaction.id = tx.id
+      ecsFields['trace.id'] = tx.traceId
+      ecsFields['transaction.id'] = tx.id
       const span = apm.currentSpan
       // istanbul ignore else
       if (span) {
-        ecsFields.span = ecsFields.span || {}
-        ecsFields.span.id = span.id
+        ecsFields['span.id'] = span.id
       }
     }
   }
@@ -180,21 +153,6 @@ function ecsTransform (info, opts) {
 
   info[MESSAGE] = stringify(ecsFields)
   return info
-}
-
-// Return true if the given arg is a "vanilla" object. Roughly the intent is
-// whether this is basic mapping of string keys to values that will serialize
-// as a JSON object.
-//
-// Currently, it excludes Map. The uses above don't really expect a user to:
-//     service = new Map([["foo", "bar"]])
-//     log.info({ service }, '...')
-//
-// There are many ways tackle this. See some attempts and benchmarks at:
-// https://gist.github.com/trentm/34131a92eede80fd2109f8febaa56f5a
-function isVanillaObject (o) {
-  return (typeof o === 'object' &&
-    (!o.constructor || o.constructor.name === 'Object'))
 }
 
 module.exports = format(ecsTransform)

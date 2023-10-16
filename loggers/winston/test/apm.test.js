@@ -132,11 +132,11 @@ test('tracing integration works', t => {
       const span = traceObjs[1].span || traceObjs[2].span
       t.ok(trans, 'got transaction')
       t.ok(span, 'got span')
-      t.equal(logObjs[0].trace.id, span.trace_id, 'trace.id matches')
-      t.equal(logObjs[0].transaction.id, span.transaction_id, 'transaction.id matches')
-      t.equal(logObjs[0].span.id, span.id, 'span.id matches')
-      t.equal(logObjs[0].service.name, 'test-apm', 'service.name matches')
-      t.equal(logObjs[0].event.dataset, 'test-apm.log', 'event.dataset matches')
+      t.equal(logObjs[0]['trace.id'], span.trace_id, 'trace.id matches')
+      t.equal(logObjs[0]['transaction.id'], span.transaction_id, 'transaction.id matches')
+      t.equal(logObjs[0]['span.id'], span.id, 'span.id matches')
+      t.equal(logObjs[0]['service.name'], 'test-apm', 'service.name matches')
+      t.equal(logObjs[0]['event.dataset'], 'test-apm', 'event.dataset matches')
       finish()
     }
   }
@@ -327,45 +327,30 @@ test('apmIntegration=false disables tracing integration', t => {
   })
 })
 
-test('can override service.name, event.dataset', t => {
-  execFile(process.execPath, [
-    path.join(__dirname, 'use-apm-override-service-name.js'),
-    'test-apm'
-  ], {
-    timeout: 5000
-  }, function (err, stdout, stderr) {
-    t.error(err)
-    const recs = stdout.trim().split(/\n/g).map(JSON.parse)
-    t.equal(recs[0].service.name, 'myname')
-    t.equal(recs[0].event.dataset, 'mydataset')
-
-    // If integrating with APM and the log record sets "service.name" to a
-    // non-string or "service" to a non-object, then ecs-winston-format will
-    // overwrite it because it conflicts with the ECS specified type.
-    t.equal(recs[1].service.name, 'test-apm')
-    t.equal(recs[1].event.dataset, 'test-apm.log')
-    t.equal(recs[2].service.name, 'test-apm')
-    t.equal(recs[2].event.dataset, 'test-apm.log')
-
-    t.equal(recs[3].service.name, 'test-apm')
-    t.equal(recs[3].event.dataset, 'test-apm.log')
-    t.end()
-  })
-})
-
-test('invalid APM serviceName does not set service.name or event.dataset, but also does not break', t => {
-  execFile(process.execPath, [
-    path.join(__dirname, 'use-apm-override-service-name.js'),
-    'foo☃bar' // Use an invalid <serviceName>.
-  ], {
-    timeout: 5000
-  }, function (err, stdout, stderr) {
-    t.error(err)
-    const recs = stdout.trim().split(/\n/g).map(JSON.parse)
-    t.equal(recs[0].service.name, 'myname')
-    t.equal(recs[0].event.dataset, 'mydataset')
-    t.equal(recs[3].service, undefined)
-    t.equal(recs[3].event, undefined)
-    t.end()
-  })
+test('invalid APM serviceName does not set service.name or event.dataset', t => {
+  execFile(
+    process.execPath,
+    ['simple-log-hi.js'],
+    {
+      cwd: __dirname,
+      env: Object.assign(
+        {},
+        process.env,
+        {
+          NODE_OPTIONS: '--require elastic-apm-node/start.js',
+          ELASTIC_APM_LOG_LEVEL: 'off',
+          ELASTIC_APM_SERVICE_NAME: 'foo☃bar'
+        }
+      ),
+      timeout: 5000
+    },
+    function (err, stdout, _stderr) {
+      t.error(err)
+      const recs = stdout.trim().split(/\n/g).map(JSON.parse)
+      t.equal(recs[0].message, 'hi')
+      t.equal(recs[0]['service.name'], undefined)
+      t.equal(recs[0]['event.dataset'], undefined)
+      t.end()
+    }
+  )
 })
