@@ -47,9 +47,7 @@ test('stringify should return a valid ecs json', t => {
     '@timestamp': new Date().toISOString(),
     'log.level': 'info',
     message: 'hello world',
-    ecs: {
-      version: '1.4.0'
-    }
+    'ecs.version': '1.4.0'
   }
 
   const line = stringify(ecsFields)
@@ -64,9 +62,7 @@ test('bad ECS json on purpose: @timestamp', t => {
     '@timestamp': 'not a date',
     'log.level': 'info',
     message: 'foo',
-    ecs: {
-      version: '1.4.0'
-    }
+    'ecs.version': '1.4.0'
   }
 
   const line = stringify(ecsFields)
@@ -133,9 +129,7 @@ test('formatHttpRequest and formatHttpResponse should return a valid ecs object'
       '@timestamp': new Date().toISOString(),
       'log.level': 'info',
       message: 'hello world',
-      ecs: {
-        version: '1.4.0'
-      }
+      'ecs.version': '1.4.0'
     }
 
     const resBody = 'ok'
@@ -235,9 +229,7 @@ test('stringify should emit valid tracing fields', t => {
     '@timestamp': new Date().toISOString(),
     'log.level': 'info',
     message: 'hello world',
-    ecs: {
-      version: '1.4.0'
-    },
+    'ecs.version': '1.4.0',
     trace: { id: 1 },
     transaction: { id: 2 },
     span: { id: 3, extra_fields: 'are dropped' }

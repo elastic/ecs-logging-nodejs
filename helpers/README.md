@@ -32,9 +32,7 @@ const ecs = {
   log: {
     logger: 'test'
   },
-  ecs: {
-    version: '1.4.0'
-  }
+  'ecs.version': '1.4.0'
 }
 
 console.log(stringify(ecs))

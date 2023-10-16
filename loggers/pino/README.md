@@ -38,8 +38,8 @@ child.warn('From child')
 Running this will produce log output similar to the following:
 
 ```sh
-{"log.level":"info","@timestamp":"2021-01-19T22:51:12.142Z","ecs":{"version":"1.6.0"},"process":{"pid":82240},"host":{"hostname":"pink.local"},"message":"Hello world"}
-{"log.level":"warn","@timestamp":"2021-01-19T22:51:12.143Z","ecs":{"version":"1.6.0"},"process":{"pid":82240},"host":{"hostname":"pink.local"},"module":"foo","message":"From child"}
+{"log.level":"info","@timestamp":"2023-10-16T18:08:02.601Z","process.pid":74325,"host.hostname":"pink.local","ecs.version":"1.6.0","message":"Hello world"}
+{"log.level":"warn","@timestamp":"2023-10-16T18:08:02.602Z","process.pid":74325,"host.hostname":"pink.local","ecs.version":"1.6.0","module":"foo","message":"From child"}
 ```
 
 Please see the [Node.js ECS pino documentation](https://www.elastic.co/guide/en/ecs-logging/nodejs/current/pino.html) for more.
