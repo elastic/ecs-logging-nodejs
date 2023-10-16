@@ -44,7 +44,10 @@ const http = require('http')
 const ecsFormat = require('../') // @elastic/ecs-winston-format
 const winston = require('winston')
 
-const ecsOpts = { convertReqRes: true }
+const ecsOpts = {
+  convertReqRes: true,
+  serviceVersion: 'override-serviceVersion'
+}
 if (disableApmIntegration) {
   ecsOpts.apmIntegration = false
 }

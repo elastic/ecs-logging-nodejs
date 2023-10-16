@@ -45,39 +45,18 @@ const reservedFields = {
   res: true
 }
 
-// Create a Winston format for ecs-logging output.
-//
-// @param {Object} opts - Optional.
-//    - {Boolean} opts.convertErr - Whether to convert a logged `err` field
-//      to ECS error fields. Default true.
-//    - {Boolean} opts.convertReqRes - Whether to convert logged `req` and `res`
-//      HTTP request and response fields to ECS HTTP, User agent, and URL
-//      fields. Default false.
-//    - {Boolean} opts.apmIntegration - Whether to automatically integrate with
-//      Elastic APM (https://github.com/elastic/apm-agent-nodejs). If a started
-//      APM agent is detected, then log records will include the following
-//      fields:
-//        - "service.name" - the configured serviceName in the agent
-//        - "event.dataset" - set to "$serviceName" for correlation in Kibana
-//        - "trace.id", "transaction.id", and "span.id" - if there is a current
-//          active trace when the log call is made
-//      Default true.
+/**
+ * Create a Winston format for ecs-logging output.
+ *
+ * @param {import('logform').TransformableInfo} info
+ * @param {Config} opts - See index.d.ts.
+ */
 function ecsTransform (info, opts) {
-  let convertErr = true
-  let convertReqRes = false
-  let apmIntegration = true
-  // istanbul ignore else
-  if (opts) {
-    if (hasOwnProperty.call(opts, 'convertErr')) {
-      convertErr = opts.convertErr
-    }
-    if (hasOwnProperty.call(opts, 'convertReqRes')) {
-      convertReqRes = opts.convertReqRes
-    }
-    if (hasOwnProperty.call(opts, 'apmIntegration')) {
-      apmIntegration = opts.apmIntegration
-    }
-  }
+  // istanbul ignore next
+  opts = opts || {}
+  const convertErr = opts.convertErr != null ? opts.convertErr : true
+  const convertReqRes = opts.convertReqRes != null ? opts.convertReqRes : false
+  const apmIntegration = opts.apmIntegration != null ? opts.apmIntegration : true
 
   const ecsFields = {
     '@timestamp': new Date().toISOString(),
@@ -100,19 +79,62 @@ function ecsTransform (info, opts) {
     apm = elasticApm
   }
 
+  // Set a number of correlation fields from (a) the given options or (b) an
+  // APM agent, if there is one running.
+  let serviceName = opts.serviceName
+  if (serviceName == null && apm) {
+    // istanbul ignore next
+    serviceName = (apm.getServiceName
+      ? apm.getServiceName() // added in elastic-apm-node@3.11.0
+      : apm._conf.serviceName) // fallback to private `_conf`
+  }
+  if (serviceName) {
+    ecsFields['service.name'] = serviceName
+  }
+
+  let serviceVersion = opts.serviceVersion
+  if (serviceVersion == null && apm) {
+    // istanbul ignore next
+    serviceVersion = (apm.getServiceVersion
+      ? apm.getServiceVersion() // added in elastic-apm-node@...
+      : apm._conf.serviceVersion) // fallback to private `_conf`
+  }
+  if (serviceVersion) {
+    ecsFields['service.version'] = serviceVersion
+  }
+
+  let serviceEnvironment = opts.serviceEnvironment
+  if (serviceEnvironment == null && apm) {
+    // istanbul ignore next
+    serviceEnvironment = (apm.getServiceEnvironment
+      ? apm.getServiceEnvironment() // added in elastic-apm-node@...
+      : apm._conf.environment) // fallback to private `_conf`
+  }
+  if (serviceEnvironment) {
+    ecsFields['service.environment'] = serviceEnvironment
+  }
+
+  let serviceNodeName = opts.serviceNodeName
+  if (serviceNodeName == null && apm) {
+    // istanbul ignore next
+    serviceNodeName = (apm.getServiceNodeName
+      ? apm.getServiceNodeName() // added in elastic-apm-node@...
+      : apm._conf.serviceNodeName) // fallback to private `_conf`
+  }
+  if (serviceNodeName) {
+    ecsFields['service.node.name'] = serviceNodeName
+  }
+
+  let eventDataset = opts.eventDataset
+  if (eventDataset == null && serviceName) {
+    eventDataset = serviceName
+  }
+  if (eventDataset) {
+    ecsFields['event.dataset'] = eventDataset
+  }
+
   // istanbul ignore else
   if (apm) {
-    // Set "service.name" and "event.dataset" from APM conf.
-    // istanbul ignore next
-    const serviceName = apm.getServiceName
-      ? apm.getServiceName() // added in elastic-apm-node@3.11.0
-      : apm._conf.serviceName // fallback to private `_conf`
-    // A mis-configured APM Agent can be "started" but not have a "serviceName".
-    if (serviceName) {
-      ecsFields['service.name'] = serviceName
-      ecsFields['event.dataset'] = serviceName
-    }
-
     // https://www.elastic.co/guide/en/ecs/current/ecs-tracing.html
     const tx = apm.currentTransaction
     if (tx) {

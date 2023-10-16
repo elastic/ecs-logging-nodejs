@@ -277,3 +277,26 @@ test('convertErr=false allows passing through err=<non-Error>', t => {
   t.equal(rec.error, undefined, 'no rec.error is set')
   t.end()
 })
+
+test('can configure correlation fields', t => {
+  const cap = new CaptureTransport()
+  const logger = winston.createLogger({
+    format: ecsFormat({
+      serviceName: 'override-serviceName',
+      serviceVersion: 'override-serviceVersion',
+      serviceEnvironment: 'override-serviceEnvironment',
+      serviceNodeName: 'override-serviceNodeName',
+      eventDataset: 'override-eventDataset'
+    }),
+    transports: [cap]
+  })
+  logger.info('hi')
+
+  const rec = cap.records[0]
+  t.equal(rec['service.name'], 'override-serviceName')
+  t.equal(rec['service.version'], 'override-serviceVersion')
+  t.equal(rec['service.environment'], 'override-serviceEnvironment')
+  t.equal(rec['service.node.name'], 'override-serviceNodeName')
+  t.equal(rec['event.dataset'], 'override-eventDataset')
+  t.end()
+})
