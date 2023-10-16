@@ -8,6 +8,7 @@ function run_install {
   npm --prefix $ROOT/$1 install
 }
 
+run_install "utils"
 run_install "helpers"
 run_install "loggers/winston"
 run_install "loggers/morgan"
