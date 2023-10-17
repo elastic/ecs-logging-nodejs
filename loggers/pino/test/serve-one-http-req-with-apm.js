@@ -44,7 +44,10 @@ const http = require('http')
 const ecsFormat = require('../') // @elastic/ecs-pino-format
 const pino = require('pino')
 
-const ecsOpts = { convertReqRes: true }
+const ecsOpts = {
+  convertReqRes: true,
+  serviceVersion: 'override-serviceVersion'
+}
 if (disableApmIntegration) {
   ecsOpts.apmIntegration = false
 }

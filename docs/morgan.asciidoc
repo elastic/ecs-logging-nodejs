@@ -32,7 +32,7 @@ const app = require('express')()
 const morgan = require('morgan')
 const ecsFormat = require('@elastic/ecs-morgan-format')
 
-app.use(morgan(ecsFormat())) <1>
+app.use(morgan(ecsFormat(/* options */))) <1>
 
 // ...
 app.get('/', function (req, res) {
@@ -62,7 +62,7 @@ const app = require('express')()
 const morgan = require('morgan')
 const ecsFormat = require('@elastic/ecs-morgan-format')
 
-app.use(morgan(ecsFormat()))
+app.use(morgan(ecsFormat(/* options */))) <1>
 
 app.get('/', function (req, res) {
   res.send('hello, world!')
@@ -73,6 +73,7 @@ app.get('/error', function (req, res, next) {
 
 app.listen(3000)
 ----
+<1> See available options <<morgan-ref,below>>.
 
 Running this script (the full example is https://github.com/elastic/ecs-logging-nodejs/blob/main/loggers/morgan/examples/express.js[here])
 and making a request (via `curl -i localhost:3000/`) will produce log output
@@ -161,14 +162,21 @@ again, a `curl -i localhost:3000/error` will yield:
 
 [float]
 [[morgan-apm]]
-=== Integration with APM Tracing
+=== Log Correlation with APM
 
-This ECS log formatter integrates with https://www.elastic.co/apm[Elastic APM] tracing.
+This ECS log formatter integrates with https://www.elastic.co/apm[Elastic APM].
 If your Node app is using the {apm-node-ref}/intro.html[Node.js Elastic APM Agent],
-then fields are added to log records that {ecs-ref}/ecs-tracing.html[identify an active trace] and the configured service name
-({ecs-ref}/ecs-service.html["service.name"] and {ecs-ref}/ecs-event.html["event.dataset"]).
-These fields allow cross linking between traces and logs in Kibana and support
-log anomaly detection.
+then a number of fields are added to log records to correlate between APM
+services or traces and logging data:
+
+- Log statements (e.g. `logger.info(...)`) called when there is a current
+  tracing span will include {ecs-ref}/ecs-tracing.html[tracing fields] --
+  `trace.id`, `transaction.id`.
+- A number of service identifier fields determined by or configured on the APM
+  agent allow cross-linking between services and logs in Kibana --
+  `service.name`, `service.version`, `service.environment`, `service.node.name`.
+- `event.dataset` enables {observability-guide}/inspect-log-anomalies.html[log
+  rate anomaly detection] in the Elastic Observability app.
 
 For example, running https://github.com/elastic/ecs-logging-nodejs/blob/main/loggers/morgan/examples/express-with-apm.js[examples/express-with-apm.js] and `curl -i localhost:3000/` results in a log record with the following:
 
@@ -177,10 +185,12 @@ For example, running https://github.com/elastic/ecs-logging-nodejs/blob/main/log
 % node examples/express-with-apm.js | jq .
 {
   // The same fields as before, plus:
-  "trace.id": "e097193afa9ac221017b45a1f674601c",
-  "transaction.id": "c6aa5b47e01bad72",
   "service.name": "express-with-elastic-apm",
-  "event.dataset": "express-with-elastic-apm"
+  "service.version": "1.1.0",
+  "service.environment": "development",
+  "event.dataset": "express-with-elastic-apm",
+  "trace.id": "116d46f667a7600deed9c41fa015f7de",
+  "transaction.id": "b84fb72d7bf42866"
 }
 ----
 
@@ -193,3 +203,24 @@ Integration with Elastic APM can be explicitly disabled via the
 ----
 app.use(morgan(ecsFormat({ apmIntegration: false })))
 ----
+
+
+[float]
+[[morgan-ref]]
+=== Reference
+
+[float]
+[[morgan-ref-ecsFormat]]
+==== `ecsFormat([options])`
+
+* `options` +{type-object}+ The following options are supported:
+** `format` +{type-string}+ A format *name* (e.g. 'combined'), format function (e.g. `morgan.combined`), or a format string (e.g. ':method :url :status'). This is used to format the "message" field. Defaults to `morgan.combined`.
+** `convertErr` +{type-boolean}+ Whether to convert a logged `err` field to ECS error fields. *Default:* `true`.
+** `apmIntegration` +{type-boolean}+ Whether to enable APM agent integration. *Default:* `true`.
+** `serviceName` +{type-string}+ A "service.name" value. If specified this overrides any value from an active APM agent.
+** `serviceVersion` +{type-string}+ A "service.version" value. If specified this overrides any value from an active APM agent.
+** `serviceEnvironment` +{type-string}+ A "service.environment" value. If specified this overrides any value from an active APM agent.
+** `serviceNodeName` +{type-string}+ A "service.node.name" value. If specified this overrides any value from an active APM agent.
+** `eventDataset` +{type-string}+ A "event.dataset" value. If specified this overrides the default of using `${serviceVersion}`.
+
+Create a formatter for morgan that emits in ECS Logging format.

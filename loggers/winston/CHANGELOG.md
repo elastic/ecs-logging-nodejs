@@ -2,12 +2,22 @@
 
 ## Unreleased
 
+- Add `service.version`, `service.environment`, and `service.node.name` log
+  correlation fields, automatically inferred from an active APM agent. As
+  well, the following `ecsFormat` configuration options have been added for
+  overriding these and existing correlation fields: `serviceName`,
+  `serviceVersion`, `serviceEnvironment`, `serviceNodeName`.
+  (https://github.com/elastic/apm-agent-nodejs/issues/3195,
+  https://github.com/elastic/ecs-logging-nodejs/issues/121,
+  https://github.com/elastic/ecs-logging-nodejs/issues/87)
+
 - Change to adding dotted field names (`"ecs.version": "1.6.0"`), rather than
   namespaced fields (`"ecs": {"version": "1.6.0"}`) for most fields. This is
   supported by the ecs-logging spec, and arguably preferred in the ECS logging
   docs. It is also what the ecs-logging-java libraries do. The resulting output
   is slightly shorter, and accidental collisions with user fields is less
   likely.
+
 - Stop adding ".log" suffix to `event.dataset` field.
   ([#95](https://github.com/elastic/ecs-logging-nodejs/issues/95))
 

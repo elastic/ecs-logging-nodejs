@@ -24,46 +24,22 @@ const {
   formatHttpResponse
 } = require('@elastic/ecs-helpers')
 
-const { hasOwnProperty } = Object.prototype
 let triedElasticApmImport = false
 let elasticApm = null
 
-// Create options for `pino(...)` that configure it for ecs-logging output.
-//
-// @param {Object} opts - Optional.
-//    - {Boolean} opts.convertErr - Whether to convert a logged `err` field
-//      to ECS error fields. Default true, to match Pino's default of having
-//      an `err` serializer.
-//    - {Boolean} opts.convertReqRes - Whether to convert logged `req` and `res`
-//      HTTP request and response fields to ECS HTTP, User agent, and URL
-//      fields. Default false.
-//    - {Boolean} opts.apmIntegration - Whether to automatically integrate with
-//      Elastic APM (https://github.com/elastic/apm-agent-nodejs). If a started
-//      APM agent is detected, then log records will include the following
-//      fields:
-//        - "service.name" - the configured serviceName in the agent
-//        - "event.dataset" - set to "$serviceName" for correlation in Kibana
-//        - "trace.id", "transaction.id", and "span.id" - if there is a current
-//          active trace when the log call is made
-//      Default true.
+/**
+ * Create options for `pino(...)` that configure it for ecs-logging output.
+ *
+ * @param {Config} [opts] - See index.d.ts.
+ */
 function createEcsPinoOptions (opts) {
-  let convertErr = true
-  let convertReqRes = false
-  let apmIntegration = true
-  if (opts) {
-    if (hasOwnProperty.call(opts, 'convertErr')) {
-      convertErr = opts.convertErr
-    }
-    if (hasOwnProperty.call(opts, 'convertReqRes')) {
-      convertReqRes = opts.convertReqRes
-    }
-    if (hasOwnProperty.call(opts, 'apmIntegration')) {
-      apmIntegration = opts.apmIntegration
-    }
-  }
+  // istanbul ignore next
+  opts = opts || {}
+  const convertErr = opts.convertErr != null ? opts.convertErr : true
+  const convertReqRes = opts.convertReqRes != null ? opts.convertReqRes : false
+  const apmIntegration = opts.apmIntegration != null ? opts.apmIntegration : true
 
   let apm = null
-  let apmServiceName = null
   if (apmIntegration) {
     // istanbul ignore if
     if (opts && opts._elasticApm) {
@@ -85,20 +61,54 @@ function createEcsPinoOptions (opts) {
     }
     if (elasticApm && elasticApm.isStarted && elasticApm.isStarted()) {
       apm = elasticApm
-      // istanbul ignore next
-      apmServiceName = apm.getServiceName
-        ? apm.getServiceName() // added in elastic-apm-node@3.11.0
-        : apm._conf.serviceName
     }
+  }
+
+  let serviceName = opts.serviceName
+  if (serviceName == null && apm) {
+    // istanbul ignore next
+    serviceName = (apm.getServiceName
+      ? apm.getServiceName() // added in elastic-apm-node@3.11.0
+      : apm._conf.serviceName) // fallback to private `_conf`
+  }
+
+  let serviceVersion = opts.serviceVersion
+  if (serviceVersion == null && apm) {
+    // istanbul ignore next
+    serviceVersion = (apm.getServiceVersion
+      ? apm.getServiceVersion() // added in elastic-apm-node@...
+      : apm._conf.serviceVersion) // fallback to private `_conf`
+  }
+
+  let serviceEnvironment = opts.serviceEnvironment
+  if (serviceEnvironment == null && apm) {
+    // istanbul ignore next
+    serviceEnvironment = (apm.getServiceEnvironment
+      ? apm.getServiceEnvironment() // added in elastic-apm-node@...
+      : apm._conf.environment) // fallback to private `_conf`
+  }
+
+  let serviceNodeName = opts.serviceNodeName
+  if (serviceNodeName == null && apm) {
+    // istanbul ignore next
+    serviceNodeName = (apm.getServiceNodeName
+      ? apm.getServiceNodeName() // added in elastic-apm-node@...
+      : apm._conf.serviceNodeName) // fallback to private `_conf`
+  }
+
+  let eventDataset = opts.eventDataset
+  if (eventDataset == null && serviceName) {
+    eventDataset = serviceName
   }
 
   let wasBindingsCalled = false
   function addStaticEcsBindings (obj) {
     obj['ecs.version'] = version
-    if (apmServiceName) {
-      obj['service.name'] = apmServiceName
-      obj['event.dataset'] = apmServiceName
-    }
+    if (serviceName) { obj['service.name'] = serviceName }
+    if (serviceVersion) { obj['service.version'] = serviceVersion }
+    if (serviceEnvironment) { obj['service.environment'] = serviceEnvironment }
+    if (serviceNodeName) { obj['service.node.name'] = serviceNodeName }
+    if (eventDataset) { obj['event.dataset'] = eventDataset }
   }
 
   const ecsPinoOptions = {

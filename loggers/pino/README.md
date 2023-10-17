@@ -28,7 +28,7 @@ This package will configure Pino's `formatters`, `messageKey` and `timestamp` op
 const ecsFormat = require('@elastic/ecs-pino-format')
 const pino = require('pino')
 
-const log = pino(ecsFormat())
+const log = pino(ecsFormat(/* options */))
 log.info('Hello world')
 
 const child = log.child({ module: 'foo' })

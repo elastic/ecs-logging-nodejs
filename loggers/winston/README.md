@@ -29,7 +29,7 @@ const ecsFormat = require('@elastic/ecs-winston-format')
 
 const logger = winston.createLogger({
   level: 'info',
-  format: ecsFormat(),
+  format: ecsFormat(/* options */),
   transports: [
     new winston.transports.Console()
   ]

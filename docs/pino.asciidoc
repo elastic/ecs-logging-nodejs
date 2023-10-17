@@ -29,7 +29,7 @@ $ npm install @elastic/ecs-pino-format
 const ecsFormat = require('@elastic/ecs-pino-format')
 const pino = require('pino')
 
-const log = pino(ecsFormat()) <1>
+const log = pino(ecsFormat(/* options */)) <1>
 log.info('hi')
 log.error({ err: new Error('boom') }, 'oops there is a problem')
 // ...
@@ -56,13 +56,13 @@ include::{ecs-repo-dir}/setup.asciidoc[tag=configure-filebeat]
 const ecsFormat = require('@elastic/ecs-pino-format')
 const pino = require('pino')
 
-const log = pino(ecsFormat()) <1>
+const log = pino(ecsFormat(/* options */)) <1>
 log.info('Hello world')
 
 const child = log.child({ module: 'foo' })
 child.warn('From child')
 ----
-
+<1> See available options <<pino-ref,below>>.
 
 Running this will produce log output similar to the following:
 
@@ -205,14 +205,21 @@ etc.
 
 [float]
 [[pino-apm]]
-=== Integration with APM Tracing
+=== Log Correlation with APM
 
 This ECS log formatter integrates with https://www.elastic.co/apm[Elastic APM].
 If your Node app is using the {apm-node-ref}/intro.html[Node.js Elastic APM Agent],
-then fields are added to log records that {ecs-ref}/ecs-tracing.html[identify an active trace] and the configured service name
-({ecs-ref}/ecs-service.html["service.name"] and {ecs-ref}/ecs-event.html["event.dataset"]).
-These fields allow cross linking between traces and logs in Kibana and support
-log anomaly detection.
+then a number of fields are added to log records to correlate between APM
+services or traces and logging data:
+
+- Log statements (e.g. `logger.info(...)`) called when there is a current
+  tracing span will include {ecs-ref}/ecs-tracing.html[tracing fields] --
+  `trace.id`, `transaction.id`, `span.id`.
+- A number of service identifier fields determined by or configured on the APM
+  agent allow cross-linking between services and logs in Kibana --
+  `service.name`, `service.version`, `service.environment`, `service.node.name`.
+- `event.dataset` enables {observability-guide}/inspect-log-anomalies.html[log
+  rate anomaly detection] in the Elastic Observability app.
 
 For example, running https://github.com/elastic/ecs-logging-nodejs/blob/main/loggers/pino/examples/http-with-elastic-apm.js[examples/http-with-elastic-apm.js] and `curl -i localhost:3000/` results in a log record with the following:
 
@@ -221,9 +228,11 @@ For example, running https://github.com/elastic/ecs-logging-nodejs/blob/main/log
 % node examples/http-with-elastic-apm.js | jq .
 ...
   "service.name": "http-with-elastic-apm",
+  "service.version": "1.4.0",
+  "service.environment": "development",
   "event.dataset": "http-with-elastic-apm",
-  "trace.id": "79de6da334efae17ad43758573d57f1c",
-  "transaction.id": "8bf944f94b72c54d",
+  "trace.id": "9f338eae7211b7993b98929046aed21d",
+  "transaction.id": "2afbef5642cc7a3f",
 ...
 ----
 
@@ -254,3 +263,24 @@ fields passed to `<logger>.child({ ... })`. This means that, even with the
 `convertReqRes` option, a call to `<logger>.child({ req })` will *not* convert
 that `req` to ECS HTTP fields. This is a slight limitation for users of
 https://github.com/pinojs/pino-http[pino-http] which does this.
+
+
+[float]
+[[pino-ref]]
+=== Reference
+
+[float]
+[[pino-ref-ecsFormat]]
+==== `ecsFormat([options])`
+
+* `options` +{type-object}+ The following options are supported:
+** `convertErr` +{type-boolean}+ Whether to convert a logged `err` field to ECS error fields. *Default:* `true`.
+** `convertReqRes` +{type-boolean}+ Whether to logged `req` and `res` HTTP request and response fields to ECS HTTP, User agent, and URL fields. *Default:* `false`.
+** `apmIntegration` +{type-boolean}+ Whether to enable APM agent integration. *Default:* `true`.
+** `serviceName` +{type-string}+ A "service.name" value. If specified this overrides any value from an active APM agent.
+** `serviceVersion` +{type-string}+ A "service.version" value. If specified this overrides any value from an active APM agent.
+** `serviceEnvironment` +{type-string}+ A "service.environment" value. If specified this overrides any value from an active APM agent.
+** `serviceNodeName` +{type-string}+ A "service.node.name" value. If specified this overrides any value from an active APM agent.
+** `eventDataset` +{type-string}+ A "event.dataset" value. If specified this overrides the default of using `${serviceVersion}`.
+
+Create options for `pino(...)` that configures ECS Logging format output.
