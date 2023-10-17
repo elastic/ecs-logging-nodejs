@@ -1,6 +1,6 @@
 {
   "name": "@elastic/ecs-pino-format",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "A formatter for the pino logger compatible with Elastic Common Schema.",
   "main": "index.js",
   "files": [

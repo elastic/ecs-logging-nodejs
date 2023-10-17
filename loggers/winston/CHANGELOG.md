@@ -1,6 +1,6 @@
 # @elastic/ecs-winston-format Changelog
 
-## Unreleased
+## v1.4.0
 
 - Add `service.version`, `service.environment`, and `service.node.name` log
   correlation fields, automatically inferred from an active APM agent. As
