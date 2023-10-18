@@ -28,7 +28,7 @@
   "bugs": {
     "url": "https://github.com/elastic/ecs-logging-nodejs/issues"
   },
-  "homepage": "https://github.com/elastic/ecs-logging-nodejs/blob/main/loggers/pino/README.md",
+  "homepage": "https://github.com/elastic/ecs-logging-nodejs/blob/main/packages/ecs-pino-format/README.md",
   "scripts": {
     "lint": "standard",
     "lint:fix": "standard --fix",

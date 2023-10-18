@@ -4,46 +4,19 @@
 
 .PHONY: all
 all:
-	./.ci/run-install.sh
-	(cd utils && npm install)
-
-.PHONY: clean
-clean:
-	(cd helpers && rm -rf node_modules)
-	(cd loggers/winston && rm -rf node_modules)
-	(cd loggers/morgan && rm -rf node_modules)
-	(cd loggers/pino && rm -rf node_modules)
-	(cd utils && rm -rf node_modules)
-
-.PHONY: lint
-lint: check-license-headers
-	./.ci/run-lint.sh
-
-.PHONY: fmt
-fmt:
-	(cd helpers && npm run lint:fix)
-	(cd loggers/winston && npm run lint:fix)
-	(cd loggers/morgan && npm run lint:fix)
-	(cd loggers/pino && npm run lint:fix)
-	(cd utils && npm run lint:fix)
+	./utils/run-install.sh
 
 .PHONY: test
 test:
-	./.ci/run-test.sh
+	./utils/run-test.sh
 
-# For local dev, setup each logger to use the local helpers, rather than
-# a version published to npm. Need to be careful to not *push* with that
-# tweak to each package.json.
-.PHONY: install-local-helpers undo-install-local-helpers
-install-local-helpers:
-	(cd loggers/winston && npm install ../../helpers)
-	(cd loggers/morgan && npm install ../../helpers)
-	(cd loggers/pino && npm install ../../helpers)
-undo-install-local-helpers:
-	export HELPERS_VER=$(shell cd helpers && npm info . version) && \
-		(cd loggers/winston && npm install @elastic/ecs-helpers@v$$HELPERS_VER) && \
-		(cd loggers/morgan && npm install @elastic/ecs-helpers@v$$HELPERS_VER) && \
-		(cd loggers/pino && npm install @elastic/ecs-helpers@v$$HELPERS_VER)
+.PHONY: lint
+lint: check-license-headers
+	./utils/run-lint.sh
+
+.PHONY: fmt
+fmt:
+	npm --workspaces lint:fix # requires npm>=7 (aka node>=16)
 
 # Build and open the rendered docs for testing.
 #
@@ -61,7 +34,7 @@ docs-and-open:
 # List licenses of prod deps.
 .PHONY: list-licenses
 list-licenses:
-	@for dir in helpers $(shell ls -d loggers/*); do \
+	@for dir in helpers $(shell ls -d packages/*); do \
 		(cd $$dir && npm ls --prod --parseable | while read subdir; do node -e "console.log(require('$$subdir/package.json').license)"; done) \
 	done | sort | uniq -c | sort -n
 

@@ -75,7 +75,7 @@ app.listen(3000)
 ----
 <1> See available options <<morgan-ref,below>>.
 
-Running this script (the full example is https://github.com/elastic/ecs-logging-nodejs/blob/main/loggers/morgan/examples/express.js[here])
+Running this script (the full example is https://github.com/elastic/ecs-logging-nodejs/blob/main/packages/ecs-morgan-format/examples/express.js[here])
 and making a request (via `curl -i localhost:3000/`) will produce log output
 similar to the following:
 
@@ -143,7 +143,7 @@ app.use(morgan(ecsFormat({ format: 'tiny' }))) <1>
 === log.level
 
 The `log.level` field will be "error" for response codes >= 500, otherwise
-"info". For example, running  https://github.com/elastic/ecs-logging-nodejs/blob/main/loggers/morgan/examples/express.js[examples/express.js]
+"info". For example, running  https://github.com/elastic/ecs-logging-nodejs/blob/main/packages/ecs-morgan-format/examples/express.js[examples/express.js]
 again, a `curl -i localhost:3000/error` will yield:
 
 [source,cmd]
@@ -178,7 +178,7 @@ services or traces and logging data:
 - `event.dataset` enables {observability-guide}/inspect-log-anomalies.html[log
   rate anomaly detection] in the Elastic Observability app.
 
-For example, running https://github.com/elastic/ecs-logging-nodejs/blob/main/loggers/morgan/examples/express-with-apm.js[examples/express-with-apm.js] and `curl -i localhost:3000/` results in a log record with the following:
+For example, running https://github.com/elastic/ecs-logging-nodejs/blob/main/packages/ecs-morgan-format/examples/express-with-apm.js[examples/express-with-apm.js] and `curl -i localhost:3000/` results in a log record with the following:
 
 [source,cmd]
 ----
