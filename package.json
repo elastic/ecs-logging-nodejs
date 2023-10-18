@@ -1,0 +1,8 @@
+{
+  "name": "@elastic/ecs-logging-nodejs",
+  "workspaces": [
+    "packages/*"
+  ],
+  "license": "Apache-2.0",
+  "private": true
+}

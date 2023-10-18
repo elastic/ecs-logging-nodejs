@@ -1,53 +1,40 @@
 # Contributing to the ecs-logging-nodejs libraries
 
-The ecs-logging-nodejs libraries are open source and we love to receive contributions
-from our community — you!
+The ecs-logging-nodejs libraries are open source and all contributions
+(issues, comments, pull requests) are welcome.
 
-There are many ways to contribute,
-from writing tutorials or blog posts,
-improving the documentation,
-submitting bug reports and feature requests or writing code.
 
-## Repository structure
+## Developing for this repository
 
-This repository contains multiple packages, that you can find inside the `loggers/*`
-folder and inside the `helper` folder.
-Every package has its own `package.json` and `node_modules` folder, same for test
-and documentation.
+This repository contains multiple packages, in the "packages/" directory. It
+is using [npm workspaces](https://docs.npmjs.com/cli/v7/using-npm/workspaces)
+to manage multiple packages. The common tasks are:
 
-## Code contributions
+    npm --workspaces install
+    npm --workspaces test
+    npm --workspaces lint
+    npm --workspaces lint:fix
 
-If you have a bugfix or new feature that you would like to contribute,
-please find or open an issue about it first.
-Talk about what you would like to do.
-It may be that somebody is already working on it,
-or that there are particular issues that you should know about before implementing the change.
+Using npm workspaces requires npm@7 or later, which typically means Node.js
+v16 or later. However, these packages currently support back to Node.js v10.
+For earlier versions of Node.js, you can install and test using:
 
-### Submitting your changes
+    make all
+    make test
+
+
+## Pull requests
 
 Generally, we require that you test any code you are adding or modifying.
 Once your changes are ready to submit for review:
 
-1. Test your changes
+1. Test your changes:
 
-    Run the test suite to make sure that nothing is broken. For a single
-    package:
-
-        npm test
-
-    Or for all packages:
-
-        .ci/run_install.sh   # to install dependencies
-        .ci/run_test.sh
+        npm --workspaces test
 
 2. Submit a pull request
 
     Push your local changes to your forked copy of the repository and [submit a pull request](https://help.github.com/articles/using-pull-requests).
-    In the pull request,
-    choose a title which sums up the changes that you have made,
-    and in the body provide more details about what your changes do.
-    Also mention the number of the issue where discussion has taken place,
-    eg "Closes #123".
 
 3. Sign the Contributor License Agreement
 

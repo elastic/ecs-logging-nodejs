@@ -27,7 +27,7 @@
   "bugs": {
     "url": "https://github.com/elastic/ecs-logging-nodejs/issues"
   },
-  "homepage": "https://github.com/elastic/ecs-logging-nodejs/blob/main/loggers/morgan/README.md",
+  "homepage": "https://github.com/elastic/ecs-logging-nodejs/blob/main/packages/ecs-morgan-format/README.md",
   "scripts": {
     "lint": "standard",
     "lint:fix": "standard --fix",
