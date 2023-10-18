@@ -29,7 +29,6 @@ const { ecsLoggingValidate } = require('../../utils/lib/ecs-logging-validate')
 
 const {
   version,
-  stringify,
   formatError,
   formatHttpRequest,
   formatHttpResponse
@@ -42,35 +41,29 @@ const ajv = new Ajv({
 addFormats(ajv)
 const validate = ajv.compile(require('../../utils/schema.json'))
 
-test('stringify should return a valid ecs json', t => {
-  const ecsFields = {
+test('validate valid ECS json', t => {
+  const rec = {
     '@timestamp': new Date().toISOString(),
     'log.level': 'info',
     message: 'hello world',
     'ecs.version': '1.4.0'
   }
-
-  const line = stringify(ecsFields)
-  const rec = JSON.parse(line)
   t.equal(validate(rec), true)
-  t.equal(ecsLoggingValidate(line), null)
+  t.equal(ecsLoggingValidate(rec), null)
   t.end()
 })
 
 test('bad ECS json on purpose: @timestamp', t => {
-  const ecsFields = {
+  const rec = {
     '@timestamp': 'not a date',
     'log.level': 'info',
     message: 'foo',
     'ecs.version': '1.4.0'
   }
 
-  const line = stringify(ecsFields)
-  const rec = JSON.parse(line)
-
   t.equal(validate(rec), false)
 
-  const err = ecsLoggingValidate(line)
+  const err = ecsLoggingValidate(rec)
   t.ok(err, 'got an ecsLoggingValidate error')
   t.equal(err.details.length, 1)
   t.ok(err.details[0].message)
@@ -145,18 +138,17 @@ test('formatHttpRequest and formatHttpResponse should return a valid ecs object'
     rv = formatHttpResponse(ecs, res)
     t.ok(rv, 'formatHttpResponse processed res')
 
-    const line = JSON.parse(stringify(ecs))
-    t.ok(validate(line))
-    t.equal(ecsLoggingValidate(line), null)
+    t.ok(validate(ecs))
+    t.equal(ecsLoggingValidate(ecs), null)
 
-    t.same(line.user_agent, { original: 'cool-agent' })
-    t.same(line.url, {
+    t.same(ecs.user_agent, { original: 'cool-agent' })
+    t.same(ecs.url, {
       path: '/hello/world',
       query: 'foo=bar',
       full: `http://127.0.0.1:${server.address().port}/hello/world?foo=bar#anchor`,
       fragment: 'anchor'
     })
-    t.same(line.http, {
+    t.same(ecs.http, {
       version: '1.1',
       request: {
         method: 'POST',
@@ -179,11 +171,11 @@ test('formatHttpRequest and formatHttpResponse should return a valid ecs object'
       }
     })
     // https://www.elastic.co/guide/en/ecs/current/ecs-client.html fields
-    t.ok(line.client, 'client fields are set')
-    t.ok(line.client.address === '127.0.0.1', 'client.address is set')
-    t.ok(line.client.ip === line.client.address,
+    t.ok(ecs.client, 'client fields are set')
+    t.ok(ecs.client.address === '127.0.0.1', 'client.address is set')
+    t.ok(ecs.client.ip === ecs.client.address,
       'client.address duplicated to client.ip')
-    t.equal(typeof (line.client.port), 'number')
+    t.equal(typeof (ecs.client.port), 'number')
 
     res.end(resBody)
   }
@@ -221,27 +213,6 @@ test('format* should not process non-req/res/err values', t => {
 
 test('Should export a valid version', t => {
   t.ok(semver.valid(version))
-  t.end()
-})
-
-test('stringify should emit valid tracing fields', t => {
-  const before = {
-    '@timestamp': new Date().toISOString(),
-    'log.level': 'info',
-    message: 'hello world',
-    'ecs.version': '1.4.0',
-    trace: { id: 1 },
-    transaction: { id: 2 },
-    span: { id: 3, extra_fields: 'are dropped' }
-  }
-
-  const after = JSON.parse(stringify(before))
-  t.ok(validate(after))
-  t.equal(ecsLoggingValidate(after), null)
-  t.same(after.trace, { id: '1' }, 'trace.id is stringified')
-  t.same(after.transaction, { id: '2' }, 'transaction.id is stringified')
-  t.same(after.span, { id: '3' },
-    'span.id is stringified, extra fields are excluded')
   t.end()
 })
 

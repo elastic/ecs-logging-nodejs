@@ -18,9 +18,9 @@
 'use strict'
 
 const morgan = require('morgan')
+const safeStableStringify = require('safe-stable-stringify')
 const {
   version,
-  stringify,
   formatHttpRequest,
   formatHttpResponse
 } = require('@elastic/ecs-helpers')
@@ -32,6 +32,8 @@ try {
 } catch (ex) {
   // Silently ignore.
 }
+
+const stringify = safeStableStringify.configure({ deterministic: false })
 
 // Return a Morgan formatter function for ecs-logging output.
 //

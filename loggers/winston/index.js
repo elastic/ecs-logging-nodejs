@@ -19,9 +19,9 @@
 
 const { MESSAGE } = require('triple-beam')
 const { format } = require('winston')
+const safeStableStringify = require('safe-stable-stringify')
 const {
   version,
-  stringify,
   formatError,
   formatHttpRequest,
   formatHttpResponse
@@ -34,6 +34,8 @@ try {
 } catch (ex) {
   // Silently ignore.
 }
+
+const stringify = safeStableStringify.configure({ deterministic: false })
 
 const reservedFields = {
   level: true,

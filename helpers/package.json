@@ -1,6 +1,6 @@
 {
   "name": "@elastic/ecs-helpers",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "ECS loggers helpers",
   "main": "lib/index.js",
   "files": [
@@ -23,9 +23,6 @@
   },
   "engines": {
     "node": ">=10"
-  },
-  "dependencies": {
-    "fast-json-stringify": "^2.4.1"
   },
   "devDependencies": {
     "@hapi/hapi": "^20.1.0",

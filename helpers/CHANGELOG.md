@@ -1,5 +1,11 @@
 # @elastic/ecs-helpers Changelog
 
+## 2.0.0
+
+- [Breaking change.] Drop the `serialize` method. Serialization will move to
+  the individual `@elastic/ecs-*-format` libraries -- and they will be
+  switching to the `safe-stable-stringify` package.
+
 ## v1.1.0
 
 - Fix `formatHttpRequest` and `formatHttpResponse` to be more defensive. If
