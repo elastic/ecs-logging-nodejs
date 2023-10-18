@@ -73,8 +73,8 @@ function createEcsPinoOptions (opts) {
   }
 
   let serviceVersion = opts.serviceVersion
+  // istanbul ignore next
   if (serviceVersion == null && apm) {
-    // istanbul ignore next
     serviceVersion = (apm.getServiceVersion
       ? apm.getServiceVersion() // added in elastic-apm-node@...
       : apm._conf.serviceVersion) // fallback to private `_conf`

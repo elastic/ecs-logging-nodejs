@@ -12,11 +12,11 @@ Please see the [Node.js ECS logging documentation](https://www.elastic.co/guide/
 
 ## Supported logging frameworks
 
-- [Morgan](https://github.com/expressjs/morgan) via [@elastic/ecs-morgan-format](./loggers/morgan)
+- [Morgan](https://github.com/expressjs/morgan) via [@elastic/ecs-morgan-format](./packages/ecs-morgan-format)
   ([docs](https://www.elastic.co/guide/en/ecs-logging/nodejs/current/morgan.html))
-- [Pino](https://getpino.io/#/) via [@elastic/ecs-pino-format](./loggers/pino)
+- [Pino](https://getpino.io/#/) via [@elastic/ecs-pino-format](./packages/ecs-pino-format)
   ([docs](https://www.elastic.co/guide/en/ecs-logging/nodejs/current/pino.html))
-- [Winston](https://github.com/winstonjs/winston) via [@elastic/ecs-winston-format](./loggers/winston)
+- [Winston](https://github.com/winstonjs/winston) via [@elastic/ecs-winston-format](./packages/ecs-winston-format)
   ([docs](https://www.elastic.co/guide/en/ecs-logging/nodejs/current/winston.html))
 
 ## Links
