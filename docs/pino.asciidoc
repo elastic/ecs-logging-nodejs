@@ -196,10 +196,10 @@ For example:
 }
 ----
 
-The https://github.com/elastic/ecs-logging-nodejs/tree/main/loggers/pino/examples[examples/ directory]
+The https://github.com/elastic/ecs-logging-nodejs/tree/main/packages/ecs-pino-format/examples[examples/ directory]
 shows sample programs using request and response logging:
-https://github.com/elastic/ecs-logging-nodejs/tree/main/loggers/pino/examples/express-simple.js[with Express],
-https://github.com/elastic/ecs-logging-nodejs/tree/main/loggers/pino/examples/express-with-pino-http.js[with the pino-http middleware package],
+https://github.com/elastic/ecs-logging-nodejs/tree/main/packages/ecs-pino-format/examples/express-simple.js[with Express],
+https://github.com/elastic/ecs-logging-nodejs/tree/main/packages/ecs-pino-format/examples/express-with-pino-http.js[with the pino-http middleware package],
 etc.
 
 
@@ -221,7 +221,7 @@ services or traces and logging data:
 - `event.dataset` enables {observability-guide}/inspect-log-anomalies.html[log
   rate anomaly detection] in the Elastic Observability app.
 
-For example, running https://github.com/elastic/ecs-logging-nodejs/blob/main/loggers/pino/examples/http-with-elastic-apm.js[examples/http-with-elastic-apm.js] and `curl -i localhost:3000/` results in a log record with the following:
+For example, running https://github.com/elastic/ecs-logging-nodejs/blob/main/packages/ecs-pino-format/examples/http-with-elastic-apm.js[examples/http-with-elastic-apm.js] and `curl -i localhost:3000/` results in a log record with the following:
 
 [source,cmd]
 ----

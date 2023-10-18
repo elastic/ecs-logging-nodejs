@@ -25,7 +25,7 @@ const Ajv = require('ajv').default
 const semver = require('semver')
 const test = require('tap').test
 
-const { ecsLoggingValidate } = require('../../utils/lib/ecs-logging-validate')
+const { ecsLoggingValidate } = require('../../../utils/lib/ecs-logging-validate')
 
 const {
   version,
@@ -39,7 +39,7 @@ const ajv = new Ajv({
   verbose: true
 })
 addFormats(ajv)
-const validate = ajv.compile(require('../../utils/schema.json'))
+const validate = ajv.compile(require('../../../utils/schema.json'))
 
 test('validate valid ECS json', t => {
   const rec = {

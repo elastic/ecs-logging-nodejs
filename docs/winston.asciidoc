@@ -74,7 +74,7 @@ logger.error('oops there is a problem', { foo: 'bar' })
 ----
 <1> See available options <<winston-ref,below>>.
 
-Running this script (available https://github.com/elastic/ecs-logging-nodejs/blob/main/loggers/winston/examples/basic.js[here]) will produce log output similar to the following:
+Running this script (available https://github.com/elastic/ecs-logging-nodejs/blob/main/packages/ecs-winston-format/examples/basic.js[here]) will produce log output similar to the following:
 
 [source,cmd]
 ----
@@ -95,7 +95,7 @@ the https://github.com/winstonjs/logform#timestamp[timestamp] formatter.
 
 By default, the formatter will convert an `err` meta field that is an Error instance
 to {ecs-ref}/ecs-error.html[ECS Error fields].
-For https://github.com/elastic/ecs-logging-nodejs/blob/main/loggers/winston/examples/error.js[example]:
+For https://github.com/elastic/ecs-logging-nodejs/blob/main/packages/ecs-winston-format/examples/error.js[example]:
 
 [source,js]
 ----
@@ -181,7 +181,7 @@ function handler (req, res) {
 
 This will produce logs with request and response info using
 {ecs-ref}/ecs-http.html[ECS HTTP fields].
-For https://github.com/elastic/ecs-logging-nodejs/blob/main/loggers/winston/examples/http.js[example]:
+For https://github.com/elastic/ecs-logging-nodejs/blob/main/packages/ecs-winston-format/examples/http.js[example]:
 
 [source,cmd]
 ----
@@ -243,7 +243,7 @@ services or traces and logging data:
 - `event.dataset` enables {observability-guide}/inspect-log-anomalies.html[log
   rate anomaly detection] in the Elastic Observability app.
 
-For example, running https://github.com/elastic/ecs-logging-nodejs/blob/main/loggers/winston/examples/http-with-elastic-apm.js[examples/http-with-elastic-apm.js] and `curl -i localhost:3000/` results in a log record with the following:
+For example, running https://github.com/elastic/ecs-logging-nodejs/blob/main/packages/ecs-winston-format/examples/http-with-elastic-apm.js[examples/http-with-elastic-apm.js] and `curl -i localhost:3000/` results in a log record with the following:
 
 [source,cmd]
 ----
