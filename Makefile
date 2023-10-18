@@ -1,6 +1,12 @@
-# All development tasks are typically available via npm scripts, i.e.
-# `npm run <script> ...` or via CI scripts (".ci/*.sh"). This Makefile
-# exists as a convenience for some common tasks.
+# Common development tasks are typically available via npm scripts, e.g.:
+#	  npm --workspaces install
+#	  npm --workspaces test
+#	  npm --workspaces lint
+#	  npm --workspaces lint:fix
+#
+# This Makefile exists as a convenience, to support older Node.js versions
+# (which npm <=7 when workspaces support was added), and to support some less
+# common tasks.
 
 .PHONY: all
 all:
