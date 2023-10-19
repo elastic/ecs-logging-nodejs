@@ -40,7 +40,8 @@
   },
   "dependencies": {
     "@elastic/ecs-helpers": "^2.0.0",
-    "safe-stable-stringify": "^2.4.3"
+    "safe-stable-stringify": "^2.4.3",
+    "triple-beam": ">=1.1.0"
   },
   "devDependencies": {
     "ajv": "^7.0.3",
