@@ -67,6 +67,7 @@ class EcsWinstonTransform {
   constructor (opts) {
     this.options = opts
   }
+
   transform (info, opts) {
     // istanbul ignore next
     opts = opts || {}

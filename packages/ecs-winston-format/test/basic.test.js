@@ -308,7 +308,7 @@ test('can handle circular refs', t => {
     transports: [cap]
   })
 
-  var obj = {foo: 'bar'}
+  const obj = { foo: 'bar' }
   obj.self = obj
   logger.info('hi', { obj })
 
