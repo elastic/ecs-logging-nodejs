@@ -35,6 +35,9 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+      - name: Update npm to at least v7 for workspaces support
+        if: ${{ matrix.node-version < 16 }} # node@16 comes with npm@8, node@14 with npm@6
+        run: npm install -g npm@7 # npm@7 supports node >=10
       - name: Install dependencies
         run: utils/run-install.sh
       - name: Test Node.js v${{ matrix.node-version }}
