@@ -313,7 +313,7 @@ test('can handle circular refs', t => {
   const stream = split().on('data', line => { lines.push(line) })
   const log = pino(ecsFormat(), stream)
 
-  var obj = {foo: 'bar'}
+  const obj = { foo: 'bar' }
   obj.self = obj
   log.info({ obj }, 'hi')
 
