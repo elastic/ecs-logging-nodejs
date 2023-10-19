@@ -307,3 +307,18 @@ test('createEcsPinoOptions with no formatters.log', t => {
   t.equal(rec.res, null)
   t.end()
 })
+
+test('can handle circular refs', t => {
+  const lines = []
+  const stream = split().on('data', line => { lines.push(line) })
+  const log = pino(ecsFormat(), stream)
+
+  var obj = {foo: 'bar'}
+  obj.self = obj
+  log.info({ obj }, 'hi')
+
+  const rec = JSON.parse(lines[0])
+  t.ok(validate(rec))
+  t.strictSame(rec.obj, { foo: 'bar', self: '[Circular]' })
+  t.end()
+})

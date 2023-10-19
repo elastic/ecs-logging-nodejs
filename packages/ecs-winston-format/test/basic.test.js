@@ -300,3 +300,19 @@ test('can configure correlation fields', t => {
   t.equal(rec['event.dataset'], 'override-eventDataset')
   t.end()
 })
+
+test('can handle circular refs', t => {
+  const cap = new CaptureTransport()
+  const logger = winston.createLogger({
+    format: ecsFormat(),
+    transports: [cap]
+  })
+
+  var obj = {foo: 'bar'}
+  obj.self = obj
+  logger.info('hi', { obj })
+
+  const rec = cap.records[0]
+  t.strictSame(rec.obj, { foo: 'bar', self: '[Circular]' })
+  t.end()
+})
