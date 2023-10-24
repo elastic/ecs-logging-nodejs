@@ -17,13 +17,11 @@
 
 'use strict'
 
-const stringify = require('./serializer')
 const errorFormatters = require('./error-formatters')
 const httpFormatters = require('./http-formatters')
 
 module.exports = {
   version: '1.6.0',
-  stringify,
   ...errorFormatters,
   ...httpFormatters
 }

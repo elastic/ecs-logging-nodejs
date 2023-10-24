@@ -1,5 +1,11 @@
 # @elastic/ecs-pino-format Changelog
 
+## Unreleased
+
+- Bump dep to `@elastic/ecs-helpers@2` which removes the dep on the old
+  `fast-safe-stringify` lib that resulted in a maintenance warning about
+  the `string-similarity` transitive dep.
+
 ## v1.4.0
 
 - Add `service.version`, `service.environment`, and `service.node.name` log

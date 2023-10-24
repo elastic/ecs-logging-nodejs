@@ -22,7 +22,14 @@ lint: check-license-headers
 
 .PHONY: fmt
 fmt:
-	npm --workspaces lint:fix # requires npm>=7 (aka node>=16)
+	npm --workspaces run lint:fix # requires npm>=7 (aka node>=16)
+
+.PHONY: clean
+clean:
+	rm -rf packages/*/node_modules
+	rm -rf node_modules
+	rm -rf utils/node_modules
+
 
 # Build and open the rendered docs for testing.
 #

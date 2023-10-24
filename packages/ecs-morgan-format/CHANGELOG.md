@@ -1,5 +1,11 @@
 # @elastic/ecs-morgan-format Changelog
 
+## Unreleased
+
+- Switch to `safe-stable-stringify` for JSON serialization. This library
+  protects against circular references and bigints.
+  (https://github.com/elastic/ecs-logging-nodejs/pull/155)
+
 ## v1.4.0
 
 - Add `service.version`, `service.environment`, and `service.node.name` log

@@ -1,5 +1,18 @@
 # @elastic/ecs-winston-format Changelog
 
+## Unreleased
+
+- Switch to `safe-stable-stringify` for JSON serialization. This library
+  protects against circular references and bigints.
+  (https://github.com/elastic/ecs-logging-nodejs/pull/155)
+
+- Explicitly depend on `triple-beam` (`>=1.1.0` when `MESSAGE` was added).
+  Before this change, this package was assuming that it would be installed by
+  the user. This worked for npm's flat install -- `npm install winston` will
+  install a `node_modules/triple-beam/...` -- but not for Yarn 2's PnP install
+  mechanism.
+  (https://github.com/elastic/ecs-logging-nodejs/issues/108)
+
 ## v1.4.0
 
 - Add `service.version`, `service.environment`, and `service.node.name` log
