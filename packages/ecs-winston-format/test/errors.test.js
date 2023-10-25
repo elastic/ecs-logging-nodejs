@@ -34,7 +34,7 @@ test('log.info("msg", new Error("boom"))', t => {
     // Set `convertErr: false` to ensure this form of passing an Error to
     // a Winston logger is handled by default.
     format: ecsFormat({ convertErr: false }),
-    defaultMeta: { aField: 'defaultMeta field value'},
+    defaultMeta: { aField: 'defaultMeta field value' },
     transports: [cap]
   })
 
@@ -53,9 +53,9 @@ test('log.info("msg", new Error("boom"))', t => {
   t.equal(rec.aField, undefined)
   t.equal(rec.error.type, 'Error')
   t.equal(rec.error.message, 'boom')
-  t.match(rec.error.stack_trace, /^Error: boom\n    at/)
+  t.match(rec.error.stack_trace, /^Error: boom\n {4}at/)
   t.equal(rec.error.aField, 'err field value')
-  t.match(rec.error.cause, /^Error: the cause\n    at/)
+  t.match(rec.error.cause, /^Error: the cause\n {4}at/)
   t.end()
 })
 
@@ -76,7 +76,7 @@ test('uncaughtException winston log error message', t => {
       t.equal(rec.message, 'uncaughtException: funcb boom', 'message')
       t.equal(rec.error.type, 'Error', 'error.type')
       t.equal(rec.error.message, 'funcb boom', 'error.message')
-      t.match(rec.error.stack_trace, /^Error: funcb boom\n    at/, 'error.stack_trace')
+      t.match(rec.error.stack_trace, /^Error: funcb boom\n {4}at/, 'error.stack_trace')
       t.equal(rec.error.code, 42, 'error.code')
       t.equal(rec.exception, true, 'exception')
       t.end()
@@ -101,7 +101,7 @@ test('unhandledRejection winston log error message', t => {
       t.equal(rec.message, 'unhandledRejection: funcb boom', 'message')
       t.equal(rec.error.type, 'Error', 'error.type')
       t.equal(rec.error.message, 'funcb boom', 'error.message')
-      t.match(rec.error.stack_trace, /^Error: funcb boom\n    at/, 'error.stack_trace')
+      t.match(rec.error.stack_trace, /^Error: funcb boom\n {4}at/, 'error.stack_trace')
       t.equal(rec.error.code, 42, 'error.code')
       t.equal(rec.exception, true, 'exception')
       t.end()
@@ -113,7 +113,7 @@ test('log.info(new Error("boom"))', t => {
   const cap = new CaptureTransport()
   const log = winston.createLogger({
     format: ecsFormat({ convertErr: true }),
-    defaultMeta: { aField: 'defaultMeta field value'},
+    defaultMeta: { aField: 'defaultMeta field value' },
     transports: [cap]
   })
 
@@ -129,7 +129,7 @@ test('log.info(new Error("boom"))', t => {
   t.equal(rec.aField, 'defaultMeta field value', 'aField')
   t.equal(rec.error.type, 'Error', 'error.type')
   t.equal(rec.error.message, 'boom', 'error.message')
-  t.match(rec.error.stack_trace, /^Error: boom\n    at/, 'error.stack_trace')
+  t.match(rec.error.stack_trace, /^Error: boom\n {4}at/, 'error.stack_trace')
   // Winston mixes `err` properties and `defaultMeta` at the top-level, so
   // conflicts result in lost date.
   t.equal(rec.error.aField, 'defaultMeta field value', 'error.aField')
@@ -141,14 +141,14 @@ test('log.info(new Error("boom"), {...})', t => {
   const cap = new CaptureTransport()
   const log = winston.createLogger({
     format: ecsFormat({ convertErr: true }),
-    defaultMeta: { aField: 'defaultMeta field value'},
+    defaultMeta: { aField: 'defaultMeta field value' },
     transports: [cap]
   })
 
   const errCause = new Error('the cause')
   const err = new Error('boom', { cause: errCause })
   err.aField = 'err field value'
-  log.info(err, { aField: 'splat field value'})
+  log.info(err, { aField: 'splat field value' })
 
   const rec = cap.records[0]
   t.ok(validate(rec))
@@ -157,9 +157,9 @@ test('log.info(new Error("boom"), {...})', t => {
   t.equal(rec.aField, 'splat field value', 'aField')
   t.equal(rec.error.type, 'Error', 'error.type')
   t.equal(rec.error.message, 'boom', 'error.message')
-  t.match(rec.error.stack_trace, /^Error: boom\n    at/, 'error.stack_trace')
+  t.match(rec.error.stack_trace, /^Error: boom\n {4}at/, 'error.stack_trace')
   t.equal(rec.error.aField, 'err field value', 'error.aField')
-  t.match(rec.error.cause, /^Error: the cause\n    at/, 'error.cause')
+  t.match(rec.error.cause, /^Error: the cause\n {4}at/, 'error.cause')
   t.end()
 })
 
@@ -167,7 +167,7 @@ test('log.info(new Error("")) with empty err.message', t => {
   const cap = new CaptureTransport()
   const log = winston.createLogger({
     format: ecsFormat({ convertErr: true }),
-    defaultMeta: { aField: 'defaultMeta field value'},
+    defaultMeta: { aField: 'defaultMeta field value' },
     transports: [cap]
   })
 
@@ -183,9 +183,9 @@ test('log.info(new Error("")) with empty err.message', t => {
   t.equal(rec.aField, 'defaultMeta field value', 'aField')
   t.equal(rec.error.type, 'Error', 'error.type')
   t.equal(rec.error.message, '', 'error.message')
-  t.match(rec.error.stack_trace, /^Error: \n    at/, 'error.stack_trace')
+  t.match(rec.error.stack_trace, /^Error: \n {4}at/, 'error.stack_trace')
   t.equal(rec.error.aField, 'err field value', 'error.aField')
-  t.match(rec.error.cause, /^Error: the cause\n    at/, 'error.cause')
+  t.match(rec.error.cause, /^Error: the cause\n {4}at/, 'error.cause')
   t.end()
 })
 
@@ -193,7 +193,7 @@ test('log.info("msg", { err: new Error("boom") })', t => {
   const cap = new CaptureTransport()
   const log = winston.createLogger({
     format: ecsFormat({ convertErr: true }),
-    defaultMeta: { aField: 'defaultMeta field value'},
+    defaultMeta: { aField: 'defaultMeta field value' },
     transports: [cap]
   })
 
@@ -209,8 +209,8 @@ test('log.info("msg", { err: new Error("boom") })', t => {
   t.equal(rec.aField, 'splat field value', 'aField')
   t.equal(rec.error.type, 'Error', 'error.type')
   t.equal(rec.error.message, 'boom', 'error.message')
-  t.match(rec.error.stack_trace, /^Error: boom\n    at/, 'error.stack_trace')
+  t.match(rec.error.stack_trace, /^Error: boom\n {4}at/, 'error.stack_trace')
   t.equal(rec.error.aField, 'err field value', 'error.aField')
-  t.match(rec.error.cause, /^Error: the cause\n    at/, 'error.cause')
+  t.match(rec.error.cause, /^Error: the cause\n {4}at/, 'error.cause')
   t.end()
 })

@@ -20,6 +20,7 @@
 const ecsFormat = require('../') // @elastic/ecs-winston-format
 const winston = require('winston')
 
+// eslint-disable-next-line
 const log = winston.createLogger({
   level: 'info',
   format: ecsFormat(),
@@ -31,13 +32,13 @@ const log = winston.createLogger({
   ]
 })
 
-async function funcb() {
+async function funcb () {
   const e = new Error('funcb boom')
   e.code = 42
   throw e
 }
 
-async function funca() {
+async function funca () {
   await funcb()
 }
 

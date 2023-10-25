@@ -186,7 +186,8 @@ class EcsWinstonTransform {
       // always a string to avoid its type varying depending on the value.
       if (err.cause) {
         ecsFields.error.cause = err.cause instanceof Error
-          ? err.cause.stack : err.cause.toString()
+          ? err.cause.stack
+          : err.cause.toString()
       }
     }
 

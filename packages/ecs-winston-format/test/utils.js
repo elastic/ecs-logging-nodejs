@@ -50,4 +50,3 @@ module.exports = {
   validate,
   CaptureTransport
 }
-
