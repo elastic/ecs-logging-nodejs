@@ -20,6 +20,7 @@
 // Test the various error/exception handling cases.
 
 const { execFile } = require('child_process')
+const semver = require('semver')
 const test = require('tap').test
 const { MESSAGE } = require('triple-beam')
 const winston = require('winston')
@@ -27,6 +28,9 @@ const { ecsLoggingValidate } = require('../../../utils/lib/ecs-logging-validate'
 const { validate, CaptureTransport } = require('./utils')
 
 const ecsFormat = require('../')
+
+// https://nodejs.org/en/blog/release/v16.9.0
+const IS_ERROR_CAUSE_SUPPORTED = semver.satisfies(process.version, '>=16.9.0')
 
 test('log.info("msg", new Error("boom"))', t => {
   const cap = new CaptureTransport()
@@ -50,12 +54,14 @@ test('log.info("msg", new Error("boom"))', t => {
   // Ideally we'd expect `aField: 'defaultMeta field value'`, but Winston
   // core error handling overwrites with `err.aField`. The ECS formatter
   // moves that err property from the record top-level to `error.`.
-  t.equal(rec.aField, undefined)
-  t.equal(rec.error.type, 'Error')
-  t.equal(rec.error.message, 'boom')
-  t.match(rec.error.stack_trace, /^Error: boom\n {4}at/)
-  t.equal(rec.error.aField, 'err field value')
-  t.match(rec.error.cause, /^Error: the cause\n {4}at/)
+  t.equal(rec.aField, undefined, 'aField')
+  t.equal(rec.error.type, 'Error', 'error.type')
+  t.equal(rec.error.message, 'boom', 'error.message')
+  t.match(rec.error.stack_trace, /^Error: boom\n {4}at/, 'error.stack_trace')
+  t.equal(rec.error.aField, 'err field value', 'error.aField')
+  if (IS_ERROR_CAUSE_SUPPORTED) {
+    t.match(rec.error.cause, /^Error: the cause\n {4}at/, 'error.cause')
+  }
   t.end()
 })
 
@@ -133,7 +139,9 @@ test('log.info(new Error("boom"))', t => {
   // Winston mixes `err` properties and `defaultMeta` at the top-level, so
   // conflicts result in lost date.
   t.equal(rec.error.aField, 'defaultMeta field value', 'error.aField')
-  t.equal(rec.error.cause, 'the cause is a string', 'error.cause')
+  if (IS_ERROR_CAUSE_SUPPORTED) {
+    t.equal(rec.error.cause, 'the cause is a string', 'error.cause')
+  }
   t.end()
 })
 
@@ -159,7 +167,9 @@ test('log.info(new Error("boom"), {...})', t => {
   t.equal(rec.error.message, 'boom', 'error.message')
   t.match(rec.error.stack_trace, /^Error: boom\n {4}at/, 'error.stack_trace')
   t.equal(rec.error.aField, 'err field value', 'error.aField')
-  t.match(rec.error.cause, /^Error: the cause\n {4}at/, 'error.cause')
+  if (IS_ERROR_CAUSE_SUPPORTED) {
+    t.match(rec.error.cause, /^Error: the cause\n {4}at/, 'error.cause')
+  }
   t.end()
 })
 
@@ -185,7 +195,9 @@ test('log.info(new Error("")) with empty err.message', t => {
   t.equal(rec.error.message, '', 'error.message')
   t.match(rec.error.stack_trace, /^Error: \n {4}at/, 'error.stack_trace')
   t.equal(rec.error.aField, 'err field value', 'error.aField')
-  t.match(rec.error.cause, /^Error: the cause\n {4}at/, 'error.cause')
+  if (IS_ERROR_CAUSE_SUPPORTED) {
+    t.match(rec.error.cause, /^Error: the cause\n {4}at/, 'error.cause')
+  }
   t.end()
 })
 
@@ -211,6 +223,8 @@ test('log.info("msg", { err: new Error("boom") })', t => {
   t.equal(rec.error.message, 'boom', 'error.message')
   t.match(rec.error.stack_trace, /^Error: boom\n {4}at/, 'error.stack_trace')
   t.equal(rec.error.aField, 'err field value', 'error.aField')
-  t.match(rec.error.cause, /^Error: the cause\n {4}at/, 'error.cause')
+  if (IS_ERROR_CAUSE_SUPPORTED) {
+    t.match(rec.error.cause, /^Error: the cause\n {4}at/, 'error.cause')
+  }
   t.end()
 })
