@@ -184,6 +184,7 @@ class EcsWinstonTransform {
       // The add some additional fields. `cause` is handled by
       // `logform.errors({cause: true})`.  This implementation ensures it is
       // always a string to avoid its type varying depending on the value.
+      // istanbul ignore next -- so coverage works for Node.js <16.9.0
       if (err.cause) {
         ecsFields.error.cause = err.cause instanceof Error
           ? err.cause.stack
