@@ -11,6 +11,8 @@ shipper, you can send your logs directly to Elasticsearch and leverage
 [Kibana's Logs app](https://www.elastic.co/guide/en/observability/current/monitor-logs.html)
 to inspect all logs in one single place.
 
+`pino` 6.x, 7.x, and 8.x versions are supported.
+
 Please see the [Node.js ECS pino documentation](https://www.elastic.co/guide/en/ecs-logging/nodejs/current/pino.html).
 
 

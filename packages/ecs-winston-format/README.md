@@ -12,6 +12,8 @@ shipper, you can send your logs directly to Elasticsearch and leverage
 [Kibana's Logs app](https://www.elastic.co/guide/en/observability/current/monitor-logs.html)
 to inspect all logs in one single place.
 
+`winston` 3.x versions are supported.
+
 Please see the [Node.js ECS winston documentation](https://www.elastic.co/guide/en/ecs-logging/nodejs/current/winston.html).
 
 
