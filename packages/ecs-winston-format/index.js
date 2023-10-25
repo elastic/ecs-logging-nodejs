@@ -17,11 +17,10 @@
 
 'use strict'
 
-const { MESSAGE } = require('triple-beam')
+const { MESSAGE, SPLAT } = require('triple-beam')
 const safeStableStringify = require('safe-stable-stringify')
 const {
   version,
-  formatError,
   formatHttpRequest,
   formatHttpResponse
 } = require('@elastic/ecs-helpers')
@@ -48,11 +47,11 @@ try {
 const stringify = safeStableStringify.configure({ deterministic: false })
 
 const reservedFields = {
+  '@timestamp': true,
+  error: true,
   level: true,
   'log.level': true,
-  ecs: true,
-  '@timestamp': true,
-  err: true,
+  message: true,
   req: true,
   res: true
 }
@@ -80,6 +79,115 @@ class EcsWinstonTransform {
       'log.level': info.level,
       message: info.message,
       'ecs.version': version
+    }
+
+    // Error handling. Winston has a number of ways that it does something with
+    // `Error` instances passed to a logger.
+    //
+    // 1. `log.warn('a message', new Error('boom'))`
+    //    If `info[SPLAT][0] instanceof Error`, then convert it to `error.*` fields
+    //    in place of `info.stack`.
+    //
+    // 2. Winston logger configured to handle uncaughtException and/or unhandledRejection.
+    //    If `info.exception: true` and level is "error" and `info.trace` is an
+    //    Array and `info.message` starts with "uncaughtException:" or
+    //    "unhandledRejection:", then convert to `error.*` fields. These
+    //    conditions are to infer the `info` shape returned by Winston's
+    //    `ExceptionHandler` and `RejectionHandler`.
+    //    In this case the redundant `stack`, `trace`, `date` fields are dropped
+    //    and error details are moved to the `error.*` fields.
+    //
+    // If `opts.convertErr === true` (the default), then the next two forms are
+    // considered as well.
+    //
+    // 3. `log.warn(new Error('boom'))`
+    //    `log.warn(new Error(''))`
+    //    `log.warn(new Error('boom'), {foo: 'bar'})`
+    //    If `info instanceof Error` or `info.message instanceof Error`, then
+    //    convert it to `error.*` fields. The latter two are a little strange, but
+    //    Winston's logger will transform that to `{ message: new Error(...) }`
+    //    and "logform/errors.js" will handle that.
+    //
+    // 4. `log.warn('a message', { err: new Error('boom') })`
+    //    If `info.err instanceof Error`, then convert to `error.*` fields.
+    //    Note: This feature doesn't really belong because it extends error
+    //    handling beyond what is typical in Winston. It remains for backward
+    //    compatibility.
+    let err
+    let delErrorLevel = false
+    const splat0 = SPLAT && info[SPLAT] && info[SPLAT][0]
+    if (splat0 instanceof Error) { // case 1
+      // Undo the addition of this error's enumerable properties to the
+      // top-level info object.
+      err = splat0
+      delete info.stack
+      for (const propName in err) {
+        delete info[propName]
+      }
+    } else if (info.exception === true &&
+      info.level === 'error' &&
+      Array.isArray(info.trace) &&
+      (info.message.startsWith('uncaughtException:') ||
+        info.message.startsWith('unhandledRejection:'))) { // case 2
+      // The 'stack', 'trace', and trace in the 'message' are redundant.
+      // 'date' is also redundant with '@timestamp'.
+      delete info.stack
+      delete info.trace
+      delete info.date
+      ecsFields.message = info.message.split(/\n/, 1)[0]
+      // istanbul ignore else
+      if (info.error instanceof Error) {
+        err = info.error
+      } else {
+        ecsFields.error = {
+          message: info.error.toString()
+        }
+      }
+      delete info.error
+      // Dev Note: We *could* translate some of the process and os fields, but
+      // we don't currently.
+      //    https://www.elastic.co/guide/en/ecs/current/ecs-process.html
+      //    https://www.elastic.co/guide/en/ecs/current/ecs-host.html
+    } else if (convertErr) { // cases 3 and 4
+      if (info instanceof Error) {
+        // With `log.info(err)`, Winston incorrectly uses `err` as the info
+        // object -- (a) mutating it and (b) resulting in not being able to
+        // differentiate `defaultMeta` and `err` properties.
+        // The best we can do is, at least, not serialize `error.level` using
+        // the incorrectly added `level` field.
+        err = info
+        delErrorLevel = true
+      } else if (info.message instanceof Error) {
+        // `log.info(err, {...})` or `log.info(new Error(''))` with empty message.
+        err = info.message
+        ecsFields.message = err.message
+      } else if (info.err instanceof Error) {
+        err = info.err
+        delete info.err
+      }
+    }
+
+    // If we have an Error instance, then serialize it to `error.*` fields.
+    if (err) {
+      // First we add err's enumerable fields, as `logform.errors()` does.
+      ecsFields.error = Object.assign({}, err)
+      if (delErrorLevel) {
+        delete ecsFields.error.level
+      }
+      // Then add standard ECS error fields (https://www.elastic.co/guide/en/ecs/current/ecs-error.html).
+      // istanbul ignore next
+      ecsFields.error.type = toString.call(err.constructor) === '[object Function]'
+        ? err.constructor.name
+        : err.name
+      ecsFields.error.message = err.message
+      ecsFields.error.stack_trace = err.stack
+      // The add some additional fields. `cause` is handled by
+      // `logform.errors({cause: true})`.  This implementation ensures it is
+      // always a string to avoid its type varying depending on the value.
+      if (err.cause) {
+        ecsFields.error.cause = err.cause instanceof Error
+          ? err.cause.stack : err.cause.toString()
+      }
     }
 
     // Add all unreserved fields.
@@ -162,15 +270,6 @@ class EcsWinstonTransform {
         if (span) {
           ecsFields['span.id'] = span.id
         }
-      }
-    }
-
-    // https://www.elastic.co/guide/en/ecs/current/ecs-error.html
-    if (info.err !== undefined) {
-      if (convertErr) {
-        formatError(ecsFields, info.err)
-      } else {
-        ecsFields.err = info.err
       }
     }
 

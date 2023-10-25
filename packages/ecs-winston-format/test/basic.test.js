@@ -20,38 +20,12 @@
 const http = require('http')
 const test = require('tap').test
 const winston = require('winston')
-const Transport = require('winston-transport')
 const { MESSAGE } = require('triple-beam')
-const addFormats = require('ajv-formats').default
-const Ajv = require('ajv').default
 const { version } = require('@elastic/ecs-helpers')
 
 const ecsFormat = require('../')
 const { ecsLoggingValidate } = require('../../../utils/lib/ecs-logging-validate')
-
-const ajv = new Ajv({
-  allErrors: true,
-  verbose: true
-})
-addFormats(ajv)
-const validate = ajv.compile(require('../../../utils/schema.json'))
-
-// Winston transport to capture logged records. Parsed JSON records are on
-// `.records`. Raw records (what Winston calls `info` objects) are on `.infos`.
-class CaptureTransport extends Transport {
-  constructor () {
-    super()
-    this.records = []
-    this.infos = []
-  }
-
-  log (info, callback) {
-    this.infos.push(info)
-    const record = JSON.parse(info[MESSAGE])
-    this.records.push(record)
-    callback()
-  }
-}
+const { validate, CaptureTransport } = require('./utils')
 
 test('Should produce valid ecs logs', t => {
   t.plan(4)
@@ -298,21 +272,5 @@ test('can configure correlation fields', t => {
   t.equal(rec['service.environment'], 'override-serviceEnvironment')
   t.equal(rec['service.node.name'], 'override-serviceNodeName')
   t.equal(rec['event.dataset'], 'override-eventDataset')
-  t.end()
-})
-
-test('can handle circular refs', t => {
-  const cap = new CaptureTransport()
-  const logger = winston.createLogger({
-    format: ecsFormat(),
-    transports: [cap]
-  })
-
-  const obj = { foo: 'bar' }
-  obj.self = obj
-  logger.info('hi', { obj })
-
-  const rec = cap.records[0]
-  t.strictSame(rec.obj, { foo: 'bar', self: '[Circular]' })
   t.end()
 })

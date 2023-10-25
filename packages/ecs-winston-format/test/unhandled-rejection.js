@@ -17,17 +17,12 @@
 
 'use strict'
 
-const winston = require('winston')
 const ecsFormat = require('../') // @elastic/ecs-winston-format
+const winston = require('winston')
 
-const logger = winston.createLogger({
+const log = winston.createLogger({
   level: 'info',
   format: ecsFormat(),
-  // Compare to:
-  // format: winston.format.combine(
-  //   winston.format.errors({stack: true, cause: true}),
-  //   winston.format.json()
-  // ),
   transports: [
     new winston.transports.Console({
       handleExceptions: true,
@@ -36,9 +31,14 @@ const logger = winston.createLogger({
   ]
 })
 
-logger.info('hi')
-logger.warn('look out', { foo: 'bar' })
+async function funcb() {
+  const e = new Error('funcb boom')
+  e.code = 42
+  throw e
+}
 
-const err = new Error('boom', { cause: new Error('the cause') })
-err.code = 42
-logger.error('here is an exception', err)
+async function funca() {
+  await funcb()
+}
+
+funca()
