@@ -32,7 +32,8 @@
   "scripts": {
     "lint": "standard",
     "lint:fix": "standard --fix",
-    "test": "tap --timeout ${TAP_TIMEOUT:-10} test/*.test.js"
+    "test": "tap --timeout ${TAP_TIMEOUT:-10} test/*.test.js",
+    "tav": "tav --quiet"
   },
   "engines": {
     "node": ">=10"
@@ -48,8 +49,10 @@
     "express": "^4.17.1",
     "pino": "^6.0.0",
     "pino-http": "^5.3.0",
+    "semver": "^7.5.4",
     "split2": "^3.1.1",
     "standard": "16.x",
-    "tap": "^15.0.10"
+    "tap": "^15.0.10",
+    "test-all-versions": "^5.0.1"
   }
 }

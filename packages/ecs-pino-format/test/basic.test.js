@@ -25,6 +25,7 @@ const os = require('os')
 const addFormats = require('ajv-formats').default
 const Ajv = require('ajv').default
 const pino = require('pino')
+const semver = require('semver')
 const split = require('split2')
 const test = require('tap').test
 const ecsVersion = require('@elastic/ecs-helpers').version
@@ -319,6 +320,12 @@ test('can handle circular refs', t => {
 
   const rec = JSON.parse(lines[0])
   t.ok(validate(rec))
-  t.strictSame(rec.obj, { foo: 'bar', self: '[Circular]' })
+  if (semver.satisfies(pino.version, '>=7.0.0 <7.1.0')) {
+    // For some versions pino used json-stringify-safe with a slightly different
+    // serialization for circular refs.
+    t.strictSame(rec.obj, { foo: 'bar', self: '[Circular ~]' })
+  } else {
+    t.strictSame(rec.obj, { foo: 'bar', self: '[Circular]' })
+  }
   t.end()
 })

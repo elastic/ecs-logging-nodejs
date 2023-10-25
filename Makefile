@@ -16,6 +16,10 @@ all:
 test:
 	./utils/run-test.sh
 
+.PHONY: tav
+tav:
+	npm --workspaces run --if-present tav # requires npm>=7 (aka node>=16)
+
 .PHONY: lint
 lint: check-license-headers
 	./utils/run-lint.sh

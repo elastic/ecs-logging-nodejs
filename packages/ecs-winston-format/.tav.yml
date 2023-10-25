@@ -1,0 +1,7 @@
+winston:
+  - versions: '>=3.0.0 <3.6.0'
+    node: '>=6.4.0'
+    commands: 'npm test'
+  - versions: '>=3.6.0'
+    node: '>=12'
+    commands: 'npm test'
