@@ -2,7 +2,7 @@
 
 # @elastic/ecs-pino-format
 
-[![npm](https://img.shields.io/npm/v/elastic-apm-node.svg)](https://www.npmjs.com/package/@elastic/ecs-pino-format)
+[![npm](https://img.shields.io/npm/v/@elastic/ecs-pino-format.svg)](https://www.npmjs.com/package/@elastic/ecs-pino-format)
 [![test](https://github.com/elastic/ecs-logging-nodejs/actions/workflows/test.yml/badge.svg)](https://github.com/elastic/ecs-logging-nodejs/actions/workflows/test.yml)
 
 This Node.js package provides a formatter for the [pino](https://getpino.io/)
