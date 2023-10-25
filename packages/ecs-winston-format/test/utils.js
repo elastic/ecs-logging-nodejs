@@ -17,28 +17,36 @@
 
 'use strict'
 
-const winston = require('winston')
-const ecsFormat = require('../') // @elastic/ecs-winston-format
+const Transport = require('winston-transport')
+const { MESSAGE } = require('triple-beam')
+const addFormats = require('ajv-formats').default
+const Ajv = require('ajv').default
 
-const logger = winston.createLogger({
-  level: 'info',
-  format: ecsFormat(),
-  // Compare to:
-  // format: winston.format.combine(
-  //   winston.format.errors({stack: true, cause: true}),
-  //   winston.format.json()
-  // ),
-  transports: [
-    new winston.transports.Console({
-      handleExceptions: true,
-      handleRejections: true
-    })
-  ]
+const ajv = new Ajv({
+  allErrors: true,
+  verbose: true
 })
+addFormats(ajv)
+const validate = ajv.compile(require('../../../utils/schema.json'))
 
-logger.info('hi')
-logger.warn('look out', { foo: 'bar' })
+// Winston transport to capture logged records. Parsed JSON records are on
+// `.records`. Raw records (what Winston calls `info` objects) are on `.infos`.
+class CaptureTransport extends Transport {
+  constructor () {
+    super()
+    this.records = []
+    this.infos = []
+  }
 
-const err = new Error('boom', { cause: new Error('the cause') })
-err.code = 42
-logger.error('here is an exception', err)
+  log (info, callback) {
+    this.infos.push(info)
+    const record = JSON.parse(info[MESSAGE])
+    this.records.push(record)
+    callback()
+  }
+}
+
+module.exports = {
+  validate,
+  CaptureTransport
+}

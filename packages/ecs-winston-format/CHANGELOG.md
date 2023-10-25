@@ -2,6 +2,40 @@
 
 ## Unreleased
 
+- Fix/improve serialization of error details to `error.*` fields for the
+  various ways a Winston logger handles `Error` instances.
+
+    ```js
+    const aCause = new Error('the cause');
+    const anErr = new Error('boom', {cause: aCause});
+    anErr.code = 42;
+
+    log.debug("some message", anErr); // Form 1
+    log.info(anErr, {foo: "bar"}); // Form 2
+    log.warn("some message", {err: anErr, foo: "bar"}); // Form 3
+    ```
+
+  1. Winston will add a `stack` field for an error passed this way.
+  2. If the `logform.errors(...)` format is configured, Winston will serialize
+     `anErr` passed this way.
+  3. Passing an error via the `err` meta field is specific to
+     `@elastic/ecs-winston-format` and is discouraged. If possible, use style 1.
+     It will remain for now for backward compatibility.
+
+  With this change, all three cases above will result in `anErr` details being
+  serialized to [ECS `error.*` fields](https://www.elastic.co/guide/en/ecs/current/ecs-error.html),
+  as well as [`error.cause`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause)
+  and other properties on the error instance. Forms 2 and 3 are enabled via
+  the `convertErr: true` configuration option.
+  See [examples/basic.js](./examples/basic.js).
+
+  In addition, if your Winston logger is configured to handle `uncaughtException`
+  and/or `unhandledRejection` (https://github.com/winstonjs/winston#exceptions),
+  then the Error instance included in this log record will be serialized to
+  `error.*` fields. See [test/uncaught-exception.js](./test/uncaught-exception.js)
+  and [test/unhandled-rejection.js](./test/unhandled-rejection.js) for examples.
+  (https://github.com/elastic/ecs-logging-nodejs/issues/128)
+
 - Switch to `safe-stable-stringify` for JSON serialization. This library
   protects against circular references and bigints.
   (https://github.com/elastic/ecs-logging-nodejs/pull/155)
