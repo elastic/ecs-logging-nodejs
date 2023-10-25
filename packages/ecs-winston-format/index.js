@@ -33,16 +33,17 @@ try {
   // Silently ignore.
 }
 
-// There are some differences between Winston's `logform.format.json()` and this
-// stringifier. They both use `safe-stable-stringify`. Winston's exposes its
+// There are some differences between Winston's `logform.json()` and this
+// stringifier. They both use `safe-stable-stringify`. Winston exposes its
 // options but doesn't doc that at https://github.com/winstonjs/logform#json.
 // 1. This one hardcodes `deterministic: false` so fields are serialized in the
 //    order added, which is helpful for ecs-logging's stated preference of
-//    having a few fields first:
+//    having a few specific fields first:
 //    https://www.elastic.co/guide/en/ecs-logging/overview/current/intro.html#_why_ecs_logging
 // 2. Winston provides a `replacer` that converts bigints to strings. Doing
 //    that is debatable. The argument *for* is that a *JavaScript* JSON parser
-//    looses precision when parsing a bigint.
+//    looses precision when parsing a bigint. This stringifier does *not*
+//    do this same conversion.
 // TODO: These differences should make it to docs somewhere.
 const stringify = safeStableStringify.configure({ deterministic: false })
 

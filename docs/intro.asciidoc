@@ -26,8 +26,8 @@ See the {ecs-logging-ref}/intro.html[ECS logging guide].
 
 Ready to jump into Node.js ECS logging?
 
-- <<morgan,ECS Logging with Morgan>>
 - <<pino,ECS Logging with Pino>>
 - <<winston,ECS Logging with Winston>>
+- <<morgan,ECS Logging with Morgan>>
 
 If you'd like to try out a tutorial using Node.js ECS logging with winston, see {cloud}/ec-getting-started-search-use-cases-node-logs.html[Ingest logs from a Node.js web application using Filebeat].
