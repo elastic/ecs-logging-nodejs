@@ -147,9 +147,6 @@ class EcsFieldsTransform {
             [LEVEL]: err.level
           },
           err)
-        if (SPLAT && SPLAT in err) {
-          info[SPLAT] = err[SPLAT]
-        }
         delete err.level
       } else if (info.message instanceof Error) { // case 3b
         // `log.info(err, {...})` or `log.info(new Error(''))` with empty message.
