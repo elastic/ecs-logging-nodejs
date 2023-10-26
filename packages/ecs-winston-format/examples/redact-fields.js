@@ -83,7 +83,7 @@ const log = winston.createLogger({
   format: winston.format.combine(
     ecsFields({ convertReqRes: true }),
     new WinstonRedactFormatter({
-      paths: ['passwd', 'http.request.headers.authorization'],
+      paths: ['passwd', 'http.request.headers.authorization']
       // censor: '🙈'
     }),
     // Get *similar* results with winston.format.json().

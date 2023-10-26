@@ -28,7 +28,7 @@ const logger = winston.createLogger({
   // winston format:
   format: winston.format.combine(
     winston.format.timestamp(),
-    winston.format.errors({stack: true, cause: true}),
+    winston.format.errors({ stack: true, cause: true }),
     winston.format.json()
   ),
   transports: [
