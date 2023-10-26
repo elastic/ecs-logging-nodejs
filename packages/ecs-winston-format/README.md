@@ -46,8 +46,8 @@ Running this script will produce log output similar to the following:
 
 ```sh
 % node examples/basic.js
-{"@timestamp":"2021-01-13T21:32:38.095Z","log.level":"info","message":"hi","ecs":{"version":"1.6.0"}}
-{"@timestamp":"2021-01-13T21:32:38.096Z","log.level":"error","message":"oops there is a problem","ecs":{"version":"1.6.0"},"foo":"bar"}
+{"@timestamp":"2021-01-13T21:32:38.095Z","log.level":"info","message":"hi","ecs":{"version":"8.10.0"}}
+{"@timestamp":"2021-01-13T21:32:38.096Z","log.level":"error","message":"oops there is a problem","ecs":{"version":"8.10.0"},"foo":"bar"}
 ```
 
 Please see the [Node.js ECS winston documentation](https://www.elastic.co/guide/en/ecs-logging/nodejs/current/winston.html) for more.

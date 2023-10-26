@@ -6,6 +6,8 @@
   protects against circular references and bigints.
   (https://github.com/elastic/ecs-logging-nodejs/pull/155)
 
+- Set `http.request.id` field (see [ecs-helpers CHANGELOG](../ecs-helpers/CHANGELOG.md#v210)).
+
 ## v1.4.0
 
 - Add `service.version`, `service.environment`, and `service.node.name` log

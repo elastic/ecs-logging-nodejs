@@ -6,6 +6,8 @@
   `fast-safe-stringify` lib that resulted in a maintenance warning about
   the `string-similarity` transitive dep.
 
+- Set `http.request.id` field (see [ecs-helpers CHANGELOG](../ecs-helpers/CHANGELOG.md#v210)).
+
 ## v1.4.0
 
 - Add `service.version`, `service.environment`, and `service.node.name` log

@@ -31,7 +31,7 @@ test('express res/req serialization', t => {
   const app = express()
   let server
 
-  app.get('/', (req, res) => {
+  app.get('/apath', (req, res) => {
     const rec = {}
 
     res.setHeader('Foo', 'Bar')
@@ -45,17 +45,20 @@ test('express res/req serialization', t => {
 
     t.same(rec.user_agent, { original: 'cool-agent' })
     t.same(rec.url, {
-      path: '/',
-      full: `http://127.0.0.1:${server.address().port}/`,
+      full: `http://127.0.0.1:${server.address().port}/apath?aquery`,
+      path: '/apath',
+      query: 'aquery',
       domain: '127.0.0.1'
     })
     t.same(rec.http, {
       version: '1.1',
       request: {
+        id: 'arequestid',
         method: 'GET',
         headers: {
           'user-agent': 'cool-agent',
           host: `127.0.0.1:${server.address().port}`,
+          'x-request-id': 'arequestid',
           connection: 'close'
         }
       },
@@ -78,9 +81,13 @@ test('express res/req serialization', t => {
   app.listen(0, '127.0.0.1', function () {
     server = this
     const req = http.get(
-      `http://127.0.0.1:${server.address().port}/`,
+      `http://127.0.0.1:${server.address().port}/apath?aquery#ahash`,
       {
-        headers: { 'user-agent': 'cool-agent', connection: 'close' }
+        headers: {
+          'user-agent': 'cool-agent',
+          connection: 'close',
+          'x-request-id': 'arequestid'
+        }
       },
       function (res) {
         res.on('data', function () {})
@@ -91,6 +98,6 @@ test('express res/req serialization', t => {
         })
       }
     )
-    req.on('error', t.ifErr)
+    req.on('error', t.error)
   })
 })
