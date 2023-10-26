@@ -54,6 +54,7 @@
     "split2": "^3.2.2",
     "standard": "16.x",
     "tap": "^15.0.10",
+    "test-all-versions": "^5.0.1",
     "winston": "^3.3.3"
   }
 }
