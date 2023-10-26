@@ -27,8 +27,8 @@ npm install @elastic/ecs-winston-format
 ## Usage
 
 ```js
-const winston = require('winston')
-const ecsFormat = require('@elastic/ecs-winston-format')
+const winston = require('winston');
+const { ecsFormat } = require('@elastic/ecs-winston-format');
 
 const logger = winston.createLogger({
   level: 'info',
@@ -36,10 +36,10 @@ const logger = winston.createLogger({
   transports: [
     new winston.transports.Console()
   ]
-})
+});
 
-logger.info('hi')
-logger.error('oops there is a problem', { foo: 'bar' })
+logger.info('hi');
+logger.error('oops there is a problem', { foo: 'bar' });
 ```
 
 Running this script will produce log output similar to the following:

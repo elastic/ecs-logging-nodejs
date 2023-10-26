@@ -20,7 +20,7 @@
 // This shows how one could use @elastic/ecs-winston-format with Express.
 // This implements simple Express middleware to do so.
 
-const ecsFormat = require('../') // @elastic/ecs-winston-format
+const { ecsFormat } = require('../') // @elastic/ecs-winston-format
 const express = require('express')
 const winston = require('winston')
 

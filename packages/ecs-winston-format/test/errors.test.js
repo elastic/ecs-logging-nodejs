@@ -27,7 +27,7 @@ const winston = require('winston')
 const { ecsLoggingValidate } = require('../../../utils/lib/ecs-logging-validate')
 const { validate, CaptureTransport } = require('./utils')
 
-const ecsFormat = require('../')
+const { ecsFormat } = require('../')
 
 // https://nodejs.org/en/blog/release/v16.9.0
 const IS_ERROR_CAUSE_SUPPORTED = semver.satisfies(process.version, '>=16.9.0')
@@ -49,7 +49,7 @@ test('log.info("msg", new Error("boom"))', t => {
 
   const rec = cap.records[0]
   t.ok(validate(rec))
-  t.equal(ecsLoggingValidate(cap.infos[0][MESSAGE]), null)
+  t.equal(ecsLoggingValidate(cap.infos[0][MESSAGE], { ignoreIndex: true }), null)
   t.equal(rec.message, 'msg boom') // Winston core appends the err.message to the message.
   // Ideally we'd expect `aField: 'defaultMeta field value'`, but Winston
   // core error handling overwrites with `err.aField`. The ECS formatter
@@ -130,14 +130,14 @@ test('log.info(new Error("boom"))', t => {
 
   const rec = cap.records[0]
   t.ok(validate(rec))
-  t.equal(ecsLoggingValidate(cap.infos[0][MESSAGE]), null)
+  t.equal(ecsLoggingValidate(cap.infos[0][MESSAGE], { ignoreIndex: true }), null)
   t.equal(rec.message, 'boom', 'message')
   t.equal(rec.aField, 'defaultMeta field value', 'aField')
   t.equal(rec.error.type, 'Error', 'error.type')
   t.equal(rec.error.message, 'boom', 'error.message')
   t.match(rec.error.stack_trace, /^Error: boom\n {4}at/, 'error.stack_trace')
   // Winston mixes `err` properties and `defaultMeta` at the top-level, so
-  // conflicts result in lost date.
+  // conflicts result in lost data.
   t.equal(rec.error.aField, 'defaultMeta field value', 'error.aField')
   if (IS_ERROR_CAUSE_SUPPORTED) {
     t.equal(rec.error.cause, 'the cause is a string', 'error.cause')
@@ -160,7 +160,7 @@ test('log.info(new Error("boom"), {...})', t => {
 
   const rec = cap.records[0]
   t.ok(validate(rec))
-  t.equal(ecsLoggingValidate(cap.infos[0][MESSAGE]), null)
+  t.equal(ecsLoggingValidate(cap.infos[0][MESSAGE], { ignoreIndex: true }), null)
   t.equal(rec.message, 'boom', 'message')
   t.equal(rec.aField, 'splat field value', 'aField')
   t.equal(rec.error.type, 'Error', 'error.type')
@@ -188,7 +188,7 @@ test('log.info(new Error("")) with empty err.message', t => {
 
   const rec = cap.records[0]
   t.ok(validate(rec))
-  t.equal(ecsLoggingValidate(cap.infos[0][MESSAGE]), null)
+  t.equal(ecsLoggingValidate(cap.infos[0][MESSAGE], { ignoreIndex: true }), null)
   t.equal(rec.message, '', 'message')
   t.equal(rec.aField, 'defaultMeta field value', 'aField')
   t.equal(rec.error.type, 'Error', 'error.type')
@@ -216,7 +216,7 @@ test('log.info("msg", { err: new Error("boom") })', t => {
 
   const rec = cap.records[0]
   t.ok(validate(rec))
-  t.equal(ecsLoggingValidate(cap.infos[0][MESSAGE]), null)
+  t.equal(ecsLoggingValidate(cap.infos[0][MESSAGE], { ignoreIndex: true }), null)
   t.equal(rec.message, 'msg', 'message')
   t.equal(rec.aField, 'splat field value', 'aField')
   t.equal(rec.error.type, 'Error', 'error.type')

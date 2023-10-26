@@ -17,7 +17,7 @@
 
 'use strict'
 
-const ecsFormat = require('../') // @elastic/ecs-winston-format
+const { ecsFormat } = require('../') // @elastic/ecs-winston-format
 const winston = require('winston')
 
 // eslint-disable-next-line

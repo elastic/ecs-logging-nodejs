@@ -19,7 +19,7 @@
 
 // This script is used by "apm.test.js".
 
-const ecsFormat = require('../') // @elastic/ecs-winston-format
+const { ecsFormat } = require('../') // @elastic/ecs-winston-format
 const winston = require('winston')
 
 const log = winston.createLogger({

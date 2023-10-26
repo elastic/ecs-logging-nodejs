@@ -18,13 +18,14 @@
 'use strict'
 
 const winston = require('winston')
-const ecsFormat = require('../') // @elastic/ecs-winston-format
+const { ecsFormat } = require('../') // @elastic/ecs-winston-format
 
 const logger = winston.createLogger({
   level: 'info',
   format: ecsFormat(),
-  // Compare to:
+  // Compare to the following (see "basic-without-ecs-format.js"):
   // format: winston.format.combine(
+  //   winston.format.timestamp(),
   //   winston.format.errors({stack: true, cause: true}),
   //   winston.format.json()
   // ),

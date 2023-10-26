@@ -26,18 +26,18 @@ $ npm install @elastic/ecs-winston-format
 
 [source,js]
 ----
-const winston = require('winston')
-const ecsFormat = require('@elastic/ecs-winston-format')
+const winston = require('winston');
+const { ecsFormat } = require('@elastic/ecs-winston-format');
 
 const logger = winston.createLogger({
   format: ecsFormat(/* options */), <1>
   transports: [
     new winston.transports.Console()
   ]
-})
+});
 
-logger.info('hi')
-logger.error('oops there is a problem', { err: new Error('boom') })
+logger.info('hi');
+logger.error('oops there is a problem', { err: new Error('boom') });
 ----
 <1> Pass the ECS formatter to winston here.
 
@@ -58,8 +58,8 @@ NOTE: You might like to try out our tutorial using Node.js ECS logging with wins
 
 [source,js]
 ----
-const winston = require('winston')
-const ecsFormat = require('@elastic/ecs-winston-format')
+const winston = require('winston');
+const { ecsFormat } = require('@elastic/ecs-winston-format');
 
 const logger = winston.createLogger({
   level: 'info',
@@ -67,10 +67,10 @@ const logger = winston.createLogger({
   transports: [
     new winston.transports.Console()
   ]
-})
+});
 
-logger.info('hi')
-logger.error('oops there is a problem', { foo: 'bar' })
+logger.info('hi');
+logger.error('oops there is a problem', { foo: 'bar' });
 ----
 <1> See available options <<winston-ref,below>>.
 
@@ -99,17 +99,17 @@ For https://github.com/elastic/ecs-logging-nodejs/blob/main/packages/ecs-winston
 
 [source,js]
 ----
-const winston = require('winston')
-const ecsFormat = require('@elastic/ecs-winston-format')
+const winston = require('winston');
+const { ecsFormat } = require('@elastic/ecs-winston-format');
 const logger = winston.createLogger({
   format: ecsFormat(), <1>
   transports: [
     new winston.transports.Console()
   ]
-})
+});
 
-const myErr = new Error('boom')
-logger.info('oops', { err: myErr }) <2>
+const myErr = new Error('boom');
+logger.info('oops', { err: myErr }); <2>
 ----
 
 will yield (pretty-printed for readability):
@@ -153,9 +153,9 @@ objects when passed as the `req` and `res` meta fields, respectively.
 
 [source,js]
 ----
-const http = require('http')
-const winston = require('winston')
-const ecsFormat = require('@elastic/ecs-winston-format')
+const http = require('http');
+const winston = require('winston');
+const { ecsFormat } = require('@elastic/ecs-winston-format');
 
 const logger = winston.createLogger({
   level: 'info',
@@ -163,17 +163,17 @@ const logger = winston.createLogger({
   transports: [
     new winston.transports.Console()
   ]
-})
+});
 
-const server = http.createServer(handler)
+const server = http.createServer(handler);
 server.listen(3000, () => {
   logger.info('listening at http://localhost:3000')
-})
+});
 
 function handler (req, res) {
-  res.setHeader('Foo', 'Bar')
-  res.end('ok')
-  logger.info('handled request', { req, res }) <2>
+  res.setHeader('Foo', 'Bar');
+  res.end('ok');
+  logger.info('handled request', { req, res }); <2>
 }
 ----
 <1> use `convertReqRes` option
@@ -272,6 +272,18 @@ const logger = winston.createLogger({
 ----
 
 [float]
+[[winston-limitations]]
+=== Limitations and Considerations
+
+The https://github.com/elastic/ecs-logging/tree/main/spec[ecs-logging spec]
+suggests that the first three fields in log records should be `@timestamp`,
+`log.level`, and `message`. As of version 1.5.0, this formatter does *not*
+follow this suggestion. It would be possible but would require creating a new
+Object in `ecsFields` for each log record. Given that ordering of ecs-logging
+fields is for *human readability* and does not affect interoperability, the
+decision was made to prefer performance.
+
+[float]
 [[winston-ref]]
 === Reference
 
@@ -289,4 +301,49 @@ const logger = winston.createLogger({
 ** `serviceNodeName` +{type-string}+ A "service.node.name" value. If specified this overrides any value from an active APM agent.
 ** `eventDataset` +{type-string}+ A "event.dataset" value. If specified this overrides the default of using `${serviceVersion}`.
 
-Create a formatter for winston that emits in ECS Logging format.
+Create a formatter for winston that emits in ECS Logging format. This is a
+single format that handles both <<winston-ref-ecsFields>> and <<winston-ref-ecsStringify>>.
+The following two are equivalent:
+
+[source,js]
+----
+const { ecsFormat, ecsFields, ecsStringify } = require('@elastic/ecs-winston-format');
+const winston = require('winston');
+
+const logger = winston.createLogger({
+  format: ecsFormat(/* options */),
+  // ...
+});
+
+const logger = winston.createLogger({
+  format: winston.format.combine(
+    ecsFields(/* options */),
+    ecsStringify()
+  ),
+  // ...
+});
+----
+
+[float]
+[[winston-ref-ecsFields]]
+==== `ecsFields([options])`
+
+* `options` +{type-object}+ The following options are supported:
+** `convertErr` +{type-boolean}+ Whether to convert a logged `err` field to ECS error fields. *Default:* `true`.
+** `convertReqRes` +{type-boolean}+ Whether to logged `req` and `res` HTTP request and response fields to ECS HTTP, User agent, and URL fields. *Default:* `false`.
+** `apmIntegration` +{type-boolean}+ Whether to enable APM agent integration. *Default:* `true`.
+** `serviceName` +{type-string}+ A "service.name" value. If specified this overrides any value from an active APM agent.
+** `serviceVersion` +{type-string}+ A "service.version" value. If specified this overrides any value from an active APM agent.
+** `serviceEnvironment` +{type-string}+ A "service.environment" value. If specified this overrides any value from an active APM agent.
+** `serviceNodeName` +{type-string}+ A "service.node.name" value. If specified this overrides any value from an active APM agent.
+** `eventDataset` +{type-string}+ A "event.dataset" value. If specified this overrides the default of using `${serviceVersion}`.
+
+Create a formatter for winston that converts fields on the log record info
+objecct to ECS Logging format.
+
+[float]
+[[winston-ref-ecsStringify]]
+==== `ecsStringify([options])`
+
+Create a formatter for winston that stringifies/serializes the log record to
+JSON. (This is very similar to `logform.json()`.)
