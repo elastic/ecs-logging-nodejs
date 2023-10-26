@@ -1,6 +1,6 @@
 # @elastic/ecs-helpers Changelog
 
-## 2.0.0
+## v2.0.0
 
 - [Breaking change.] Drop the `serialize` method. Serialization will move to
   the individual `@elastic/ecs-*-format` libraries -- and they will be

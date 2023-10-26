@@ -1,29 +1,17 @@
-## Test with multiple node versions.
-name: test
+## TAV (test-all-versions) tests to test with multiple versions of deps.
+name: tav
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+  workflow_dispatch: ~
+  schedule:
+    # Weekly on Monday, 16:00 UTC, so hopefully near my PST morning.
+    - cron: '0 16 * * 1'
 
 permissions:
   contents: read
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18
-      - run: utils/run-install.sh
-      - run: utils/run-lint.sh
-
-  test:
+  tav:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -39,5 +27,5 @@ jobs:
         run: npm install -g npm@7 # npm@7 supports node >=10
       - name: Install dependencies
         run: utils/run-install.sh
-      - name: Test Node.js v${{ matrix.node-version }}
-        run: utils/run-test.sh
+      - name: TAV Node.js v${{ matrix.node-version }}
+        run: npm --workspaces run --if-present tav

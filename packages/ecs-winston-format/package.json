@@ -33,7 +33,8 @@
     "bench": "./benchmarks/bench",
     "lint": "standard",
     "lint:fix": "standard --fix",
-    "test": "tap --timeout ${TAP_TIMEOUT:-10} test/*.test.js"
+    "test": "tap --timeout ${TAP_TIMEOUT:-10} test/*.test.js",
+    "tav": "tav --quiet"
   },
   "engines": {
     "node": ">=10"

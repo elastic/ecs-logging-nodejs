@@ -1,0 +1,15 @@
+# Ideally we'd test all pino releases, but that is too many to justify the
+# compute time -- so we test a subset.
+pino:
+  - versions: '6.0.0 || ^6.14.0'
+    # versions: '^6.0.0'
+    node: '>=10 <17'
+    commands: 'npm test'
+  - versions: '7.0.0 || ^7.11.0'
+    # versions: '^7.0.0'
+    node: '>=12 <18'
+    commands: 'npm test'
+  - versions: '8.0.0 || >=8.16.1'
+    # versions: '>=8.0.0'
+    node: '>=14'
+    commands: 'npm test'
