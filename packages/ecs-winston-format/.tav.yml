@@ -1,4 +1,6 @@
-# Skip winston@3.7.1, it breaks errors.test.js. Fixed in 3.7.2.
+# - Skip winston@3.7.1, it breaks errors.test.js. Fixed in 3.7.2.
+# - Min supported is winston@3.3.3, because I had timeouts even installing
+#   winston@3.3.1 with node v14.
 winston:
   - versions: '>=3.3.3 <3.6.0'
     node: '>=6.4.0'
