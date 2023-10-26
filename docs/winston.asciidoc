@@ -5,7 +5,7 @@ This Node.js package provides a formatter for the https://github.com/winstonjs/w
 logger, compatible with {ecs-logging-ref}/intro.html[Elastic Common Schema (ECS) logging].
 In combination with the https://www.elastic.co/beats/filebeat[Filebeat] shipper,
 you can https://www.elastic.co/log-monitoring[monitor all your logs] in one
-place in the Elastic Stack.
+place in the Elastic Stack. `winston` 3.x versions are supported.
 
 
 [float]
