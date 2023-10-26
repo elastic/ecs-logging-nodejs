@@ -19,7 +19,7 @@
 
 const http = require('http')
 const winston = require('winston')
-const ecsFormat = require('../') // @elastic/ecs-winston-format
+const { ecsFormat } = require('../') // @elastic/ecs-winston-format
 
 const logger = winston.createLogger({
   level: 'info',

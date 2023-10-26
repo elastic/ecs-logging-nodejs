@@ -28,6 +28,7 @@ const logger = winston.createLogger({
   // winston format:
   format: winston.format.combine(
     winston.format.timestamp(),
+    winston.format.errors({stack: true, cause: true}),
     winston.format.json()
   ),
   transports: [
@@ -36,4 +37,8 @@ const logger = winston.createLogger({
 })
 
 logger.info('hi')
-logger.error('oops there is a problem', { foo: 'bar' })
+logger.warn('look out', { foo: 'bar' })
+
+const err = new Error('boom', { cause: new Error('the cause') })
+err.code = 42
+logger.error('here is an exception', err)

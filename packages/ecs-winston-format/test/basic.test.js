@@ -23,7 +23,7 @@ const winston = require('winston')
 const { MESSAGE } = require('triple-beam')
 const { version } = require('@elastic/ecs-helpers')
 
-const ecsFormat = require('../')
+const { ecsFormat, ecsFields, ecsStringify } = require('../')
 const { ecsLoggingValidate } = require('../../../utils/lib/ecs-logging-validate')
 const { validate, CaptureTransport } = require('./utils')
 
@@ -42,7 +42,7 @@ test('Should produce valid ecs logs', t => {
     t.ok(validate(rec))
   })
   cap.infos.forEach((info) => {
-    t.equal(ecsLoggingValidate(info[MESSAGE]), null)
+    t.equal(ecsLoggingValidate(info[MESSAGE], { ignoreIndex: true }), null)
   })
   t.end()
 })
@@ -60,7 +60,7 @@ test('Bad ecs log (on purpose)', t => {
   cap.records.forEach((rec) => {
     rec['@timestamp'] = true // Intentionally break it
     t.notOk(validate(rec))
-    t.notOk(ecsLoggingValidate(rec))
+    t.notOk(ecsLoggingValidate(rec, { ignoreIndex: true }))
   })
   t.end()
 })
@@ -180,9 +180,9 @@ test('http request and response (req, res keys)', t => {
         res.on('close', function () {
           t.equal(cap.records.length, 2)
           t.ok(validate(cap.records[0]), 'record 0 is ECS valid')
-          t.equal(ecsLoggingValidate(cap.infos[0][MESSAGE]), null)
+          t.equal(ecsLoggingValidate(cap.infos[0][MESSAGE], { ignoreIndex: true }), null)
           t.ok(validate(cap.records[1]), 'record 1 is ECS valid')
-          t.equal(ecsLoggingValidate(cap.infos[1][MESSAGE]), null)
+          t.equal(ecsLoggingValidate(cap.infos[1][MESSAGE], { ignoreIndex: true }), null)
           // Spot check that some of the ECS HTTP fields are there.
           t.equal(cap.records[0].http.request.method, 'POST',
             'http.request.method')
@@ -210,7 +210,7 @@ test('convertErr is true by default', t => {
   log.info('hi', { err: new Error('boom') })
   const rec = cap.records[0]
   t.ok(validate(rec))
-  t.equal(ecsLoggingValidate(cap.infos[0][MESSAGE]), null)
+  t.equal(ecsLoggingValidate(cap.infos[0][MESSAGE], { ignoreIndex: true }), null)
   t.equal(rec.error.type, 'Error')
   t.equal(rec.error.message, 'boom')
   t.match(rec.error.stack_trace, /^Error: boom\n {4}at/)
@@ -246,7 +246,7 @@ test('convertErr=false allows passing through err=<non-Error>', t => {
   log.info('hi', { err: 42 })
   const rec = cap.records[0]
   t.ok(validate(rec))
-  t.equal(ecsLoggingValidate(cap.infos[0][MESSAGE]), null)
+  t.equal(ecsLoggingValidate(cap.infos[0][MESSAGE], { ignoreIndex: true }), null)
   t.equal(rec.err, 42, 'rec.err is unchanged')
   t.equal(rec.error, undefined, 'no rec.error is set')
   t.end()
@@ -272,5 +272,28 @@ test('can configure correlation fields', t => {
   t.equal(rec['service.environment'], 'override-serviceEnvironment')
   t.equal(rec['service.node.name'], 'override-serviceNodeName')
   t.equal(rec['event.dataset'], 'override-eventDataset')
+  t.end()
+})
+
+test('basic test with separate ecsFields + ecsStringify', t => {
+  t.plan(4)
+
+  const cap = new CaptureTransport()
+  const logger = winston.createLogger({
+    format: winston.format.combine(
+      ecsFields(),
+      ecsStringify()
+    ),
+    transports: [cap]
+  })
+  logger.info('ecs is cool!')
+  logger.error('ecs is cool!', { hello: 'world' })
+
+  cap.records.forEach((rec) => {
+    t.ok(validate(rec))
+  })
+  cap.infos.forEach((info) => {
+    t.equal(ecsLoggingValidate(info[MESSAGE], { ignoreIndex: true }), null)
+  })
   t.end()
 })

@@ -47,5 +47,12 @@ interface Config {
 }
 
 declare function ecsFormat(opts?: Config): Logform.Format;
+declare function ecsFields(opts?: Config): Logform.Format;
+declare function ecsStringify(): Logform.Format;
 
-export = ecsFormat;
+export default ecsFormat;
+export {
+  ecsFormat,
+  ecsFields,
+  ecsStringify
+}

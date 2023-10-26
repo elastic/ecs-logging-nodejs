@@ -2,6 +2,50 @@
 
 ## Unreleased
 
+- Add `ecsFields` and `ecsStringify` exports that are winston formatters
+  that separate the gathering of ECS fields (`ecsFields`) and the
+  stringification of a log record to an ecs-logging JSON object
+  (`ecsStringify`). This allows for better composability using
+  [`winston.format.combine`](https://github.com/winstonjs/logform#combine).
+
+  The preferred way to import now changes to:
+
+  ```js
+  const { ecsFormat } = require('@elastic/ecs-winston-format'); // NEW
+  ```
+
+  The old way will be deprecated and removed in the future:
+
+  ```js
+  const ecsFormat = require('@elastic/ecs-winston-format'); // OLD
+  ```
+
+  Common usage will still use `ecsFormat` in the same way:
+
+  ```js
+  const { ecsFormat } = require('@elastic/ecs-winston-format');
+  const log = winston.createLogger({
+      format: ecsFormat(<options>),
+      // ...
+  ```
+
+  However, one can use the separated formatters as follows:
+
+  ```js
+  const { ecsFields, ecsStringify } = require('@elastic/ecs-winston-format');
+  const log = winston.createLogger({
+      format: winston.format.combine(
+          ecsFields(<options>),
+          // Add a custom formatter to redact fields here.
+          ecsStringify()
+      ),
+      // ...
+  ```
+
+  One good use case is for redaction of sensitive fields in the log record
+  as in https://github.com/elastic/ecs-logging-nodejs/issues/57. See a
+  complete example at [examples/redact-fields.js](./examples/redact-fields.js).
+
 - Fix/improve serialization of error details to `error.*` fields for the
   various ways a Winston logger handles `Error` instances.
 

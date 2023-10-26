@@ -127,7 +127,7 @@ test('tracing integration works', t => {
     }
     if (logObj) {
       t.ok(validate(logObj), 'logObj is ECS valid')
-      t.equal(ecsLoggingValidate(logObj), null, 'logObj is ecs-logging valid')
+      t.equal(ecsLoggingValidate(logObj, { ignoreIndex: true }), null, 'logObj is ecs-logging valid')
       logObjs.push(logObj)
       t.comment(`received logObjs ${logObjs.length}`)
     }
@@ -276,7 +276,7 @@ test('apmIntegration=false disables tracing integration', t => {
     }
     if (logObj) {
       t.ok(validate(logObj), 'logObj is ECS valid')
-      t.equal(ecsLoggingValidate(logObj), null, 'logObj is ecs-logging valid')
+      t.equal(ecsLoggingValidate(logObj, { ignoreIndex: true }), null, 'logObj is ecs-logging valid')
       logObjs.push(logObj)
       t.comment(`received logObjs ${logObjs.length}`)
     }

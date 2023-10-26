@@ -17,7 +17,9 @@
 
 'use strict'
 
-const { MESSAGE, SPLAT } = require('triple-beam')
+// Min dep is triple-beam@1.1.0, which defines LEVEL and MESSAGE. SPLAT might be
+// undefined.
+const { LEVEL, MESSAGE, SPLAT } = require('triple-beam')
 const safeStableStringify = require('safe-stable-stringify')
 const {
   version,
@@ -33,36 +35,26 @@ try {
   // Silently ignore.
 }
 
-// There are some differences between Winston's `logform.format.json()` and this
-// stringifier. They both use `safe-stable-stringify`. Winston's exposes its
-// options but doesn't doc that at https://github.com/winstonjs/logform#json.
-// 1. This one hardcodes `deterministic: false` so fields are serialized in the
-//    order added, which is helpful for ecs-logging's stated preference of
-//    having a few fields first:
-//    https://www.elastic.co/guide/en/ecs-logging/overview/current/intro.html#_why_ecs_logging
-// 2. Winston provides a `replacer` that converts bigints to strings. Doing
-//    that is debatable. The argument *for* is that a *JavaScript* JSON parser
-//    looses precision when parsing a bigint.
+// Comparison of Winston's `logform.json()` for JSON serialization and
+// `ecsStringify()`.
+// - They both use `safe-stable-stringify`.
+// - Winston's exposes its `safe-stable-stringify` options, but doesn't document
+//   this. (https://github.com/winstonjs/logform#json)
+// - Winston provides a `replacer` that converts bigints to strings. Doing
+//   that is debatable. The argument *for* is that a *JavaScript* JSON parser
+//   looses precision when parsing a bigint. The argument against is that a
+//   BigInt changes type to a string rather than a number.
 // TODO: These differences should make it to docs somewhere.
-const stringify = safeStableStringify.configure({ deterministic: false })
-
-const reservedFields = {
-  '@timestamp': true,
-  error: true,
-  level: true,
-  'log.level': true,
-  message: true,
-  req: true,
-  res: true
-}
+const stringify = safeStableStringify.configure()
 
 /**
- * A Winston `Format` for converting to ecs-logging output.
+ * A Winston `Format` for converting fields on the `info` object to ECS logging
+ * format.
  *
  * @class {import('logform').Format}
  * @param {Config} opts - See index.d.ts.
  */
-class EcsWinstonTransform {
+class EcsFieldsTransform {
   constructor (opts) {
     this.options = opts
   }
@@ -74,15 +66,9 @@ class EcsWinstonTransform {
     const convertReqRes = opts.convertReqRes != null ? opts.convertReqRes : false
     const apmIntegration = opts.apmIntegration != null ? opts.apmIntegration : true
 
-    const ecsFields = {
-      '@timestamp': new Date().toISOString(),
-      'log.level': info.level,
-      message: info.message,
-      'ecs.version': version
-    }
-
-    // Error handling. Winston has a number of ways that it does something with
-    // `Error` instances passed to a logger.
+    // Do error handling first, because for case 3 we sometimes need to
+    // *replace* the `info` object. Winston has a number of ways that it does
+    // something with `Error` instances passed to a logger.
     //
     // 1. `log.warn('a message', new Error('boom'))`
     //    If `info[SPLAT][0] instanceof Error`, then convert it to `error.*` fields
@@ -114,7 +100,6 @@ class EcsWinstonTransform {
     //    handling beyond what is typical in Winston. It remains for backward
     //    compatibility.
     let err
-    let delErrorLevel = false
     const splat0 = SPLAT && info[SPLAT] && info[SPLAT][0]
     if (splat0 instanceof Error) { // case 1
       // Undo the addition of this error's enumerable properties to the
@@ -134,12 +119,12 @@ class EcsWinstonTransform {
       delete info.stack
       delete info.trace
       delete info.date
-      ecsFields.message = info.message.split(/\n/, 1)[0]
+      info.message = info.message.split(/\n/, 1)[0]
       // istanbul ignore else
       if (info.error instanceof Error) {
         err = info.error
       } else {
-        ecsFields.error = {
+        info.error = {
           message: info.error.toString()
         }
       }
@@ -148,20 +133,29 @@ class EcsWinstonTransform {
       // we don't currently.
       //    https://www.elastic.co/guide/en/ecs/current/ecs-process.html
       //    https://www.elastic.co/guide/en/ecs/current/ecs-host.html
-    } else if (convertErr) { // cases 3 and 4
-      if (info instanceof Error) {
+    } else if (convertErr) {
+      if (info instanceof Error) { // case 3a
         // With `log.info(err)`, Winston incorrectly uses `err` as the info
         // object -- (a) mutating it and (b) resulting in not being able to
         // differentiate `defaultMeta` and `err` properties.
         // The best we can do is, at least, not serialize `error.level` using
         // the incorrectly added `level` field.
         err = info
-        delErrorLevel = true
-      } else if (info.message instanceof Error) {
+        info = Object.assign(
+          {
+            message: err.message,
+            [LEVEL]: err.level
+          },
+          err)
+        if (SPLAT && SPLAT in err) {
+          info[SPLAT] = err[SPLAT]
+        }
+        delete err.level
+      } else if (info.message instanceof Error) { // case 3b
         // `log.info(err, {...})` or `log.info(new Error(''))` with empty message.
         err = info.message
-        ecsFields.message = err.message
-      } else if (info.err instanceof Error) {
+        info.message = err.message
+      } else if (info.err instanceof Error) { // case 4
         err = info.err
         delete info.err
       }
@@ -170,36 +164,36 @@ class EcsWinstonTransform {
     // If we have an Error instance, then serialize it to `error.*` fields.
     if (err) {
       // First we add err's enumerable fields, as `logform.errors()` does.
-      ecsFields.error = Object.assign({}, err)
-      if (delErrorLevel) {
-        delete ecsFields.error.level
-      }
+      info.error = Object.assign({}, err)
       // Then add standard ECS error fields (https://www.elastic.co/guide/en/ecs/current/ecs-error.html).
       // istanbul ignore next
-      ecsFields.error.type = toString.call(err.constructor) === '[object Function]'
+      info.error.type = toString.call(err.constructor) === '[object Function]'
         ? err.constructor.name
         : err.name
-      ecsFields.error.message = err.message
-      ecsFields.error.stack_trace = err.stack
+      info.error.message = err.message
+      info.error.stack_trace = err.stack
       // The add some additional fields. `cause` is handled by
       // `logform.errors({cause: true})`.  This implementation ensures it is
       // always a string to avoid its type varying depending on the value.
       // istanbul ignore next -- so coverage works for Node.js <16.9.0
       if (err.cause) {
-        ecsFields.error.cause = err.cause instanceof Error
+        info.error.cause = err.cause instanceof Error
           ? err.cause.stack
           : err.cause.toString()
       }
     }
 
-    // Add all unreserved fields.
-    const keys = Object.keys(info)
-    for (let i = 0, len = keys.length; i < len; i++) {
-      const key = keys[i]
-      if (!reservedFields[key]) {
-        ecsFields[key] = info[key]
-      }
-    }
+    // Core ECS logging fields.
+    info['@timestamp'] = new Date().toISOString()
+    info['log.level'] = info.level
+    // Removing 'level' might cause trouble for downstream winston formatters
+    // given that https://github.com/winstonjs/logform#info-objects says:
+    //
+    // > Every info must have at least the level and message properties:
+    //
+    // However info still has a `info[Symbol.for('level')]` for more reliable use.
+    delete info.level
+    info['ecs.version'] = version
 
     let apm = null
     if (apmIntegration && elasticApm && elasticApm.isStarted && elasticApm.isStarted()) {
@@ -216,7 +210,7 @@ class EcsWinstonTransform {
         : apm._conf.serviceName) // fallback to private `_conf`
     }
     if (serviceName) {
-      ecsFields['service.name'] = serviceName
+      info['service.name'] = serviceName
     }
 
     let serviceVersion = opts.serviceVersion
@@ -227,7 +221,7 @@ class EcsWinstonTransform {
         : apm._conf.serviceVersion) // fallback to private `_conf`
     }
     if (serviceVersion) {
-      ecsFields['service.version'] = serviceVersion
+      info['service.version'] = serviceVersion
     }
 
     let serviceEnvironment = opts.serviceEnvironment
@@ -238,7 +232,7 @@ class EcsWinstonTransform {
         : apm._conf.environment) // fallback to private `_conf`
     }
     if (serviceEnvironment) {
-      ecsFields['service.environment'] = serviceEnvironment
+      info['service.environment'] = serviceEnvironment
     }
 
     let serviceNodeName = opts.serviceNodeName
@@ -249,7 +243,7 @@ class EcsWinstonTransform {
         : apm._conf.serviceNodeName) // fallback to private `_conf`
     }
     if (serviceNodeName) {
-      ecsFields['service.node.name'] = serviceNodeName
+      info['service.node.name'] = serviceNodeName
     }
 
     let eventDataset = opts.eventDataset
@@ -257,7 +251,7 @@ class EcsWinstonTransform {
       eventDataset = serviceName
     }
     if (eventDataset) {
-      ecsFields['event.dataset'] = eventDataset
+      info['event.dataset'] = eventDataset
     }
 
     // istanbul ignore else
@@ -265,35 +259,73 @@ class EcsWinstonTransform {
       // https://www.elastic.co/guide/en/ecs/current/ecs-tracing.html
       const tx = apm.currentTransaction
       if (tx) {
-        ecsFields['trace.id'] = tx.traceId
-        ecsFields['transaction.id'] = tx.id
+        info['trace.id'] = tx.traceId
+        info['transaction.id'] = tx.id
         const span = apm.currentSpan
         // istanbul ignore else
         if (span) {
-          ecsFields['span.id'] = span.id
+          info['span.id'] = span.id
         }
       }
     }
 
     // https://www.elastic.co/guide/en/ecs/current/ecs-http.html
-    if (info.req !== undefined) {
-      if (convertReqRes) {
-        formatHttpRequest(ecsFields, info.req)
-      } else {
-        ecsFields.req = info.req
-      }
+    if (info.req !== undefined && convertReqRes) {
+      formatHttpRequest(info, info.req)
+      delete info.req
     }
-    if (info.res !== undefined) {
-      if (convertReqRes) {
-        formatHttpResponse(ecsFields, info.res)
-      } else {
-        ecsFields.res = info.res
-      }
+    if (info.res !== undefined && convertReqRes) {
+      formatHttpResponse(info, info.res)
+      delete info.res
     }
 
-    info[MESSAGE] = stringify(ecsFields)
     return info
   }
 }
 
-module.exports = opts => new EcsWinstonTransform(opts)
+function ecsFields (opts) {
+  return new EcsFieldsTransform(opts)
+}
+
+class EcsStringifyTransform {
+  constructor (opts) {
+    this.options = opts
+  }
+
+  transform (info, opts) {
+    info[MESSAGE] = stringify(info)
+    return info
+  }
+}
+
+function ecsStringify (opts) {
+  return new EcsStringifyTransform(opts)
+}
+
+/**
+ * A Winston transform that composes `ecsFields(...)` and `ecsStringify()`.
+ */
+class EcsFormatTransform {
+  constructor (opts) {
+    this.options = opts
+    this._fieldsTx = ecsFields(opts)
+    this._stringifyTx = ecsStringify()
+  }
+
+  transform (info, opts) {
+    info = this._fieldsTx.transform(info, this._fieldsTx.options)
+    info = this._stringifyTx.transform(info, this._stringifyTx.options)
+    return info
+  }
+}
+
+function ecsFormat (opts) {
+  return new EcsFormatTransform(opts)
+}
+
+// For backwards compatibility with v1.0.0, the top-level export is `ecsFormat`,
+// though using the separate exports is preferred.
+module.exports = ecsFormat
+module.exports.ecsFormat = ecsFormat
+module.exports.ecsFields = ecsFields
+module.exports.ecsStringify = ecsStringify
