@@ -2,11 +2,12 @@
 
 # @elastic/ecs-winston-format
 
-[![Build Status](https://apm-ci.elastic.co/buildStatus/icon?job=apm-agent-nodejs%2Fecs-logging-nodejs-mbp%2Fmain)](https://apm-ci.elastic.co/job/apm-agent-nodejs/job/ecs-logging-nodejs-mbp/job/main/)  [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](http://standardjs.com/)
+[![npm](https://img.shields.io/npm/v/@elastic/ecs-winston-format.svg)](https://www.npmjs.com/package/@elastic/ecs-winston-format)
+[![test](https://github.com/elastic/ecs-logging-nodejs/actions/workflows/test.yml/badge.svg)](https://github.com/elastic/ecs-logging-nodejs/actions/workflows/test.yml)
 
 This Node.js package provides a formatter for the
-[winston](https://www.npmjs.com/package/winston) logger compatible with
-[Elastic Common Schema (ECS) logging](https://www.elastic.co/guide/en/ecs-logging/overview/master/intro.html).<br/>
+[winston](https://github.com/winstonjs/winston) logger compatible with
+[Elastic Common Schema (ECS) logging](https://www.elastic.co/guide/en/ecs-logging/overview/master/intro.html).
 In combination with the [filebeat](https://www.elastic.co/products/beats/filebeat)
 shipper, you can send your logs directly to Elasticsearch and leverage
 [Kibana's Logs app](https://www.elastic.co/guide/en/observability/current/monitor-logs.html)
