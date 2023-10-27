@@ -1,5 +1,21 @@
 # @elastic/ecs-helpers Changelog
 
+## v2.1.0
+
+- Bump the `ecs.version` from "1.6.0" to "8.10.0".
+  (https://github.com/elastic/ecs-logging-nodejs/issues/133)
+
+- `formatHttpRequest()` will now attempt to determine request ID and add it
+  to the [`http.request.id` field](https://www.elastic.co/guide/en/ecs/current/ecs-http.html#field-http-request-id).
+  This first attempts `req.id` (Fastify, express-request-id), `req.id()`
+  (Restify), and then falls back to the `request-id` or `x-request-id` headers.
+  (https://github.com/elastic/ecs-logging-nodejs/issues/76)
+
+  Note: In previous versions a `req.id` value would be added to the `event.id`
+  field. This has been removed. Please [open an issue](https://github.com/elastic/ecs-logging-nodejs/issues/new)
+  if this impacts you.
+
+
 ## v2.0.0
 
 - [Breaking change.] Drop the `serialize` method. Serialization will move to

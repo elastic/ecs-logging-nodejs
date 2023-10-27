@@ -17,6 +17,14 @@
 
 'use strict'
 
+// Likely HTTP request header names that would include a request ID value,
+// drawn from Fastify's [`requestIdHeader`](https://fastify.dev/docs/latest/Reference/Server/#requestidheader)
+// default, Restify's defaults (https://github.com/restify/node-restify/blob/9f1d249/lib/plugins/pre/reqIdHeaders.js#L5).
+const REQUEST_ID_HEADERS = [
+  'request-id',
+  'x-request-id'
+]
+
 // Write ECS fields for the given HTTP request (expected to be
 // `http.IncomingMessage`-y) into the `ecs` object. This returns true iff
 // the given `req` was a request object it could process.
@@ -36,7 +44,6 @@ function formatHttpRequest (ecs, req) {
   }
 
   const {
-    id,
     method,
     url,
     headers,
@@ -44,11 +51,6 @@ function formatHttpRequest (ecs, req) {
     httpVersion,
     socket
   } = req
-
-  if (id) {
-    ecs.event = ecs.event || {}
-    ecs.event.id = id
-  }
 
   ecs.http = ecs.http || {}
   ecs.http.version = httpVersion
@@ -112,6 +114,39 @@ function formatHttpRequest (ecs, req) {
       ecs.user_agent = ecs.user_agent || {}
       ecs.user_agent.original = headers['user-agent']
     }
+  }
+
+  // Attempt to set `http.request.id` field from well-known web framework APIs
+  // or from some likely headers.
+  // Note: I'm not sure whether to include Hapi's `request.info.id` generated
+  // value (https://hapi.dev/api/?v=21.3.2#-requestinfo). IIUC it does NOT
+  // consider an incoming header.
+  let id = null
+  switch (typeof (req.id)) {
+    case 'string':
+      // Fastify https://fastify.dev/docs/latest/Reference/Request/, also
+      // Express if using https://www.npmjs.com/package/express-request-id.
+      id = req.id
+      break
+    case 'number':
+      id = req.id.toString()
+      break
+    case 'function':
+      // Restify http://restify.com/docs/request-api/#id
+      id = req.id()
+      break
+  }
+  if (!id && hasHeaders) {
+    for (let i = 0; i < REQUEST_ID_HEADERS.length; i++) {
+      const k = REQUEST_ID_HEADERS[i]
+      if (headers[k]) {
+        id = headers[k]
+        break
+      }
+    }
+  }
+  if (id) {
+    ecs.http.request.id = id
   }
 
   return true

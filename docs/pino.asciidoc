@@ -68,8 +68,8 @@ Running this will produce log output similar to the following:
 
 [source,cmd]
 ----
-{"log.level":"info","@timestamp":"2023-10-14T02:07:47.901Z","process.pid":56645,"host.hostname":"pink.local","ecs.version":"1.6.0","message":"Hello world"}
-{"log.level":"warn","@timestamp":"2023-10-14T02:07:47.901Z","process.pid":56645,"host.hostname":"pink.local","ecs.version":"1.6.0","module":"foo","message":"From child"}
+{"log.level":"info","@timestamp":"2023-10-14T02:07:47.901Z","process.pid":56645,"host.hostname":"pink.local","ecs.version":"8.10.0","message":"Hello world"}
+{"log.level":"warn","@timestamp":"2023-10-14T02:07:47.901Z","process.pid":56645,"host.hostname":"pink.local","ecs.version":"8.10.0","module":"foo","message":"From child"}
 ----
 
 [float]
@@ -162,7 +162,7 @@ For example:
   "@timestamp": "2023-10-14T02:10:14.477Z",
   "process.pid": 56697,
   "host.hostname": "pink.local",
-  "ecs.version": "1.6.0",
+  "ecs.version": "8.10.0",
   "http": {
     "version": "1.1",
     "request": {

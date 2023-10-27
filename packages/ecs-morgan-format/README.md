@@ -83,7 +83,7 @@ produce log output similar to the following:
   "user_agent": {
     "original": "curl/8.1.2"
   },
-  "ecs.version": "1.6.0"
+  "ecs.version": "8.10.0"
 }
 ```
 
