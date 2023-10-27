@@ -79,8 +79,8 @@ Running this script (available https://github.com/elastic/ecs-logging-nodejs/blo
 [source,cmd]
 ----
 % node examples/basic.js
-{"@timestamp":"2023-10-14T02:14:17.302Z","log.level":"info","message":"hi","ecs.version":"1.6.0"}
-{"@timestamp":"2023-10-14T02:14:17.304Z","log.level":"error","message":"oops there is a problem","ecs.version":"1.6.0","foo":"bar"}
+{"@timestamp":"2023-10-14T02:14:17.302Z","log.level":"info","message":"hi","ecs.version":"8.10.0"}
+{"@timestamp":"2023-10-14T02:14:17.304Z","log.level":"error","message":"oops there is a problem","ecs.version":"8.10.0","foo":"bar"}
 ----
 
 The formatter handles serialization to JSON, so you don't need to add the
@@ -126,7 +126,7 @@ will yield (pretty-printed for readability):
     "message": "boom",
     "stack_trace": "Error: boom\n    at Object.<anonymous> (..."
   },
-  "ecs.version": "1.6.0"
+  "ecs.version": "8.10.0"
 }
 ----
 
@@ -220,7 +220,7 @@ For https://github.com/elastic/ecs-logging-nodejs/blob/main/packages/ecs-winston
   "user_agent": {
     "original": "curl/8.1.2"
   },
-  "ecs.version": "1.6.0"
+  "ecs.version": "8.10.0"
 }
 ----
 
