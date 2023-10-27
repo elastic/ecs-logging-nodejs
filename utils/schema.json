@@ -1,5 +1,5 @@
 {
-  "$comment": "ecs.git commit b5bbe25 (HEAD, tag: v1.5.0)",
+  "$comment": "ecs.git commit 43a1a61a (HEAD, tag: v8.10.0)",
   "type": "object",
   "properties": {
     "agent": {
@@ -7,6 +7,15 @@
       "properties": {
         "version": {
           "type": "string"
+        },
+        "build": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "original": {
+              "type": "string"
+            }
+          }
         },
         "name": {
           "type": "string"
@@ -86,6 +95,9 @@
         "top_level_domain": {
           "type": "string"
         },
+        "subdomain": {
+          "type": "string"
+        },
         "bytes": {
           "type": "number"
         },
@@ -154,6 +166,30 @@
           "properties": {
             "id": {
               "type": "string"
+            },
+            "name": {
+              "type": "string"
+            }
+          }
+        },
+        "service": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "name": {
+              "type": "string"
+            }
+          }
+        },
+        "project": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
             }
           }
         }
@@ -176,14 +212,57 @@
         },
         "status": {
           "type": "string"
+        },
+        "team_id": {
+          "type": "string"
+        },
+        "signing_id": {
+          "type": "string"
+        },
+        "digest_algorithm": {
+          "type": "string"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
         }
       }
     },
     "container": {
       "type": "object",
       "properties": {
-        "runtime": {
-          "type": "string"
+        "cpu": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "usage": {
+              "type": "number"
+            }
+          }
+        },
+        "disk": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "read": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "bytes": {
+                  "type": "number"
+                }
+              }
+            },
+            "write": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "bytes": {
+                  "type": "number"
+                }
+              }
+            }
+          }
         },
         "id": {
           "type": "string"
@@ -197,15 +276,83 @@
             },
             "tag": {
               "type": "string"
+            },
+            "hash": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "all": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "labels": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "memory": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "usage": {
+              "type": "number"
             }
           }
         },
         "name": {
           "type": "string"
         },
-        "labels": {
+        "network": {
           "type": "object",
-          "additionalProperties": true
+          "additionalProperties": true,
+          "properties": {
+            "ingress": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "bytes": {
+                  "type": "number"
+                }
+              }
+            },
+            "egress": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "bytes": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        },
+        "security_context": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "privileged": {
+              "type": "boolean"
+            }
+          }
+        },
+        "runtime": {
+          "type": "string"
+        }
+      }
+    },
+    "data_stream": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "dataset": {
+          "type": "string"
+        },
+        "namespace": {
+          "type": "string"
         }
       }
     },
@@ -242,6 +389,9 @@
         "top_level_domain": {
           "type": "string"
         },
+        "subdomain": {
+          "type": "string"
+        },
         "bytes": {
           "type": "number"
         },
@@ -268,6 +418,29 @@
               "type": "number"
             }
           }
+        }
+      }
+    },
+    "device": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "model": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "identifier": {
+              "type": "string"
+            }
+          }
+        },
+        "manufacturer": {
+          "type": "string"
         }
       }
     },
@@ -363,6 +536,250 @@
       "type": "object",
       "properties": {
         "version": {
+          "type": "string"
+        }
+      }
+    },
+    "elf": {
+      "type": "object",
+      "properties": {
+        "creation_date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "architecture": {
+          "type": "string"
+        },
+        "byte_order": {
+          "type": "string"
+        },
+        "cpu_type": {
+          "type": "string"
+        },
+        "go_import_hash": {
+          "type": "string"
+        },
+        "go_imports_names_entropy": {
+          "type": "number"
+        },
+        "go_imports_names_var_entropy": {
+          "type": "number"
+        },
+        "go_imports": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "go_stripped": {
+          "type": "boolean"
+        },
+        "header": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "class": {
+              "type": "string"
+            },
+            "data": {
+              "type": "string"
+            },
+            "os_abi": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            },
+            "version": {
+              "type": "string"
+            },
+            "abi_version": {
+              "type": "string"
+            },
+            "entrypoint": {
+              "type": "number"
+            },
+            "object_version": {
+              "type": "string"
+            }
+          }
+        },
+        "import_hash": {
+          "type": "string"
+        },
+        "imports_names_entropy": {
+          "type": "number"
+        },
+        "imports_names_var_entropy": {
+          "type": "number"
+        },
+        "sections": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "flags": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "physical_offset": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            },
+            "physical_size": {
+              "type": "number"
+            },
+            "var_entropy": {
+              "type": "number"
+            },
+            "virtual_address": {
+              "type": "number"
+            },
+            "virtual_size": {
+              "type": "number"
+            },
+            "entropy": {
+              "type": "number"
+            },
+            "chi2": {
+              "type": "number"
+            }
+          }
+        },
+        "exports": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "imports": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "shared_libraries": {
+          "type": "string"
+        },
+        "telfhash": {
+          "type": "string"
+        },
+        "segments": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "type": {
+              "type": "string"
+            },
+            "sections": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "email": {
+      "type": "object",
+      "properties": {
+        "attachments": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "file": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "extension": {
+                  "type": "string"
+                },
+                "mime_type": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "size": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        },
+        "bcc": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "address": {
+              "type": "string"
+            }
+          }
+        },
+        "cc": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "address": {
+              "type": "string"
+            }
+          }
+        },
+        "content_type": {
+          "type": "string"
+        },
+        "delivery_timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "direction": {
+          "type": "string"
+        },
+        "from": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "address": {
+              "type": "string"
+            }
+          }
+        },
+        "local_id": {
+          "type": "string"
+        },
+        "message_id": {
+          "type": "string"
+        },
+        "origination_timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "reply_to": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "address": {
+              "type": "string"
+            }
+          }
+        },
+        "sender": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "address": {
+              "type": "string"
+            }
+          }
+        },
+        "subject": {
+          "type": "string"
+        },
+        "to": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "address": {
+              "type": "string"
+            }
+          }
+        },
+        "x_mailer": {
           "type": "string"
         }
       }
@@ -465,6 +882,44 @@
         },
         "url": {
           "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "agent_id_status": {
+          "type": "string"
+        }
+      }
+    },
+    "faas": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "coldstart": {
+          "type": "boolean"
+        },
+        "execution": {
+          "type": "string"
+        },
+        "trigger": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "type": {
+              "type": "string"
+            },
+            "request_id": {
+              "type": "string"
+            }
+          }
         }
       }
     },
@@ -537,6 +992,9 @@
         },
         "mime_type": {
           "type": "string"
+        },
+        "fork_name": {
+          "type": "string"
         }
       }
     },
@@ -554,6 +1012,9 @@
             }
           }
         },
+        "continent_code": {
+          "type": "string"
+        },
         "continent_name": {
           "type": "string"
         },
@@ -569,7 +1030,13 @@
         "country_iso_code": {
           "type": "string"
         },
+        "postal_code": {
+          "type": "string"
+        },
         "region_iso_code": {
+          "type": "string"
+        },
+        "timezone": {
           "type": "string"
         },
         "name": {
@@ -603,7 +1070,16 @@
         "sha256": {
           "type": "string"
         },
+        "sha384": {
+          "type": "string"
+        },
         "sha512": {
+          "type": "string"
+        },
+        "ssdeep": {
+          "type": "string"
+        },
+        "tlsh": {
           "type": "string"
         }
       }
@@ -646,6 +1122,81 @@
         },
         "domain": {
           "type": "string"
+        },
+        "cpu": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "usage": {
+              "type": "number"
+            }
+          }
+        },
+        "disk": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "read": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "bytes": {
+                  "type": "number"
+                }
+              }
+            },
+            "write": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "bytes": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        },
+        "network": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "ingress": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "bytes": {
+                  "type": "number"
+                },
+                "packets": {
+                  "type": "number"
+                }
+              }
+            },
+            "egress": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "bytes": {
+                  "type": "number"
+                },
+                "packets": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        },
+        "boot": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "id": {
+              "type": "string"
+            }
+          }
+        },
+        "pid_ns_ino": {
+          "type": "string"
         }
       }
     },
@@ -656,7 +1207,13 @@
           "type": "object",
           "additionalProperties": true,
           "properties": {
+            "id": {
+              "type": "string"
+            },
             "method": {
+              "type": "string"
+            },
+            "mime_type": {
               "type": "string"
             },
             "body": {
@@ -685,6 +1242,9 @@
           "properties": {
             "status_code": {
               "type": "number"
+            },
+            "mime_type": {
+              "type": "string"
             },
             "body": {
               "type": "object",
@@ -728,8 +1288,14 @@
         "level": {
           "type": "string"
         },
-        "original": {
-          "type": "string"
+        "file": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "path": {
+              "type": "string"
+            }
+          }
         },
         "logger": {
           "type": "string"
@@ -746,7 +1312,7 @@
                   "type": "string"
                 },
                 "line": {
-                  "type": "integer"
+                  "type": "number"
                 }
               }
             },
@@ -785,8 +1351,85 @@
             },
             "priority": {
               "type": "number"
+            },
+            "version": {
+              "type": "string"
+            },
+            "hostname": {
+              "type": "string"
+            },
+            "appname": {
+              "type": "string"
+            },
+            "procid": {
+              "type": "string"
+            },
+            "msgid": {
+              "type": "string"
+            },
+            "structured_data": {
+              "type": "object",
+              "additionalProperties": true
             }
           }
+        }
+      }
+    },
+    "macho": {
+      "type": "object",
+      "properties": {
+        "go_import_hash": {
+          "type": "string"
+        },
+        "go_imports_names_entropy": {
+          "type": "number"
+        },
+        "go_imports_names_var_entropy": {
+          "type": "number"
+        },
+        "go_imports": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "go_stripped": {
+          "type": "boolean"
+        },
+        "import_hash": {
+          "type": "string"
+        },
+        "imports": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "imports_names_entropy": {
+          "type": "number"
+        },
+        "imports_names_var_entropy": {
+          "type": "number"
+        },
+        "sections": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "entropy": {
+              "type": "number"
+            },
+            "name": {
+              "type": "string"
+            },
+            "physical_size": {
+              "type": "number"
+            },
+            "var_entropy": {
+              "type": "number"
+            },
+            "virtual_size": {
+              "type": "number"
+            }
+          }
+        },
+        "symhash": {
+          "type": "string"
         }
       }
     },
@@ -900,6 +1543,83 @@
         }
       }
     },
+    "orchestrator": {
+      "type": "object",
+      "properties": {
+        "cluster": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "id": {
+              "type": "string"
+            },
+            "url": {
+              "type": "string"
+            },
+            "version": {
+              "type": "string"
+            }
+          }
+        },
+        "type": {
+          "type": "string"
+        },
+        "organization": {
+          "type": "string"
+        },
+        "namespace": {
+          "type": "string"
+        },
+        "resource": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "annotation": {
+              "type": "string"
+            },
+            "label": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            },
+            "parent": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "type": {
+                  "type": "string"
+                }
+              }
+            },
+            "ip": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "ipv4"
+                },
+                {
+                  "type": "string",
+                  "format": "ipv6"
+                }
+              ]
+            },
+            "id": {
+              "type": "string"
+            }
+          }
+        },
+        "api_version": {
+          "type": "string"
+        }
+      }
+    },
     "organization": {
       "type": "object",
       "properties": {
@@ -914,6 +1634,9 @@
     "os": {
       "type": "object",
       "properties": {
+        "type": {
+          "type": "string"
+        },
         "platform": {
           "type": "string"
         },
@@ -996,6 +1719,65 @@
         },
         "company": {
           "type": "string"
+        },
+        "imphash": {
+          "type": "string"
+        },
+        "architecture": {
+          "type": "string"
+        },
+        "go_import_hash": {
+          "type": "string"
+        },
+        "go_imports": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "go_imports_names_entropy": {
+          "type": "number"
+        },
+        "go_imports_names_var_entropy": {
+          "type": "number"
+        },
+        "go_stripped": {
+          "type": "boolean"
+        },
+        "import_hash": {
+          "type": "string"
+        },
+        "imports": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "imports_names_entropy": {
+          "type": "number"
+        },
+        "imports_names_var_entropy": {
+          "type": "number"
+        },
+        "pehash": {
+          "type": "string"
+        },
+        "sections": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "entropy": {
+              "type": "number"
+            },
+            "name": {
+              "type": "string"
+            },
+            "physical_size": {
+              "type": "number"
+            },
+            "var_entropy": {
+              "type": "number"
+            },
+            "virtual_size": {
+              "type": "number"
+            }
+          }
         }
       }
     },
@@ -1005,75 +1787,14 @@
         "pid": {
           "type": "number"
         },
-        "parent": {
-          "type": "object",
-          "additionalProperties": true,
-          "properties": {
-            "pid": {
-              "type": "number"
-            },
-            "entity_id": {
-              "type": "string"
-            },
-            "name": {
-              "type": "string"
-            },
-            "ppid": {
-              "type": "number"
-            },
-            "pgid": {
-              "type": "number"
-            },
-            "command_line": {
-              "type": "string"
-            },
-            "args": {
-              "type": "string"
-            },
-            "args_count": {
-              "type": "number"
-            },
-            "executable": {
-              "type": "string"
-            },
-            "title": {
-              "type": "string"
-            },
-            "thread": {
-              "type": "object",
-              "additionalProperties": true,
-              "properties": {
-                "id": {
-                  "type": "number"
-                },
-                "name": {
-                  "type": "string"
-                }
-              }
-            },
-            "start": {
-              "type": "string",
-              "format": "date-time"
-            },
-            "uptime": {
-              "type": "number"
-            },
-            "working_directory": {
-              "type": "string"
-            },
-            "exit_code": {
-              "type": "number"
-            }
-          }
+        "vpid": {
+          "type": "number"
         },
         "entity_id": {
           "type": "string"
         },
         "name": {
           "type": "string"
-        },
-        "ppid": {
-          "type": "number"
         },
         "pgid": {
           "type": "number"
@@ -1102,6 +1823,18 @@
             },
             "name": {
               "type": "string"
+            },
+            "capabilities": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "permitted": {
+                  "type": "string"
+                },
+                "effective": {
+                  "type": "string"
+                }
+              }
             }
           }
         },
@@ -1117,6 +1850,89 @@
         },
         "exit_code": {
           "type": "number"
+        },
+        "end": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "interactive": {
+          "type": "boolean"
+        },
+        "same_as_process": {
+          "type": "boolean"
+        },
+        "env_vars": {
+          "type": "string"
+        },
+        "entry_meta": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "type": {
+              "type": "string"
+            },
+            "source": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          }
+        },
+        "tty": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "char_device": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "major": {
+                  "type": "number"
+                },
+                "minor": {
+                  "type": "number"
+                }
+              }
+            },
+            "rows": {
+              "type": "number"
+            },
+            "columns": {
+              "type": "number"
+            }
+          }
+        },
+        "io": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "type": {
+              "type": "string"
+            },
+            "text": {
+              "type": "string"
+            },
+            "total_bytes_captured": {
+              "type": "number"
+            },
+            "total_bytes_skipped": {
+              "type": "number"
+            },
+            "max_bytes_per_process_exceeded": {
+              "type": "boolean"
+            },
+            "bytes_skipped": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "offset": {
+                  "type": "number"
+                },
+                "length": {
+                  "type": "number"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -1171,6 +1987,32 @@
           "type": "string"
         },
         "hash": {
+          "type": "string"
+        },
+        "hosts": {
+          "type": "string"
+        }
+      }
+    },
+    "risk": {
+      "type": "object",
+      "properties": {
+        "calculated_score": {
+          "type": "number"
+        },
+        "calculated_score_norm": {
+          "type": "number"
+        },
+        "static_score": {
+          "type": "number"
+        },
+        "static_score_norm": {
+          "type": "number"
+        },
+        "calculated_level": {
+          "type": "string"
+        },
+        "static_level": {
           "type": "string"
         }
       }
@@ -1243,6 +2085,9 @@
         "top_level_domain": {
           "type": "string"
         },
+        "subdomain": {
+          "type": "string"
+        },
         "bytes": {
           "type": "number"
         },
@@ -1275,6 +2120,9 @@
     "service": {
       "type": "object",
       "properties": {
+        "environment": {
+          "type": "string"
+        },
         "id": {
           "type": "string"
         },
@@ -1286,6 +2134,12 @@
           "additionalProperties": true,
           "properties": {
             "name": {
+              "type": "string"
+            },
+            "role": {
+              "type": "string"
+            },
+            "roles": {
               "type": "string"
             }
           }
@@ -1300,6 +2154,9 @@
           "type": "string"
         },
         "ephemeral_id": {
+          "type": "string"
+        },
+        "address": {
           "type": "string"
         }
       }
@@ -1337,6 +2194,9 @@
         "top_level_domain": {
           "type": "string"
         },
+        "subdomain": {
+          "type": "string"
+        },
         "bytes": {
           "type": "number"
         },
@@ -1369,17 +2229,264 @@
     "threat": {
       "type": "object",
       "properties": {
+        "enrichments": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "indicator": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "first_seen": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "last_seen": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "modified_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "sightings": {
+                  "type": "number"
+                },
+                "type": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "scanner_stats": {
+                  "type": "number"
+                },
+                "confidence": {
+                  "type": "string"
+                },
+                "ip": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "ipv4"
+                    },
+                    {
+                      "type": "string",
+                      "format": "ipv6"
+                    }
+                  ]
+                },
+                "port": {
+                  "type": "number"
+                },
+                "email": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "properties": {
+                    "address": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "marking": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "properties": {
+                    "tlp": {
+                      "type": "string"
+                    },
+                    "tlp_version": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "reference": {
+                  "type": "string"
+                },
+                "provider": {
+                  "type": "string"
+                }
+              }
+            },
+            "matched": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "atomic": {
+                  "type": "string"
+                },
+                "field": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "index": {
+                  "type": "string"
+                },
+                "occurred": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "type": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "feed": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "dashboard_id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "reference": {
+              "type": "string"
+            }
+          }
+        },
         "framework": {
           "type": "string"
+        },
+        "group": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "alias": {
+              "type": "string"
+            },
+            "id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "reference": {
+              "type": "string"
+            }
+          }
+        },
+        "indicator": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "first_seen": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "last_seen": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "modified_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "sightings": {
+              "type": "number"
+            },
+            "type": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "scanner_stats": {
+              "type": "number"
+            },
+            "confidence": {
+              "type": "string"
+            },
+            "ip": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "ipv4"
+                },
+                {
+                  "type": "string",
+                  "format": "ipv6"
+                }
+              ]
+            },
+            "port": {
+              "type": "number"
+            },
+            "email": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "address": {
+                  "type": "string"
+                }
+              }
+            },
+            "marking": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "tlp": {
+                  "type": "string"
+                },
+                "tlp_version": {
+                  "type": "string"
+                }
+              }
+            },
+            "reference": {
+              "type": "string"
+            },
+            "provider": {
+              "type": "string"
+            }
+          }
+        },
+        "software": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "alias": {
+              "type": "string"
+            },
+            "platforms": {
+              "type": "string"
+            },
+            "reference": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            }
+          }
         },
         "tactic": {
           "type": "object",
           "additionalProperties": true,
           "properties": {
-            "name": {
+            "id": {
               "type": "string"
             },
-            "id": {
+            "name": {
               "type": "string"
             },
             "reference": {
@@ -1391,14 +2498,29 @@
           "type": "object",
           "additionalProperties": true,
           "properties": {
-            "name": {
+            "id": {
               "type": "string"
             },
-            "id": {
+            "name": {
               "type": "string"
             },
             "reference": {
               "type": "string"
+            },
+            "subtechnique": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "reference": {
+                  "type": "string"
+                }
+              }
             }
           }
         }
@@ -1544,6 +2666,15 @@
               "type": "string"
             }
           }
+        },
+        "span": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "id": {
+              "type": "string"
+            }
+          }
         }
       }
     },
@@ -1566,6 +2697,9 @@
           "type": "string"
         },
         "top_level_domain": {
+          "type": "string"
+        },
+        "subdomain": {
           "type": "string"
         },
         "port": {
@@ -1610,6 +2744,9 @@
           "type": "string"
         },
         "domain": {
+          "type": "string"
+        },
+        "roles": {
           "type": "string"
         }
       }
@@ -1700,6 +2837,97 @@
           "type": "string"
         },
         "report_id": {
+          "type": "string"
+        }
+      }
+    },
+    "x509": {
+      "type": "object",
+      "properties": {
+        "version_number": {
+          "type": "string"
+        },
+        "serial_number": {
+          "type": "string"
+        },
+        "issuer": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "distinguished_name": {
+              "type": "string"
+            },
+            "common_name": {
+              "type": "string"
+            },
+            "organizational_unit": {
+              "type": "string"
+            },
+            "organization": {
+              "type": "string"
+            },
+            "locality": {
+              "type": "string"
+            },
+            "state_or_province": {
+              "type": "string"
+            },
+            "country": {
+              "type": "string"
+            }
+          }
+        },
+        "signature_algorithm": {
+          "type": "string"
+        },
+        "not_before": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "not_after": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "subject": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "distinguished_name": {
+              "type": "string"
+            },
+            "common_name": {
+              "type": "string"
+            },
+            "organizational_unit": {
+              "type": "string"
+            },
+            "organization": {
+              "type": "string"
+            },
+            "locality": {
+              "type": "string"
+            },
+            "state_or_province": {
+              "type": "string"
+            },
+            "country": {
+              "type": "string"
+            }
+          }
+        },
+        "public_key_algorithm": {
+          "type": "string"
+        },
+        "public_key_size": {
+          "type": "number"
+        },
+        "public_key_exponent": {
+          "type": "number"
+        },
+        "public_key_curve": {
+          "type": "string"
+        },
+        "alternative_names": {
           "type": "string"
         }
       }

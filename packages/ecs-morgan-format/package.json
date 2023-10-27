@@ -37,7 +37,7 @@
     "node": ">=10"
   },
   "dependencies": {
-    "@elastic/ecs-helpers": "^2.0.0",
+    "@elastic/ecs-helpers": "^2.1.0",
     "safe-stable-stringify": "^2.4.3"
   },
   "devDependencies": {
