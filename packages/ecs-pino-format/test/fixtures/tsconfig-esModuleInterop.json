@@ -1,0 +1,17 @@
+// TypeScript using esModuleInterop:true (the default setting from `tsc --init`).
+// Based on https://github.com/tsconfig/bases/blob/main/bases/node10.json
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Node 10",
+
+  "compilerOptions": {
+    "lib": ["es2018"],
+    "module": "commonjs",
+    "target": "es2018",
+
+    "strict": true,
+    "esModuleInterop": true, // XXX
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  }
+}

@@ -20,7 +20,7 @@
 // This shows how one could use @elastic/ecs-pino-format with Express.
 // This implements simple Express middleware to do so.
 
-const ecsFormat = require('../') // @elastic/ecs-pino-format
+const { ecsFormat } = require('../') // @elastic/ecs-pino-format
 const express = require('express')
 const pino = require('pino')
 

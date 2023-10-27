@@ -44,7 +44,7 @@ const apm = require('elastic-apm-node').start({
 const app = require('express')()
 const http = require('http')
 const morgan = require('morgan')
-const ecsFormat = require('../') // @elastic/ecs-morgan-format
+const { ecsFormat } = require('../') // @elastic/ecs-morgan-format
 
 const ecsOpts = { serviceVersion: 'override-serviceVersion' }
 if (disableApmIntegration) {

@@ -34,6 +34,7 @@
     "lint": "standard",
     "lint:fix": "standard --fix",
     "test": "tap --timeout ${TAP_TIMEOUT:-10} test/*.test.js",
+    "test:skip-slow": "TEST_SKIP_SLOW=1 tap --no-coverage --timeout ${TAP_TIMEOUT:-10} test/*.test.js # test a subset for a fast test run",
     "tav": "tav --quiet"
   },
   "engines": {

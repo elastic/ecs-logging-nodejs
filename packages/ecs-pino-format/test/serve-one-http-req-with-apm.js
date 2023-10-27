@@ -41,7 +41,7 @@ const apm = require('elastic-apm-node').start({
 })
 
 const http = require('http')
-const ecsFormat = require('../') // @elastic/ecs-pino-format
+const { ecsFormat } = require('../') // @elastic/ecs-pino-format
 const pino = require('pino')
 
 const ecsOpts = {

@@ -27,7 +27,7 @@ npm install @elastic/ecs-morgan-format
 ```js
 const app = require('express')()
 const morgan = require('morgan')
-const ecsFormat = require('@elastic/ecs-morgan-format')
+const { ecsFormat } = require('@elastic/ecs-morgan-format')
 
 app.use(morgan(ecsFormat(/* options */)))
 

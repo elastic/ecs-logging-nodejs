@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-const ecsFormat = require('..') // @elastic/ecs-pino-format
+const { ecsFormat } = require('..') // @elastic/ecs-pino-format
 const pino = require('pino')
 const log = pino({ ...ecsFormat() })
 

@@ -26,12 +26,12 @@ $ npm install @elastic/ecs-pino-format
 
 [source,js]
 ----
-const ecsFormat = require('@elastic/ecs-pino-format')
-const pino = require('pino')
+const { ecsFormat } = require('@elastic/ecs-pino-format');
+const pino = require('pino');
 
-const log = pino(ecsFormat(/* options */)) <1>
-log.info('hi')
-log.error({ err: new Error('boom') }, 'oops there is a problem')
+const log = pino(ecsFormat(/* options */)); <1>
+log.info('hi');
+log.error({ err: new Error('boom') }, 'oops there is a problem');
 // ...
 ----
 <1> This will https://getpino.io/#/docs/api?id=options[configure] Pino's `formatters`, `messageKey` and `timestamp` options.
@@ -53,14 +53,14 @@ include::{ecs-repo-dir}/setup.asciidoc[tag=configure-filebeat]
 
 [source,js]
 ----
-const ecsFormat = require('@elastic/ecs-pino-format')
-const pino = require('pino')
+const { ecsFormat } = require('@elastic/ecs-pino-format');
+const pino = require('pino');
 
-const log = pino(ecsFormat(/* options */)) <1>
-log.info('Hello world')
+const log = pino(ecsFormat(/* options */)); <1>
+log.info('Hello world');
 
-const child = log.child({ module: 'foo' })
-child.warn('From child')
+const child = log.child({ module: 'foo' });
+child.warn('From child');
 ----
 <1> See available options <<pino-ref,below>>.
 
@@ -82,12 +82,12 @@ For example:
 
 [source,js]
 ----
-const ecsFormat = require('@elastic/ecs-pino-format')
-const pino = require('pino')
-const log = pino(ecsFormat())
+const { ecsFormat } = require('@elastic/ecs-pino-format');
+const pino = require('pino');
+const log = pino(ecsFormat());
 
-const myErr = new Error('boom')
-log.info({ err: myErr }, 'oops')
+const myErr = new Error('boom');
+log.info({ err: myErr }, 'oops');
 ----
 
 will yield (pretty-printed for readability):
@@ -114,7 +114,7 @@ Special handling of the `err` field can be disabled via the `convertErr: false` 
 
 [source,js]
 ----
-const log = pino(ecsFormat({ convertErr: false }))
+const log = pino(ecsFormat({ convertErr: false }));
 ----
 
 
@@ -130,20 +130,20 @@ objects when passed as the `req` and `res` fields, respectively.
 
 [source,js]
 ----
-const http = require('http')
-const ecsFormat = require('@elastic/ecs-pino-format')
-const pino = require('pino')
+const http = require('http');
+const { ecsFormat } = require('@elastic/ecs-pino-format');
+const pino = require('pino');
 
-const log = pino(ecsFormat({ convertReqRes: true })) <1>
+const log = pino(ecsFormat({ convertReqRes: true })); <1>
 
 const server = http.createServer(function handler (req, res) {
-  res.setHeader('Foo', 'Bar')
-  res.end('ok')
-  log.info({ req, res }, 'handled request') <2>
-})
+  res.setHeader('Foo', 'Bar');
+  res.end('ok');
+  log.info({ req, res }, 'handled request'); <2>
+});
 
 server.listen(3000, () => {
-  log.info('listening at http://localhost:3000')
+  log.info('listening at http://localhost:3000');
 }
 ----
 <1> use `convertReqRes` option
@@ -243,7 +243,7 @@ Integration with Elastic APM can be explicitly disabled via the
 
 [source,js]
 ----
-const log = pino(ecsFormat({ apmIntegration: false }))
+const log = pino(ecsFormat({ apmIntegration: false }));
 ----
 
 
