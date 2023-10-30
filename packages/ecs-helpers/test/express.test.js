@@ -27,7 +27,7 @@ const {
   formatHttpResponse
 } = require('../')
 
-async function makeARequest(url, opts) {
+async function makeARequest (url, opts) {
   return new Promise((resolve, reject) => {
     const clientReq = http.request(url, opts, function (clientRes) {
       const chunks = []
@@ -110,7 +110,7 @@ test('express res/req serialization', t => {
 
     const port = server.address().port
     t.same(rec, {
-      'http': {
+      http: {
         version: '1.1',
         request: {
           method: 'GET',
@@ -126,16 +126,16 @@ test('express res/req serialization', t => {
           }
         }
       },
-      'url': {
+      url: {
         full: `http://127.0.0.1:${port}/arouter/asubpath`,
         path: '/arouter/asubpath',
         domain: '127.0.0.1'
       },
-      'client': {
-        "address": "127.0.0.1",
-        "ip": "127.0.0.1",
+      client: {
+        address: '127.0.0.1',
+        ip: '127.0.0.1',
         port: req.socket.remotePort
-      },
+      }
     })
   })
   app.use('/arouter', aRouter)
