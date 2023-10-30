@@ -95,7 +95,7 @@
 - Set `http.request.id` field (see [ecs-helpers CHANGELOG](../ecs-helpers/CHANGELOG.md#v210)).
 
 - Add support for default import in TypeScript, with or without the
-`esModuleInterop` setting:
+  `esModuleInterop` setting:
 
   ```ts
   import ecsFormat from '@elastic/ecs-pino-format';
