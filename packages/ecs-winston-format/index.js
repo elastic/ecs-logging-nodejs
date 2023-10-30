@@ -321,8 +321,9 @@ function ecsFormat (opts) {
 }
 
 // For backwards compatibility with v1.0.0, the top-level export is `ecsFormat`,
-// though using the separate exports is preferred.
+// though using the named exports is preferred.
 module.exports = ecsFormat
 module.exports.ecsFormat = ecsFormat
 module.exports.ecsFields = ecsFields
 module.exports.ecsStringify = ecsStringify
+module.exports.default = ecsFormat

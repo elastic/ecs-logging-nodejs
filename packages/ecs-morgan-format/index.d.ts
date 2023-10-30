@@ -1,18 +1,14 @@
-import type { LoggerOptions } from "pino";
+import type { FormatFn } from "morgan";
 
 interface Config {
   /**
-   * Whether to convert a logged `err` field to ECS error fields.
-   * Default true, to match Pino's default of having an `err` serializer.
+   * A format *name* (e.g. 'combined'), format function (e.g. `morgan.combined`),
+   * or a format string (e.g. ':method :url :status').
+   *
+   * This is used to format the "message" field.
+   * @default `morgan.combined`
    */
-
-  convertErr?: boolean;
-  /**
-   * Whether to convert logged `req` and `res` HTTP request and response fields
-   * to ECS HTTP, User agent, and URL fields. Default false.
-   */
-
-  convertReqRes?: boolean;
+  format: string;
 
   /**
    * Whether to automatically integrate with
@@ -31,7 +27,7 @@ interface Config {
    * - "service.node.name" - the configured `serviceNodeName` in the agent
    * - "event.dataset" - set to `${serviceName}` for correlation in Kibana
    *
-   * Default true.
+   * @default true.
    */
   apmIntegration?: boolean;
 
@@ -48,7 +44,7 @@ interface Config {
 
 }
 
-declare function ecsFormat(config?: Config): LoggerOptions;
+declare function ecsFormat(config?: Config): FormatFn;
 
 export default ecsFormat;
 export { ecsFormat }

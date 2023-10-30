@@ -32,6 +32,8 @@ const { ecsFormat } = require('../')
 // https://nodejs.org/en/blog/release/v16.9.0
 const IS_ERROR_CAUSE_SUPPORTED = semver.satisfies(process.version, '>=16.9.0')
 
+const TEST_SKIP_SLOW = ['1', 'true'].includes(process.env.TEST_SKIP_SLOW)
+
 test('log.info("msg", new Error("boom"))', t => {
   const cap = new CaptureTransport()
   const log = winston.createLogger({
@@ -65,55 +67,57 @@ test('log.info("msg", new Error("boom"))', t => {
   t.end()
 })
 
-test('uncaughtException winston log error message', t => {
-  execFile(
-    process.execPath,
-    ['uncaught-exception.js'],
-    {
-      cwd: __dirname,
-      timeout: 5000
-    },
-    function (err, stdout, _stderr) {
-      t.ok(err, 'script exited non-zero')
-      const recs = stdout.trim().split(/\n/g).map(JSON.parse)
-      t.equal(recs.length, 1)
-      const rec = recs[0]
-      t.equal(rec['log.level'], 'error', 'log.level')
-      t.equal(rec.message, 'uncaughtException: funcb boom', 'message')
-      t.equal(rec.error.type, 'Error', 'error.type')
-      t.equal(rec.error.message, 'funcb boom', 'error.message')
-      t.match(rec.error.stack_trace, /^Error: funcb boom\n {4}at/, 'error.stack_trace')
-      t.equal(rec.error.code, 42, 'error.code')
-      t.equal(rec.exception, true, 'exception')
-      t.end()
-    }
-  )
-})
+if (!TEST_SKIP_SLOW) {
+  test('uncaughtException winston log error message', t => {
+    execFile(
+      process.execPath,
+      ['uncaught-exception.js'],
+      {
+        cwd: __dirname,
+        timeout: 5000
+      },
+      function (err, stdout, _stderr) {
+        t.ok(err, 'script exited non-zero')
+        const recs = stdout.trim().split(/\n/g).map(JSON.parse)
+        t.equal(recs.length, 1)
+        const rec = recs[0]
+        t.equal(rec['log.level'], 'error', 'log.level')
+        t.equal(rec.message, 'uncaughtException: funcb boom', 'message')
+        t.equal(rec.error.type, 'Error', 'error.type')
+        t.equal(rec.error.message, 'funcb boom', 'error.message')
+        t.match(rec.error.stack_trace, /^Error: funcb boom\n {4}at/, 'error.stack_trace')
+        t.equal(rec.error.code, 42, 'error.code')
+        t.equal(rec.exception, true, 'exception')
+        t.end()
+      }
+    )
+  })
 
-test('unhandledRejection winston log error message', t => {
-  execFile(
-    process.execPath,
-    ['unhandled-rejection.js'],
-    {
-      cwd: __dirname,
-      timeout: 5000
-    },
-    function (err, stdout, _stderr) {
-      t.ok(err, 'script exited non-zero')
-      const recs = stdout.trim().split(/\n/g).map(JSON.parse)
-      t.equal(recs.length, 1)
-      const rec = recs[0]
-      t.equal(rec['log.level'], 'error', 'log.level')
-      t.equal(rec.message, 'unhandledRejection: funcb boom', 'message')
-      t.equal(rec.error.type, 'Error', 'error.type')
-      t.equal(rec.error.message, 'funcb boom', 'error.message')
-      t.match(rec.error.stack_trace, /^Error: funcb boom\n {4}at/, 'error.stack_trace')
-      t.equal(rec.error.code, 42, 'error.code')
-      t.equal(rec.exception, true, 'exception')
-      t.end()
-    }
-  )
-})
+  test('unhandledRejection winston log error message', t => {
+    execFile(
+      process.execPath,
+      ['unhandled-rejection.js'],
+      {
+        cwd: __dirname,
+        timeout: 5000
+      },
+      function (err, stdout, _stderr) {
+        t.ok(err, 'script exited non-zero')
+        const recs = stdout.trim().split(/\n/g).map(JSON.parse)
+        t.equal(recs.length, 1)
+        const rec = recs[0]
+        t.equal(rec['log.level'], 'error', 'log.level')
+        t.equal(rec.message, 'unhandledRejection: funcb boom', 'message')
+        t.equal(rec.error.type, 'Error', 'error.type')
+        t.equal(rec.error.message, 'funcb boom', 'error.message')
+        t.match(rec.error.stack_trace, /^Error: funcb boom\n {4}at/, 'error.stack_trace')
+        t.equal(rec.error.code, 42, 'error.code')
+        t.equal(rec.exception, true, 'exception')
+        t.end()
+      }
+    )
+  })
+}
 
 test('log.info(new Error("boom"))', t => {
   const cap = new CaptureTransport()

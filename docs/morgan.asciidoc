@@ -28,17 +28,17 @@ $ npm install @elastic/ecs-morgan-format
 
 [source,js]
 ----
-const app = require('express')()
-const morgan = require('morgan')
-const ecsFormat = require('@elastic/ecs-morgan-format')
+const app = require('express')();
+const morgan = require('morgan');
+const { ecsFormat } = require('@elastic/ecs-morgan-format');
 
-app.use(morgan(ecsFormat(/* options */))) <1>
+app.use(morgan(ecsFormat(/* options */))); <1>
 
 // ...
 app.get('/', function (req, res) {
-  res.send('hello, world!')
+  res.send('hello, world!');
 })
-app.listen(3000)
+app.listen(3000);
 ----
 <1> Pass the ECS formatter to `morgan()`.
 
@@ -58,17 +58,17 @@ include::{ecs-repo-dir}/setup.asciidoc[tag=configure-filebeat]
 
 [source,js]
 ----
-const app = require('express')()
-const morgan = require('morgan')
-const ecsFormat = require('@elastic/ecs-morgan-format')
+const app = require('express')();
+const morgan = require('morgan');
+const { ecsFormat } = require('@elastic/ecs-morgan-format');
 
-app.use(morgan(ecsFormat(/* options */))) <1>
+app.use(morgan(ecsFormat(/* options */))); <1>
 
 app.get('/', function (req, res) {
-  res.send('hello, world!')
+  res.send('hello, world!');
 })
 app.get('/error', function (req, res, next) {
-  next(new Error('boom'))
+  next(new Error('boom'));
 })
 
 app.listen(3000)
@@ -129,11 +129,11 @@ specified format. The default is https://github.com/expressjs/morgan#combined[`c
 
 [source,js]
 ----
-const app = require('express')()
-const morgan = require('morgan')
-const ecsFormat = require('@elastic/ecs-morgan-format')
+const app = require('express')();
+const morgan = require('morgan');
+const { ecsFormat } = require('@elastic/ecs-morgan-format');
 
-app.use(morgan(ecsFormat({ format: 'tiny' }))) <1>
+app.use(morgan(ecsFormat({ format: 'tiny' }))); <1>
 // ...
 ----
 <1> If "format" is the only option you are using, you may pass it as `ecsFormat('tiny')`.
@@ -201,7 +201,7 @@ Integration with Elastic APM can be explicitly disabled via the
 
 [source,js]
 ----
-app.use(morgan(ecsFormat({ apmIntegration: false })))
+app.use(morgan(ecsFormat({ apmIntegration: false })));
 ----
 
 

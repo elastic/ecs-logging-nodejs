@@ -17,7 +17,7 @@
 
 'use strict'
 
-const ecsFormat = require('../') // @elastic/ecs-pino-format
+const { ecsFormat } = require('../') // @elastic/ecs-pino-format
 const pino = require('pino')
 
 const log = pino(ecsFormat())

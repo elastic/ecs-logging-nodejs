@@ -8,6 +8,26 @@
 
 - Set `http.request.id` field (see [ecs-helpers CHANGELOG](../ecs-helpers/CHANGELOG.md#v210)).
 
+- Changed to a named export. The preferred way to import is now:
+
+  ```js
+  const { ecsFormat } = require('@elastic/ecs-pino-format'); // CommonJS
+  import { ecsFormat } from '@elastic/ecs-pino-format'; // ESM
+  ```
+
+  The old way will be deprecated and removed in the future:
+
+  ```js
+  const ecsFormat = require('@elastic/ecs-pino-format'); // OLD
+  ```
+
+  Changes in this version add support for default import in TypeScript,
+  with or without the `esModuleInterop` setting:
+
+  ```ts
+  import ecsFormat from '@elastic/ecs-pino-format';
+  ```
+
 ## v1.4.0
 
 - Add `service.version`, `service.environment`, and `service.node.name` log

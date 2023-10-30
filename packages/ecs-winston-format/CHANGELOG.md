@@ -11,7 +11,8 @@
   The preferred way to import now changes to:
 
   ```js
-  const { ecsFormat } = require('@elastic/ecs-winston-format'); // NEW
+  const { ecsFormat } = require('@elastic/ecs-winston-format'); // CommonJS
+  import { ecsFormat } from '@elastic/ecs-winston-format'; // ESM
   ```
 
   The old way will be deprecated and removed in the future:
@@ -20,23 +21,23 @@
   const ecsFormat = require('@elastic/ecs-winston-format'); // OLD
   ```
 
-  Common usage will still use `ecsFormat` in the same way:
+  Typical usage of `ecsFormat` is unchanged:
 
   ```js
   const { ecsFormat } = require('@elastic/ecs-winston-format');
   const log = winston.createLogger({
-      format: ecsFormat(<options>),
+      format: ecsFormat(/* options */),
       // ...
   ```
 
-  However, one can use the separated formatters as follows:
+  However, one can now use the separated formatters as follows:
 
   ```js
   const { ecsFields, ecsStringify } = require('@elastic/ecs-winston-format');
   const log = winston.createLogger({
       format: winston.format.combine(
-          ecsFields(<options>),
-          // Add a custom formatter to redact fields here.
+          ecsFields(/* options */),
+          // Add any custom formatters, e.g. one to redact added ECS fields.
           ecsStringify()
       ),
       // ...

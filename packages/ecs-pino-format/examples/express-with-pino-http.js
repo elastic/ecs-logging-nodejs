@@ -23,7 +23,7 @@
 // TODO: doc the log.child({req}) limitation
 // TODO: doc pino-http's 'req.id' and ECS translation to 'event.id'
 
-const ecsFormat = require('../') // @elastic/ecs-pino-format
+const { ecsFormat } = require('../') // @elastic/ecs-pino-format
 const express = require('express')
 const pino = require('pino')
 const pinoHttp = require('pino-http')

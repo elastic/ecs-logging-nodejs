@@ -19,7 +19,7 @@
 
 // This script is used by "apm.test.js".
 
-const ecsFormat = require('../') // @elastic/ecs-pino-format
+const { ecsFormat } = require('../') // @elastic/ecs-pino-format
 const pino = require('pino')
 
 const log = pino(ecsFormat())

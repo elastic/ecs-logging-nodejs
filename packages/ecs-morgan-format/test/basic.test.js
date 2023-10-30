@@ -26,7 +26,7 @@ const morgan = require('morgan')
 const split = require('split2')
 const test = require('tap').test
 
-const ecsFormat = require('../')
+const { ecsFormat } = require('../')
 const { ecsLoggingValidate } = require('../../../utils/lib/ecs-logging-validate')
 
 const ajv = new Ajv({

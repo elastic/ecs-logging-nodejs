@@ -27,7 +27,7 @@ function check_license_header {
 
 cd "$TOP"
 nErrors=0
-for f in $(git ls-files | grep '\.js$'); do
+for f in $(git ls-files | grep '\.js$' | grep -v fixtures); do
     if ! check_license_header $f; then
         nErrors=$((nErrors+1))
     fi

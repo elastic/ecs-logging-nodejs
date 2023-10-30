@@ -28,7 +28,7 @@ npm install @elastic/ecs-pino-format
 This package will configure Pino's `formatters`, `messageKey` and `timestamp` options.
 
 ```js
-const ecsFormat = require('@elastic/ecs-pino-format')
+const { ecsFormat } = require('@elastic/ecs-pino-format')
 const pino = require('pino')
 
 const log = pino(ecsFormat(/* options */))

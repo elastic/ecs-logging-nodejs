@@ -32,7 +32,7 @@ let elasticApm = null
  *
  * @param {Config} [opts] - See index.d.ts.
  */
-function createEcsPinoOptions (opts) {
+function ecsFormat (opts) {
   // istanbul ignore next
   opts = opts || {}
   const convertErr = opts.convertErr != null ? opts.convertErr : true
@@ -211,4 +211,18 @@ function createEcsPinoOptions (opts) {
   return ecsPinoOptions
 }
 
-module.exports = createEcsPinoOptions
+// Exports to support the following import-styles from JS and TS code:
+// 1. `const { ecsFormat } = require('@elastic/ecs-pino-format)` in JS and TS.
+//    The preferred import style for JS code using CommonJS.
+// 2. `import { ecsFormat } from '@elastic/ecs-pino-format'` in JS and TS.
+//    ES module (ESM) import style. This is the preferred style for TypeScript
+//    code and for JS developers using ESM.
+// 3. `const ecsFormat = require('@elastic/ecs-pino-format')` in JS.
+//    The old, deprecated import method. Still supported for backward compat.
+// 4. `import ecsFormat from '@elastic/ecs-pino-format'` in JS and TS.
+//    This works, but is deprecated. Prefer #2 style.
+// 5. `import * as EcsPinoFormat from '@elastic/ecs-pino-format'` in TS.
+//    One must then use `EcsPinoFormat.ecsFormat()`.
+module.exports = ecsFormat // Required to support style 3.
+module.exports.ecsFormat = ecsFormat
+module.exports.default = ecsFormat // Required to support style 4.
