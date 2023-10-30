@@ -45,7 +45,6 @@ function formatHttpRequest (ecs, req) {
 
   const {
     method,
-    url,
     headers,
     hostname,
     httpVersion,
@@ -56,6 +55,12 @@ function formatHttpRequest (ecs, req) {
   ecs.http.version = httpVersion
   ecs.http.request = ecs.http.request || {}
   ecs.http.request.method = method
+
+  // Express can strip leading parts of `req.url` during routing, so we must use
+  // https://expressjs.com/en/4x/api.html#req.originalUrl if available.
+  // Fastify docs (https://fastify.dev/docs/latest/Reference/Request/) imply
+  // that it might mutate `req.url` during routing as well.
+  const url = req.originalUrl || req.url
 
   ecs.url = ecs.url || {}
   ecs.url.full = (socket && socket.encrypted ? 'https://' : 'http://') + headers.host + url
@@ -78,6 +83,7 @@ function formatHttpRequest (ecs, req) {
   if (hostname) {
     const [host, port] = hostname.split(':')
     ecs.url.domain = host
+    // istanbul ignore next
     if (port) {
       ecs.url.port = Number(port)
     }
