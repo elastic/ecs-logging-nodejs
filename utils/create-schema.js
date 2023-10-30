@@ -47,10 +47,11 @@ if (!ecsRepo) {
 const ecsSchemasDir = path.join(ecsRepo, 'schemas')
 
 // Build the JSON schema properties from the ECS schema YAML files.
-const properties = getAllFiles(ecsSchemasDir)
+var properties = getAllFiles(ecsSchemasDir)
   .filter(file => !file.includes('README.md'))
   .map(file => fs.readFileSync(file, 'utf8'))
   .map(yaml.safeLoad)
+  .filter(entry => Array.isArray(entry)) // filter out weird `{name: 'main', ...}` entry
   .reduce((acc, [val]) => {
     let properties = {}
     for (const prop of val.fields) {
@@ -121,6 +122,7 @@ function set (object, objPath, value, customizer) {
 function jsonSchemaTypeFromEcsType (type) {
   switch (type) {
     case 'keyword':
+    case 'constant_keyword':
       return { type: 'string' }
     case 'boolean':
       return { type: 'boolean' }
@@ -134,11 +136,14 @@ function jsonSchemaTypeFromEcsType (type) {
         ]
       }
     case 'text':
+    case 'match_only_text':
+    case 'wildcard':
       return { type: 'string' }
     case 'integer':
       return { type: 'integer' }
     case 'long':
     case 'float':
+    case 'scaled_float':
       return { type: 'number' }
     case 'geo_point':
       return {
@@ -149,6 +154,9 @@ function jsonSchemaTypeFromEcsType (type) {
         }
       }
     case 'object':
+    case 'flattened':
+    case 'nested':
+    case 'source':
       return {
         type: 'object',
         additionalProperties: true
