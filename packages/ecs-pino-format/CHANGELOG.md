@@ -1,6 +1,6 @@
 # @elastic/ecs-pino-format Changelog
 
-## Unreleased
+## v1.5.0
 
 - Bump dep to `@elastic/ecs-helpers@2` which removes the dep on the old
   `fast-safe-stringify` lib that resulted in a maintenance warning about
@@ -21,12 +21,14 @@
   const ecsFormat = require('@elastic/ecs-pino-format'); // OLD
   ```
 
-  Changes in this version add support for default import in TypeScript,
-  with or without the `esModuleInterop` setting:
+- Add support for default import in TypeScript, with or without the
+`esModuleInterop` setting:
 
   ```ts
   import ecsFormat from '@elastic/ecs-pino-format';
   ```
+
+  However, note that using *named* imports is now preferred.
 
 ## v1.4.0
 

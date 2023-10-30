@@ -1,6 +1,6 @@
 # @elastic/ecs-morgan-format Changelog
 
-## Unreleased
+## v1.5.0
 
 - Switch to `safe-stable-stringify` for JSON serialization. This library
   protects against circular references and bigints.
@@ -21,12 +21,14 @@
   const ecsFormat = require('@elastic/ecs-morgan-format'); // OLD
   ```
 
-  Changes in this version add support for default import in TypeScript, with or
-  without the `esModuleInterop` setting:
+- Add support for default import in TypeScript, with or without the
+`esModuleInterop` setting:
 
   ```ts
-  import ecsFormat from '@elastic/ecs-morgan-format';
+  import ecsFormat from '@elastic/ecs-pino-format';
   ```
+
+  However, note that using *named* imports is now preferred.
 
 ## v1.4.0
 
