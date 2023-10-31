@@ -1,6 +1,6 @@
 # @elastic/ecs-winston-format Changelog
 
-## Unreleased
+## v1.5.0
 
 - Add `ecsFields` and `ecsStringify` exports that are winston formatters
   that separate the gathering of ECS fields (`ecsFields`) and the
@@ -93,6 +93,15 @@
   (https://github.com/elastic/ecs-logging-nodejs/issues/108)
 
 - Set `http.request.id` field (see [ecs-helpers CHANGELOG](../ecs-helpers/CHANGELOG.md#v210)).
+
+- Add support for default import in TypeScript, with or without the
+  `esModuleInterop` setting:
+
+  ```ts
+  import ecsFormat from '@elastic/ecs-pino-format';
+  ```
+
+  However, note that using *named* imports is now preferred.
 
 ## v1.4.0
 

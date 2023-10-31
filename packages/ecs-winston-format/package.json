@@ -1,6 +1,6 @@
 {
   "name": "@elastic/ecs-winston-format",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "A formatter for the winston logger compatible with Elastic Common Schema.",
   "main": "index.js",
   "types": "index.d.ts",
@@ -41,7 +41,7 @@
     "node": ">=10"
   },
   "dependencies": {
-    "@elastic/ecs-helpers": "^2.1.0",
+    "@elastic/ecs-helpers": "^2.1.1",
     "safe-stable-stringify": "^2.4.3",
     "triple-beam": ">=1.1.0"
   },
