@@ -1,5 +1,11 @@
 # @elastic/ecs-helpers Changelog
 
+## v2.1.1
+
+- fix: Use `req.originalUrl`, if available, when converting `req` to ECS fields.
+  This is necessary because [Express will mutate req.url during routing](https://expressjs.com/en/4x/api.html#req.originalUrl).
+  (https://github.com/elastic/ecs-logging-nodejs/issues/114)
+
 ## v2.1.0
 
 - Bump the `ecs.version` from "1.6.0" to "8.10.0".
