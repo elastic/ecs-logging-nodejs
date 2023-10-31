@@ -40,7 +40,7 @@
     "node": ">=10"
   },
   "dependencies": {
-    "@elastic/ecs-helpers": "^2.1.0"
+    "@elastic/ecs-helpers": "^2.1.1"
   },
   "devDependencies": {
     "@types/pino": "^6.3.9",
