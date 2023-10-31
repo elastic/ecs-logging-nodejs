@@ -27,6 +27,26 @@ const {
   formatHttpResponse
 } = require('../')
 
+async function makeARequest (url, opts) {
+  return new Promise((resolve, reject) => {
+    const clientReq = http.request(url, opts, function (clientRes) {
+      const chunks = []
+      clientRes.on('data', function (chunk) {
+        chunks.push(chunk)
+      })
+      clientRes.on('end', function () {
+        resolve({
+          statusCode: clientRes.statusCode,
+          headers: clientRes.headers,
+          body: chunks.join('')
+        })
+      })
+    })
+    clientReq.on('error', reject)
+    clientReq.end()
+  })
+}
+
 test('express res/req serialization', t => {
   const app = express()
   let server
@@ -78,26 +98,74 @@ test('express res/req serialization', t => {
     t.equal(typeof (rec.client.port), 'number')
   })
 
-  app.listen(0, '127.0.0.1', function () {
-    server = this
-    const req = http.get(
-      `http://127.0.0.1:${server.address().port}/apath?aquery#ahash`,
-      {
-        headers: {
-          'user-agent': 'cool-agent',
-          connection: 'close',
-          'x-request-id': 'arequestid'
+  const aRouter = express.Router()
+  aRouter.get('/asubpath', (req, res) => {
+    res.end('hi')
+
+    const rec = {}
+    let rv = formatHttpRequest(rec, req)
+    t.ok(rv, 'formatHttpRequest processed req')
+    rv = formatHttpResponse(rec, res)
+    t.ok(rv, 'formatHttpResponse processed res')
+
+    const port = server.address().port
+    t.same(rec, {
+      http: {
+        version: '1.1',
+        request: {
+          method: 'GET',
+          headers: {
+            host: `127.0.0.1:${port}`,
+            connection: 'close'
+          }
+        },
+        response: {
+          status_code: 200,
+          headers: {
+            'x-powered-by': 'Express'
+          }
         }
       },
-      function (res) {
-        res.on('data', function () {})
-        res.on('end', function () {
-          server.close(function () {
-            t.end()
-          })
-        })
+      url: {
+        full: `http://127.0.0.1:${port}/arouter/asubpath`,
+        path: '/arouter/asubpath',
+        domain: '127.0.0.1'
+      },
+      client: {
+        address: '127.0.0.1',
+        ip: '127.0.0.1',
+        port: req.socket.remotePort
       }
-    )
-    req.on('error', t.error)
+    })
+  })
+  app.use('/arouter', aRouter)
+
+  app.listen(0, '127.0.0.1', async function () {
+    server = this
+
+    await Promise.all([
+      makeARequest(
+        `http://127.0.0.1:${server.address().port}/apath?aquery#ahash`,
+        {
+          headers: {
+            'user-agent': 'cool-agent',
+            connection: 'close',
+            'x-request-id': 'arequestid'
+          }
+        }
+      ),
+      makeARequest(
+        `http://127.0.0.1:${server.address().port}/arouter/asubpath`,
+        {
+          headers: {
+            connection: 'close'
+          }
+        }
+      )
+    ])
+
+    server.close(() => {
+      t.end()
+    })
   })
 })
