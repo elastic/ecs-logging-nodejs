@@ -154,7 +154,14 @@ test('express res/req serialization', t => {
           }
         }
       ),
-      makeARequest(`http://127.0.0.1:${server.address().port}/arouter/asubpath`)
+      makeARequest(
+        `http://127.0.0.1:${server.address().port}/arouter/asubpath`,
+        {
+          headers: {
+            connection: 'close'
+          }
+        }
+      )
     ])
 
     server.close(() => {
