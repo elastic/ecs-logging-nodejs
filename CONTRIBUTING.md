@@ -50,16 +50,3 @@ Once your changes are ready to submit for review:
     but we'll do our best to dedicate it the attention it deserves.
     Your effort is much appreciated!
 
-### Releasing
-
-If you have access to make releases, the process is as follows:
-
-1. Update the version in `package.json` according to the scale of the change
-   (major, minor or patch).
-1. Update the corresponding "CHANGELOG.md".
-1. Commit changes with message `Bumped vx.y.z` where `x.y.z` is the version in
-   "package.json".
-1. Wait for CI to finish running the test.
-1. Publish to npm with `npm publish` *(see
-   [publish](https://docs.npmjs.com/cli/publish) and
-   [dist-tag](https://docs.npmjs.com/cli/dist-tag) docs)*
