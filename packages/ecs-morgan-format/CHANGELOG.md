@@ -1,5 +1,10 @@
 # @elastic/ecs-morgan-format Changelog
 
+## v1.5.1
+
+- Fix types -- "index.d.ts" had not been included in the published package.
+  (by @imusvesh in https://github.com/elastic/ecs-logging-nodejs/pull/170)
+
 ## v1.5.0
 
 - Switch to `safe-stable-stringify` for JSON serialization. This library
