@@ -20,7 +20,7 @@
 // This shows how one could use @elastic/ecs-pino-format with Express and
 // the https://github.com/pinojs/pino-http middleware maintained by the Pino
 // team.
-// TODO: doc the log.child({req}) limitation
+// TODO: doc the log.child({req}) limitation. See https://github.com/elastic/ecs-logging-nodejs/issues/102 and https://gist.github.com/gkampitakis/b36819f38f8886598c20ed1af7245e3a
 // TODO: doc pino-http's 'req.id' and ECS translation to 'event.id'
 
 const { ecsFormat } = require('../') // @elastic/ecs-pino-format
@@ -37,7 +37,7 @@ app.use(pinoHttp({ logger: log }))
 app.get('/', function (req, res, next) {
   res.setHeader('Foo', 'Bar')
   res.end('hi')
-  res.log.info({ req, res }, 'hi there')
+  req.log.info('in app.get / handler')
 })
 app.get('/error', function (req, res, next) {
   return next(new Error('boom'))
