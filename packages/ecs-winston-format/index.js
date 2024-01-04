@@ -35,16 +35,6 @@ try {
   // Silently ignore.
 }
 
-// Comparison of Winston's `logform.json()` for JSON serialization and
-// `ecsStringify()`.
-// - They both use `safe-stable-stringify`.
-// - Winston's exposes its `safe-stable-stringify` options, but doesn't document
-//   this. (https://github.com/winstonjs/logform#json)
-// - Winston provides a `replacer` that converts bigints to strings. Doing
-//   that is debatable. The argument *for* is that a *JavaScript* JSON parser
-//   looses precision when parsing a bigint. The argument against is that a
-//   BigInt changes type to a string rather than a number.
-// TODO: These differences should make it to docs somewhere.
 const stringify = safeStableStringify.configure()
 
 /**
@@ -183,13 +173,10 @@ class EcsFieldsTransform {
     // Core ECS logging fields.
     info['@timestamp'] = new Date().toISOString()
     info['log.level'] = info.level
-    // Removing 'level' might cause trouble for downstream winston formatters
-    // given that https://github.com/winstonjs/logform#info-objects says:
-    //
-    // > Every info must have at least the level and message properties:
-    //
-    // However info still has a `info[Symbol.for('level')]` for more reliable use.
-    delete info.level
+    // Note: We do *not* remove `info.level`, even though it is not an ECS
+    // field, because https://github.com/winstonjs/logform#info-objects says:
+    // "Every info must have at least the level and message properties".
+    // Instead, it will be excluded from serialization in `EcsStringifyTransform`.
     info['ecs.version'] = version
 
     let apm = null
@@ -290,7 +277,11 @@ class EcsStringifyTransform {
   }
 
   transform (info, opts) {
-    info[MESSAGE] = stringify(info)
+    // `info.level` must stay (see note above), but we don't want to serialize
+    // it, so exclude it from the stringified fields. There *is* a perf cost
+    // for this.
+    const { level, ...infoSansLevel } = info
+    info[MESSAGE] = stringify(infoSansLevel)
     return info
   }
 }
