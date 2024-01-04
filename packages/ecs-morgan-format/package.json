@@ -10,7 +10,8 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/elastic/ecs-logging-nodejs.git"
+    "url": "git+https://github.com/elastic/ecs-logging-nodejs.git",
+    "directory": "packages/ecs-morgan-format"
   },
   "keywords": [
     "morgan",
