@@ -92,6 +92,7 @@ test('Log record "info" objects should still have info.level and info.message', 
     constructor (opts) {
       this.options = opts
     }
+
     transform (info, _opts) {
       t.ok(info.message, 'info.message exists')
       t.ok(info.level, 'info.level exists')
