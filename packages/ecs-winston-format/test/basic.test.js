@@ -85,6 +85,37 @@ test('Should set expected @timestamp, "log.level", message', t => {
   t.end()
 })
 
+// Per https://github.com/winstonjs/logform#info-objects
+// "Every info must have at least the level and message properties"
+test('Log record "info" objects should still have info.level and info.message', t => {
+  class CheckInfoTransform {
+    constructor (opts) {
+      this.options = opts
+    }
+    transform (info, _opts) {
+      t.ok(info.message, 'info.message exists')
+      t.ok(info.level, 'info.level exists')
+      return info
+    }
+  }
+
+  const cap = new CaptureTransport()
+  const logger = winston.createLogger({
+    format: winston.format.combine(
+      ecsFormat(),
+      new CheckInfoTransform()
+    ),
+    transports: [cap]
+  })
+
+  logger.info('hi')
+  // Should *not* have a 'level' field.
+  const rec = cap.records[0]
+  t.notOk(rec.level, 'should not have a "level" field')
+
+  t.end()
+})
+
 test('Should append additional fields to the log record', t => {
   const cap = new CaptureTransport()
   const logger = winston.createLogger({

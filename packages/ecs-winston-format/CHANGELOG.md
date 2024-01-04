@@ -1,5 +1,11 @@
 # @elastic/ecs-winston-format Changelog
 
+## v1.5.2
+
+- Fix the Winston transformers to *not* delete the `level` property from the
+  `info` object, because https://github.com/winstonjs/logform#info-objects says
+  "Every `info` must have at least the `level` and `message` properties".
+
 ## v1.5.0
 
 - Add `ecsFields` and `ecsStringify` exports that are winston formatters

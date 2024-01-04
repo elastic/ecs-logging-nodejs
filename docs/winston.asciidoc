@@ -339,11 +339,22 @@ const logger = winston.createLogger({
 ** `eventDataset` +{type-string}+ A "event.dataset" value. If specified this overrides the default of using `${serviceVersion}`.
 
 Create a formatter for winston that converts fields on the log record info
-objecct to ECS Logging format.
+object to ECS Logging format.
 
 [float]
 [[winston-ref-ecsStringify]]
 ==== `ecsStringify([options])`
 
 Create a formatter for winston that stringifies/serializes the log record to
-JSON. (This is very similar to `logform.json()`.)
+JSON.
+
+This is similar to `logform.json()`. They both use the `safe-stable-stringify`
+package to produce the JSON. Some differences:
+
+* This stringifier skips serializing the `level` field, because it is not
+  an ECS field.
+* Winston provides a `replacer` that converts bigints to strings The argument
+  *for* doing so is that a *JavaScript* JSON parser looses precision when
+  parsing a bigint. The argument against is that a BigInt changes type to a
+  string rather than a number. For now this stringifier does not convert
+  BitInts to strings.
