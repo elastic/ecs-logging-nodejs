@@ -176,7 +176,7 @@ class EcsFieldsTransform {
     // Note: We do *not* remove `info.level`, even though it is not an ECS
     // field, because https://github.com/winstonjs/logform#info-objects says:
     // "Every info must have at least the level and message properties".
-    // Instead, it will be excluded from serialization in `EcsFormatTransform`.
+    // Instead, it will be excluded from serialization in `EcsStringifyTransform`.
     info['ecs.version'] = version
 
     let apm = null
