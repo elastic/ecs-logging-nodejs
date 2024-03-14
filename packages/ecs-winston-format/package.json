@@ -1,6 +1,6 @@
 {
   "name": "@elastic/ecs-winston-format",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "description": "A formatter for the winston logger compatible with Elastic Common Schema.",
   "main": "index.js",
   "types": "index.d.ts",
