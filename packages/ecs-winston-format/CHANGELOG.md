@@ -1,5 +1,12 @@
 # @elastic/ecs-winston-format Changelog
 
+## v1.5.3
+
+- Fix format handling for the log record emitted by Winston for
+  `unhandledRejection` events (when configured to handle them) as of
+  winston@3.12.0. In that version the log record changed slightly to
+  set `record.rejection` rather than `record.exception`.
+
 ## v1.5.2
 
 - Fix the Winston transformers to *not* delete the `level` property from the

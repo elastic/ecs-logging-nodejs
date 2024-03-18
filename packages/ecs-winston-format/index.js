@@ -65,11 +65,11 @@ class EcsFieldsTransform {
     //    in place of `info.stack`.
     //
     // 2. Winston logger configured to handle uncaughtException and/or unhandledRejection.
-    //    If `info.exception: true` and level is "error" and `info.trace` is an
-    //    Array and `info.message` starts with "uncaughtException:" or
-    //    "unhandledRejection:", then convert to `error.*` fields. These
-    //    conditions are to infer the `info` shape returned by Winston's
-    //    `ExceptionHandler` and `RejectionHandler`.
+    //    If `info.exception: true` or `info.rejection: true`, and level is
+    //    "error",  and `info.trace` is an Array and `info.message` starts with
+    //    "uncaughtException:" or "unhandledRejection:", then convert to
+    //    `error.*` fields. These conditions are to infer the `info` shape
+    //    returned by Winston's `ExceptionHandler` and `RejectionHandler`.
     //    In this case the redundant `stack`, `trace`, `date` fields are dropped
     //    and error details are moved to the `error.*` fields.
     //
@@ -99,7 +99,8 @@ class EcsFieldsTransform {
       for (const propName in err) {
         delete info[propName]
       }
-    } else if (info.exception === true &&
+    } else if (
+      (info.exception === true || info.rejection === true) &&
       info.level === 'error' &&
       Array.isArray(info.trace) &&
       (info.message.startsWith('uncaughtException:') ||

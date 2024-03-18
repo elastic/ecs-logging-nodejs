@@ -112,7 +112,13 @@ if (!TEST_SKIP_SLOW) {
         t.equal(rec.error.message, 'funcb boom', 'error.message')
         t.match(rec.error.stack_trace, /^Error: funcb boom\n {4}at/, 'error.stack_trace')
         t.equal(rec.error.code, 42, 'error.code')
-        t.equal(rec.exception, true, 'exception')
+        if (semver.gte(winston.version, '3.12.0')) {
+          // https://github.com/winstonjs/winston/pull/2390 changed behaviour
+          // with unhandledRejection in winston@3.12.0.
+          t.equal(rec.rejection, true, 'rejection')
+        } else {
+          t.equal(rec.exception, true, 'exception')
+        }
         t.end()
       }
     )
