@@ -235,3 +235,26 @@ test('can configure correlation fields', t => {
     t.end()
   })
 })
+
+test('can provide custom fields', t => {
+  t.plan(2)
+
+  const stream = split().on('data', line => {
+    const rec = JSON.parse(line)
+    t.equal(rec.labels.custom, 'customValue')
+  })
+  const logger = morgan(
+    ecsFormat({
+      customize(fields, req, res) {
+        fields.labels ??= {};
+        fields.labels.custom = 'customValue';
+      }
+    }),
+    { stream }
+  )
+
+  makeExpressServerAndRequest(logger, '/', {}, null, function (err) {
+    t.error(err)
+    t.end()
+  })
+})
