@@ -24,6 +24,7 @@ const {
   formatHttpRequest,
   formatHttpResponse
 } = require('@elastic/ecs-helpers')
+const fastRedact = require('fast-redact');
 
 // We will query the Elastic APM agent if it is available.
 let elasticApm = null
@@ -64,6 +65,7 @@ const stringify = safeStableStringify.configure({ deterministic: false })
 // The former allows specifying other options.
 function ecsFormat (opts) {
   let format = morgan.combined
+  let redactPaths = [];
   let apmIntegration = true
   if (opts && typeof opts === 'object') {
     // Usage: ecsFormat({ /* opts */ })
@@ -72,6 +74,9 @@ function ecsFormat (opts) {
     }
     if (opts.apmIntegration != null) {
       apmIntegration = opts.apmIntegration
+    }
+    if (opts.redactPaths != null && Array.isArray(opts.redactPaths) && opts.redactPaths.length > 0) {
+      redactPaths = opts.redactPaths;
     }
   } else if (opts) {
     // Usage: ecsFormat(format)
@@ -174,6 +179,18 @@ function ecsFormat (opts) {
     // https://www.elastic.co/guide/en/ecs/current/ecs-http.html
     formatHttpRequest(ecsFields, req)
     formatHttpResponse(ecsFields, res)
+
+    if (redactPaths.length > 0) {
+      const fastRedactOpts = {
+        paths: opts.redactPaths,
+        // This option tells fast-redact to just do the redactions in-place.
+        // Leave serialization to a separate Winston formatter.
+        serialize: false,
+      };
+      const redact = fastRedact(fastRedactOpts);
+
+      redact(ecsFields);
+    }
 
     return stringify(ecsFields)
   }

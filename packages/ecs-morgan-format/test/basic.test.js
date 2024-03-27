@@ -235,3 +235,20 @@ test('can configure correlation fields', t => {
     t.end()
   })
 })
+
+test('redact authorization', t => {
+  const stream = split().on('data', line => {
+    const rec = JSON.parse(line)
+    const test = rec.http.request.headers.authorization;
+    t.equal(test, '[REDACTED]')
+  })
+  const logger = morgan(ecsFormat({
+    format: 'tiny',
+    redactPaths: ['http.request.headers.authorization'],
+  }), { stream })
+
+  makeExpressServerAndRequest(logger, '/?foo=bar', { method: 'POST', headers: { authorization: 'Bearer gjfkgkdfgkjdfk' } }, 'hi', function (err) {
+    t.error(err)
+    t.end()
+  })
+})
