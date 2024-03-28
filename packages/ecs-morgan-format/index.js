@@ -183,8 +183,6 @@ function ecsFormat (opts) {
     if (redactPaths.length > 0) {
       const fastRedactOpts = {
         paths: opts.redactPaths,
-        // This option tells fast-redact to just do the redactions in-place.
-        // Leave serialization to a separate Winston formatter.
         serialize: false,
       };
       const redact = fastRedact(fastRedactOpts);
