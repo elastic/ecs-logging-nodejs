@@ -154,11 +154,12 @@ function ecsFormat (opts) {
 
       log (obj) {
         const {
-          req,
           res,
           err,
           ...ecsObj
         } = obj
+
+        const req = obj?.req || res?.req || undefined;
 
         if (!wasBindingsCalled) {
           addStaticEcsBindings(ecsObj)
@@ -193,6 +194,13 @@ function ecsFormat (opts) {
             ecsObj.req = req
           } else {
             formatHttpRequest(ecsObj, req)
+            ecsObj.http = {
+              ...ecsObj?.http,
+              request: {
+                ...ecsObj?.http?.request?.body,
+                body: JSON.stringify(req?.body || {}),
+              }
+            }
           }
         }
         if (res !== undefined) {
