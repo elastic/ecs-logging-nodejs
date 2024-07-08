@@ -197,8 +197,11 @@ function ecsFormat (opts) {
             ecsObj.http = {
               ...ecsObj?.http,
               request: {
-                ...ecsObj?.http?.request?.body,
-                body: JSON.stringify(req?.body || {}),
+                ...ecsObj?.http?.request,
+                body: {
+                  ...ecsObj?.http?.request?.body,
+                  requestBody: JSON.stringify(req?.body || {}),
+                }
               }
             }
           }

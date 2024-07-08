@@ -1,6 +1,6 @@
 {
   "name": "@htempest/ecs-pino-format",
-  "version": "1.5.4",
+  "version": "1.5.5",
   "description": "A formatter for the pino logger compatible with Elastic Common Schema.",
   "main": "index.js",
   "files": [
