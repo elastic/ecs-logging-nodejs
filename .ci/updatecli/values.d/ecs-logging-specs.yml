@@ -1,2 +1,2 @@
-spec_path: tests/shared/spec/spec.json
+spec_path: utils/ecs-logging/spec.json
 signedcommit: true
