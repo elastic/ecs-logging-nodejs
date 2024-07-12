@@ -27,12 +27,18 @@ Assuming "x.y.z" is the release version:
     git tag ecs-helpers-vx.y.z
     git push origin ecs-helpers-vx.y.z
     ```
-5. Publish to npm, in a clean git clone:
+
+5. The automation will do the rest.
+
+If for any reason you need to run the publish the package manually then run the
+below command in a clean git clone:
     ```
     git status              # this should show "working tree clean"
+
     cd packages/ecs-helpers
     npm publish
     ```
+
 
 ## Releasing `@elastic/ecs-[...]-format`
 
@@ -68,7 +74,10 @@ Assuming "x.y.z" is the release version:
     git push origin vx.y.z
     ```
 
-5. Publish to npm, in a clean git clone:
+5. The automation will do the rest.
+
+If for any reason you need to run the publish the package manually then run the
+below command in a clean git clone:
     ```
     git status              # this should show "working tree clean"
 
@@ -76,4 +85,3 @@ Assuming "x.y.z" is the release version:
     cd packages/ecs-...-format
     npm publish
     ```
-

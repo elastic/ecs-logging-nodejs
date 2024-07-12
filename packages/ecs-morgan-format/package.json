@@ -2,6 +2,10 @@
   "name": "@elastic/ecs-morgan-format",
   "version": "1.5.1",
   "description": "A formatter for the morgan logger compatible with Elastic Common Schema.",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "main": "index.js",
   "types": "index.d.ts",
   "files": [
