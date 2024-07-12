@@ -1,5 +1,5 @@
 # Release a tagged version of the '@elastic/ecs-helpers' package.
-name: release
+name: release-ecs-helpers
 
 on:
   push:
