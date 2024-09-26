@@ -1,0 +1,35 @@
+---
+
+name: npm/publish
+description: common build tasks for npm publish
+
+inputs:
+  node-version:
+    description: 'Nodejs version'
+    required: false
+    default: 'v18.20.2'
+  package:
+    description: 'The npm package'
+    required: true
+  npm-token:
+    description: 'The NPMJS token'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 'v18.20.2'
+        registry-url: 'https://registry.npmjs.org'
+
+    - run: npm ci --ignore-scripts
+      shell: 'bash'
+
+    - name: npm publish
+      working-directory: ./packages/${{ inputs.package}}
+      run: npm publish
+      shell: 'bash'
+      env:
+        # https://docs.github.com/en/actions/publishing-packages/publishing-nodejs-packages#publishing-packages-to-the-npm-registry
+        NODE_AUTH_TOKEN: ${{ inputs.npm-token }}
