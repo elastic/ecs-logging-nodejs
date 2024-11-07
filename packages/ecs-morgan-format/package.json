@@ -41,6 +41,7 @@
   },
   "dependencies": {
     "@elastic/ecs-helpers": "^2.1.1",
+    "fast-redact": "^3.5.0",
     "safe-stable-stringify": "^2.4.3"
   },
   "devDependencies": {
