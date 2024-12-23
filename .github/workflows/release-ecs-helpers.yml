@@ -1,0 +1,36 @@
+# Release a tagged version of the '@elastic/ecs-helpers' package.
+name: release-ecs-helpers
+
+on:
+  push:
+    tags:
+      - ecs-helpers-v*.*.*
+
+# 'id-token' perm needed for npm publishing with provenance (see
+# https://docs.npmjs.com/generating-provenance-statements#example-github-actions-workflow)
+permissions:
+  contents: write
+  pull-requests: read
+  id-token: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: ./.github/actions/npm-publish
+        with:
+          node-version: 'v18.20.2'
+          npm-token: 'ecs-helpers'
+          package: ${{ matrix.package }}
+
+      - name: Notify in Slack
+        if: ${{ failure() }}
+        uses: elastic/oblt-actions/slack/notify-result@v1
+        with:
+          bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          channel-id: "#apm-agent-node"
+          message: '[${{ github.repository }}] Release `@elastic/ecs-helpers` *${{ github.ref_name }}*'

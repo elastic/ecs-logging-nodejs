@@ -22,17 +22,27 @@ Assuming "x.y.z" is the release version:
       changes, then the commit/PR title should include mention of those
       things as well.)
 3. Get the PR approved and merged.
-4. Tag the commit as follows, in a git clone with the merged commit:
+
+4. Working on the elastic repo (not a fork), tag the commit as follows:
     ```
     git tag ecs-helpers-vx.y.z
     git push origin ecs-helpers-vx.y.z
     ```
-5. Publish to npm, in a clean git clone:
+    The GitHub Actions "release-ecs-helpers" workflow will handle the release
+    steps -- including the `npm publish`. See the appropriate run at:
+    https://github.com/elastic/ecs-logging-nodehs/actions/workflows/release-ecs-helpers.yml
+
+5. The automation will do the rest.
+
+If for any reason you need to run the publish the package manually then run the
+below command in a clean git clone:
     ```
     git status              # this should show "working tree clean"
+
     cd packages/ecs-helpers
     npm publish
     ```
+
 
 ## Releasing `@elastic/ecs-[...]-format`
 
@@ -62,13 +72,19 @@ Assuming "x.y.z" is the release version:
 
 3. Get the PR approved and merged.
 
-4. Tag the commit as follows, in a git clone with the merged commit:
+4. Working on the elastic repo (not a fork), tag the commit as follows:
     ```
     git tag vx.y.z
     git push origin vx.y.z
     ```
+    The GitHub Actions "release" workflow will handle the release
+    steps -- including the `npm publish`. See the appropriate run at:
+    https://github.com/elastic/ecs-logging-nodehs/actions/workflows/release.yml
 
-5. Publish to npm, in a clean git clone:
+5. The automation will do the rest.
+
+If for any reason you need to run the publish the package manually then run the
+below command in a clean git clone:
     ```
     git status              # this should show "working tree clean"
 
@@ -76,4 +92,3 @@ Assuming "x.y.z" is the release version:
     cd packages/ecs-...-format
     npm publish
     ```
-
