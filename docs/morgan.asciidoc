@@ -204,6 +204,35 @@ Integration with Elastic APM can be explicitly disabled via the
 app.use(morgan(ecsFormat({ apmIntegration: false })));
 ----
 
+[float]
+[[morgan-logHook]]
+=== Customizing Log Records
+
+To add custom fields to log records or remove sensitive data, you can use the `logHook` option. This option is a function that takes the formatted log record and returns a new log record. Here's an example that adds a label to the log record and removes the `authorization` and `cookie` headers:
+
+[source,js]
+----
+app.use(morgan(ecsFormat({
+  logHook: ({ record, req, res }) => {
+    // Omit sensitive headers
+    const { authorization, cookie, ...headers } = record.http.request.headers;
+    return {
+      ...record,
+      labels: {
+        ...record.labels,
+        customLabel: res.locals.someValue
+      },
+      http: {
+        ...record.http,
+        request: {
+          ...record.http.request,
+          headers
+        }
+      }
+    };
+  },
+})));
+----
 
 [float]
 [[morgan-ref]]
@@ -222,5 +251,6 @@ app.use(morgan(ecsFormat({ apmIntegration: false })));
 ** `serviceEnvironment` +{type-string}+ A "service.environment" value. If specified this overrides any value from an active APM agent.
 ** `serviceNodeName` +{type-string}+ A "service.node.name" value. If specified this overrides any value from an active APM agent.
 ** `eventDataset` +{type-string}+ A "event.dataset" value. If specified this overrides the default of using `${serviceVersion}`.
+** `logHook` +{type-function}+ A function that takes the formatted log record and returns a new log record. This can be used to add custom fields to the log record or remove sensitive data. It is passed an object with three properties: `record`, `req`, and `res`.
 
 Create a formatter for morgan that emits in ECS Logging format.
