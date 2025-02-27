@@ -267,16 +267,16 @@ app.use(morgan(ecsFormat({ apmIntegration: false })));
 
 ### `ecsFormat([options])` [morgan-ref-ecsFormat]
 
-* `options` `{{type-object}}` The following options are supported:
+* `options` `{type-object}` The following options are supported:
 
-    * `format` `{{type-string}}` A format **name** (e.g. *combined*), format function (e.g. `morgan.combined`), or a format string (e.g. *:method :url :status*). This is used to format the "message" field. Defaults to `morgan.combined`.
-    * `convertErr` `{{type-boolean}}` Whether to convert a logged `err` field to ECS error fields. **Default:** `true`.
-    * `apmIntegration` `{{type-boolean}}` Whether to enable APM agent integration. **Default:** `true`.
-    * `serviceName` `{{type-string}}` A "service.name" value. If specified this overrides any value from an active APM agent.
-    * `serviceVersion` `{{type-string}}` A "service.version" value. If specified this overrides any value from an active APM agent.
-    * `serviceEnvironment` `{{type-string}}` A "service.environment" value. If specified this overrides any value from an active APM agent.
-    * `serviceNodeName` `{{type-string}}` A "service.node.name" value. If specified this overrides any value from an active APM agent.
-    * `eventDataset` `{{type-string}}` A "event.dataset" value. If specified this overrides the default of using `${serviceVersion}`.
+    * `format` `{type-string}` A format **name** (e.g. *combined*), format function (e.g. `morgan.combined`), or a format string (e.g. *:method :url :status*). This is used to format the "message" field. Defaults to `morgan.combined`.
+    * `convertErr` `{type-boolean}` Whether to convert a logged `err` field to ECS error fields. **Default:** `true`.
+    * `apmIntegration` `{type-boolean}` Whether to enable APM agent integration. **Default:** `true`.
+    * `serviceName` `{type-string}` A "service.name" value. If specified this overrides any value from an active APM agent.
+    * `serviceVersion` `{type-string}` A "service.version" value. If specified this overrides any value from an active APM agent.
+    * `serviceEnvironment` `{type-string}` A "service.environment" value. If specified this overrides any value from an active APM agent.
+    * `serviceNodeName` `{type-string}` A "service.node.name" value. If specified this overrides any value from an active APM agent.
+    * `eventDataset` `{type-string}` A "event.dataset" value. If specified this overrides the default of using `${serviceVersion}`.
 
 
 Create a formatter for morgan that emits in ECS Logging format.
