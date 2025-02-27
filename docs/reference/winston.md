@@ -336,16 +336,16 @@ The [ecs-logging spec](https://github.com/elastic/ecs-logging/tree/main/spec) su
 
 ### `ecsFormat([options])` [winston-ref-ecsFormat]
 
-* `options` `{{type-object}}` The following options are supported:
+* `options` `{type-object}` The following options are supported:
 
-    * `convertErr` `{{type-boolean}}` Whether to convert a logged `err` field to ECS error fields. **Default:** `true`.
-    * `convertReqRes` `{{type-boolean}}` Whether to logged `req` and `res` HTTP request and response fields to ECS HTTP, User agent, and URL fields. **Default:** `false`.
-    * `apmIntegration` `{{type-boolean}}` Whether to enable APM agent integration. **Default:** `true`.
-    * `serviceName` `{{type-string}}` A "service.name" value. If specified this overrides any value from an active APM agent.
-    * `serviceVersion` `{{type-string}}` A "service.version" value. If specified this overrides any value from an active APM agent.
-    * `serviceEnvironment` `{{type-string}}` A "service.environment" value. If specified this overrides any value from an active APM agent.
-    * `serviceNodeName` `{{type-string}}` A "service.node.name" value. If specified this overrides any value from an active APM agent.
-    * `eventDataset` `{{type-string}}` A "event.dataset" value. If specified this overrides the default of using `${serviceVersion}`.
+    * `convertErr` `{type-boolean}` Whether to convert a logged `err` field to ECS error fields. **Default:** `true`.
+    * `convertReqRes` `{type-boolean}` Whether to logged `req` and `res` HTTP request and response fields to ECS HTTP, User agent, and URL fields. **Default:** `false`.
+    * `apmIntegration` `{type-boolean}` Whether to enable APM agent integration. **Default:** `true`.
+    * `serviceName` `{type-string}` A "service.name" value. If specified this overrides any value from an active APM agent.
+    * `serviceVersion` `{type-string}` A "service.version" value. If specified this overrides any value from an active APM agent.
+    * `serviceEnvironment` `{type-string}` A "service.environment" value. If specified this overrides any value from an active APM agent.
+    * `serviceNodeName` `{type-string}` A "service.node.name" value. If specified this overrides any value from an active APM agent.
+    * `eventDataset` `{type-string}` A "event.dataset" value. If specified this overrides the default of using `${serviceVersion}`.
 
 
 Create a formatter for winston that emits in ECS Logging format. This is a single format that handles both [`ecsFields([options])`](#winston-ref-ecsFields) and [`ecsStringify([options])`](#winston-ref-ecsStringify). The following two are equivalent:
@@ -371,16 +371,16 @@ const logger = winston.createLogger({
 
 ### `ecsFields([options])` [winston-ref-ecsFields]
 
-* `options` `{{type-object}}` The following options are supported:
+* `options` `{type-object}` The following options are supported:
 
-    * `convertErr` `{{type-boolean}}` Whether to convert a logged `err` field to ECS error fields. **Default:** `true`.
-    * `convertReqRes` `{{type-boolean}}` Whether to logged `req` and `res` HTTP request and response fields to ECS HTTP, User agent, and URL fields. **Default:** `false`.
-    * `apmIntegration` `{{type-boolean}}` Whether to enable APM agent integration. **Default:** `true`.
-    * `serviceName` `{{type-string}}` A "service.name" value. If specified this overrides any value from an active APM agent.
-    * `serviceVersion` `{{type-string}}` A "service.version" value. If specified this overrides any value from an active APM agent.
-    * `serviceEnvironment` `{{type-string}}` A "service.environment" value. If specified this overrides any value from an active APM agent.
-    * `serviceNodeName` `{{type-string}}` A "service.node.name" value. If specified this overrides any value from an active APM agent.
-    * `eventDataset` `{{type-string}}` A "event.dataset" value. If specified this overrides the default of using `${serviceVersion}`.
+    * `convertErr` `{type-boolean}` Whether to convert a logged `err` field to ECS error fields. **Default:** `true`.
+    * `convertReqRes` `{type-boolean}` Whether to logged `req` and `res` HTTP request and response fields to ECS HTTP, User agent, and URL fields. **Default:** `false`.
+    * `apmIntegration` `{type-boolean}` Whether to enable APM agent integration. **Default:** `true`.
+    * `serviceName` `{type-string}` A "service.name" value. If specified this overrides any value from an active APM agent.
+    * `serviceVersion` `{type-string}` A "service.version" value. If specified this overrides any value from an active APM agent.
+    * `serviceEnvironment` `{type-string}` A "service.environment" value. If specified this overrides any value from an active APM agent.
+    * `serviceNodeName` `{type-string}` A "service.node.name" value. If specified this overrides any value from an active APM agent.
+    * `eventDataset` `{type-string}` A "event.dataset" value. If specified this overrides the default of using `${serviceVersion}`.
 
 
 Create a formatter for winston that converts fields on the log record info object to ECS Logging format.
