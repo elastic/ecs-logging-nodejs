@@ -5,7 +5,7 @@ mapped_pages:
 
 # ECS Logging with Pino [pino]
 
-This Node.js package provides a formatter for the [pino](https://getpino.io) logger, compatible with [Elastic Common Schema (ECS) logging](ecs-logging://docs/reference/intro.md). In combination with the [Filebeat](https://www.elastic.co/beats/filebeat) shipper, you can [monitor all your logs](https://www.elastic.co/log-monitoring) in one place in the Elastic Stack. `pino` 6.x, 7.x, and 8.x versions are supported.
+This Node.js package provides a formatter for the [pino](https://getpino.io) logger, compatible with [Elastic Common Schema (ECS) logging](ecs-logging://reference/intro.md). In combination with the [Filebeat](https://www.elastic.co/beats/filebeat) shipper, you can [monitor all your logs](https://www.elastic.co/log-monitoring) in one place in the Elastic Stack. `pino` 6.x, 7.x, and 8.x versions are supported.
 
 
 ## Setup [_setup]
@@ -38,12 +38,12 @@ See usage discussion and examples below.
 
 ### Step 3: Configure Filebeat [pino-setup-step-3]
 
-The best way to collect the logs once they are ECS-formatted is with [Filebeat](beats://docs/reference/filebeat/filebeat-overview.md):
+The best way to collect the logs once they are ECS-formatted is with [Filebeat](beats://reference/filebeat/filebeat-overview.md):
 
 :::::::{tab-set}
 
 ::::::{tab-item} Log file
-1. Follow the [Filebeat quick start](beats://docs/reference/filebeat/filebeat-installation-configuration.md)
+1. Follow the [Filebeat quick start](beats://reference/filebeat/filebeat-installation-configuration.md)
 2. Add the following configuration to your `filebeat.yaml` file.
 
 For Filebeat 7.16+
@@ -69,7 +69,7 @@ processors: <5>
 2. Values from the decoded JSON object overwrite the fields that {{filebeat}} normally adds (type, source, offset, etc.) in case of conflicts.
 3. {{filebeat}} adds an "error.message" and "error.type: json" key in case of JSON unmarshalling errors.
 4. {{filebeat}} will recursively de-dot keys in the decoded JSON, and expand them into a hierarchical object structure.
-5. Processors enhance your data. See [processors](beats://docs/reference/filebeat/filtering-enhancing-data.md) to learn more.
+5. Processors enhance your data. See [processors](beats://reference/filebeat/filtering-enhancing-data.md) to learn more.
 
 
 For Filebeat < 7.16
@@ -93,8 +93,8 @@ processors:
 
 ::::::{tab-item} Kubernetes
 1. Make sure your application logs to stdout/stderr.
-2. Follow the [Run Filebeat on Kubernetes](beats://docs/reference/filebeat/running-on-kubernetes.md) guide.
-3. Enable [hints-based autodiscover](beats://docs/reference/filebeat/configuration-autodiscover-hints.md) (uncomment the corresponding section in `filebeat-kubernetes.yaml`).
+2. Follow the [Run Filebeat on Kubernetes](beats://reference/filebeat/running-on-kubernetes.md) guide.
+3. Enable [hints-based autodiscover](beats://reference/filebeat/configuration-autodiscover-hints.md) (uncomment the corresponding section in `filebeat-kubernetes.yaml`).
 4. Add these annotations to your pods that log using ECS loggers. This will make sure the logs are parsed appropriately.
 
 ```yaml
@@ -111,8 +111,8 @@ annotations:
 
 ::::::{tab-item} Docker
 1. Make sure your application logs to stdout/stderr.
-2. Follow the [Run Filebeat on Docker](beats://docs/reference/filebeat/running-on-docker.md) guide.
-3. Enable [hints-based autodiscover](beats://docs/reference/filebeat/configuration-autodiscover-hints.md).
+2. Follow the [Run Filebeat on Docker](beats://reference/filebeat/running-on-docker.md) guide.
+3. Enable [hints-based autodiscover](beats://reference/filebeat/configuration-autodiscover-hints.md).
 4. Add these labels to your containers that log using ECS loggers. This will make sure the logs are parsed appropriately.
 
 ```yaml
@@ -128,7 +128,7 @@ labels:
 ::::::
 
 :::::::
-For more information, see the [Filebeat reference](beats://docs/reference/filebeat/configuring-howto-filebeat.md).
+For more information, see the [Filebeat reference](beats://reference/filebeat/configuring-howto-filebeat.md).
 
 
 ## Usage [pino-usage]
@@ -157,7 +157,7 @@ Running this will produce log output similar to the following:
 
 ## Error Logging [pino-error-logging]
 
-By default, the formatter will convert an `err` field that is an Error instance to [ECS Error fields](ecs://docs/reference/ecs-error.md). For example:
+By default, the formatter will convert an `err` field that is an Error instance to [ECS Error fields](ecs://reference/ecs-error.md). For example:
 
 ```js
 const { ecsFormat } = require('@elastic/ecs-pino-format');
@@ -218,7 +218,7 @@ server.listen(3000, () => {
 2. log with `req` and/or `res` fields
 
 
-This will produce logs with request and response info using [ECS HTTP fields](ecs://docs/reference/ecs-http.md). For example:
+This will produce logs with request and response info using [ECS HTTP fields](ecs://reference/ecs-http.md). For example:
 
 ```cmd
 % node examples/http.js | jq .    # using jq for pretty printing
@@ -267,9 +267,9 @@ The [examples/ directory](https://github.com/elastic/ecs-logging-nodejs/tree/mai
 
 ## Log Correlation with APM [pino-apm]
 
-This ECS log formatter integrates with [Elastic APM](https://www.elastic.co/apm). If your Node app is using the [Node.js Elastic APM Agent](apm-agent-nodejs://docs/reference/index.md), then a number of fields are added to log records to correlate between APM services or traces and logging data:
+This ECS log formatter integrates with [Elastic APM](https://www.elastic.co/apm). If your Node app is using the [Node.js Elastic APM Agent](apm-agent-nodejs://reference/index.md), then a number of fields are added to log records to correlate between APM services or traces and logging data:
 
-* Log statements (e.g. `logger.info(...)`) called when there is a current tracing span will include [tracing fields](ecs://docs/reference/ecs-tracing.md) — `trace.id`, `transaction.id`, `span.id`.
+* Log statements (e.g. `logger.info(...)`) called when there is a current tracing span will include [tracing fields](ecs://reference/ecs-tracing.md) — `trace.id`, `transaction.id`, `span.id`.
 * A number of service identifier fields determined by or configured on the APM agent allow cross-linking between services and logs in Kibana — `service.name`, `service.version`, `service.environment`, `service.node.name`.
 * `event.dataset` enables [log rate anomaly detection](docs-content://solutions/observability/logs/inspect-log-anomalies.md) in the Elastic Observability app.
 

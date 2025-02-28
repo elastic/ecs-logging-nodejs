@@ -20,7 +20,7 @@ The Node.js ECS logging formatters log structured JSON and support serialization
 ```
 
 ::::{tip}
-Want to learn more about ECS, ECS logging, and other available language plugins? See the [ECS logging guide](ecs-logging://docs/reference/intro.md).
+Want to learn more about ECS, ECS logging, and other available language plugins? See the [ECS logging guide](ecs-logging://reference/intro.md).
 ::::
 
 
