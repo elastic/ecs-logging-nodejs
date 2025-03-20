@@ -39,7 +39,7 @@ app.listen(3000);
 
 ### Step 3: Configure Filebeat [morgan-setup-step-3]
 
-The best way to collect the logs once they are ECS-formatted is with [Filebeat](beats://reference/filebeat/filebeat-overview.md):
+The best way to collect the logs once they are ECS-formatted is with [Filebeat](beats://reference/filebeat/index.md):
 
 :::::::{tab-set}
 
