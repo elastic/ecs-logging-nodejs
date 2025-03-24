@@ -41,7 +41,7 @@ logger.error('oops there is a problem', { err: new Error('boom') });
 
 ### Step 3: Configure Filebeat [winston-setup-step-3]
 
-The best way to collect the logs once they are ECS-formatted is with [Filebeat](beats://reference/filebeat/filebeat-overview.md):
+The best way to collect the logs once they are ECS-formatted is with [Filebeat](beats://reference/filebeat/index.md):
 
 :::::::{tab-set}
 

@@ -38,7 +38,7 @@ See usage discussion and examples below.
 
 ### Step 3: Configure Filebeat [pino-setup-step-3]
 
-The best way to collect the logs once they are ECS-formatted is with [Filebeat](beats://reference/filebeat/filebeat-overview.md):
+The best way to collect the logs once they are ECS-formatted is with [Filebeat](beats://reference/filebeat/index.md):
 
 :::::::{tab-set}
 
