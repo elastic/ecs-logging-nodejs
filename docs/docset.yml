@@ -1,4 +1,6 @@
 project: 'ECS Logging Node.js'
+products:
+  - id: ecs-logging
 cross_links:
   - apm-agent-nodejs
   - beats
