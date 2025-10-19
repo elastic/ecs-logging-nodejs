@@ -19,7 +19,7 @@ jobs:
         node-version: [10, 12, 14, 16, 18, 20, 22]
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
       - name: Update npm to at least v7 for workspaces support
