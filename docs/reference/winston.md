@@ -1,4 +1,7 @@
 ---
+applies_to:
+  stack: ga
+  serverless: ga
 mapped_pages:
   - https://www.elastic.co/guide/en/ecs-logging/nodejs/current/winston.html
 ---
@@ -40,6 +43,11 @@ logger.error('oops there is a problem', { err: new Error('boom') });
 
 
 ### Step 3: Configure Filebeat [winston-setup-step-3]
+
+```{applies_to}
+stack: ga
+serverless: unavailable
+```
 
 The best way to collect the logs once they are ECS-formatted is with [Filebeat](beats://reference/filebeat/index.md):
 
