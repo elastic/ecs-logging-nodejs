@@ -33,7 +33,7 @@ log.error({ err: new Error('boom') }, 'oops there is a problem');
 // ...
 ```
 
-1. This will [configure](https://getpino.io/#/docs/api?id=options) Pino’s `formatters`, `messageKey` and `timestamp` options.
+1. This will [configure](https://getpino.io/#/docs/api?id=options) Pino's `formatters`, `messageKey` and `timestamp` options.
 
 
 See usage discussion and examples below.
@@ -193,7 +193,7 @@ will yield (pretty-printed for readability):
 }
 ```
 
-This is analogous to and overrides [Pino’s default err serializer](https://getpino.io/#/docs/api?id=serializers-object). Special handling of the `err` field can be disabled via the `convertErr: false` option:
+This is analogous to and overrides [Pino's default err serializer](https://getpino.io/#/docs/api?id=serializers-object). Special handling of the `err` field can be disabled via the `convertErr: false` option:
 
 ```js
 const log = pino(ecsFormat({ convertErr: false }));
