@@ -1,4 +1,7 @@
 ---
+applies_to:
+  stack: ga
+  serverless: ga
 mapped_pages:
   - https://www.elastic.co/guide/en/ecs-logging/nodejs/current/pino.html
 ---
@@ -30,13 +33,18 @@ log.error({ err: new Error('boom') }, 'oops there is a problem');
 // ...
 ```
 
-1. This will [configure](https://getpino.io/#/docs/api?id=options) Pino’s `formatters`, `messageKey` and `timestamp` options.
+1. This will [configure](https://getpino.io/#/docs/api?id=options) Pino's `formatters`, `messageKey` and `timestamp` options.
 
 
 See usage discussion and examples below.
 
 
 ### Step 3: Configure Filebeat [pino-setup-step-3]
+
+```{applies_to}
+stack: ga
+serverless: unavailable
+```
 
 The best way to collect the logs once they are ECS-formatted is with [Filebeat](beats://reference/filebeat/index.md):
 
@@ -185,7 +193,7 @@ will yield (pretty-printed for readability):
 }
 ```
 
-This is analogous to and overrides [Pino’s default err serializer](https://getpino.io/#/docs/api?id=serializers-object). Special handling of the `err` field can be disabled via the `convertErr: false` option:
+This is analogous to and overrides [Pino's default err serializer](https://getpino.io/#/docs/api?id=serializers-object). Special handling of the `err` field can be disabled via the `convertErr: false` option:
 
 ```js
 const log = pino(ecsFormat({ convertErr: false }));

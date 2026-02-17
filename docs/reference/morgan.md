@@ -1,4 +1,7 @@
 ---
+applies_to:
+  stack: ga
+  serverless: ga
 mapped_pages:
   - https://www.elastic.co/guide/en/ecs-logging/nodejs/current/morgan.html
 ---
@@ -38,6 +41,11 @@ app.listen(3000);
 
 
 ### Step 3: Configure Filebeat [morgan-setup-step-3]
+
+```{applies_to}
+stack: ga
+serverless: unavailable
+```
 
 The best way to collect the logs once they are ECS-formatted is with [Filebeat](beats://reference/filebeat/index.md):
 
