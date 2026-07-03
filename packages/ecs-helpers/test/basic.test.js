@@ -265,6 +265,25 @@ test('formatError: MyError with removed constructor', t => {
   t.end()
 })
 
+test('formatError: Error with code and id', t => {
+  const rec = {}
+  const err = new Error('boom')
+  err.code = 'ESOMETHING'
+  err.id = 'req-123'
+  formatError(rec, err)
+  t.equal(rec.error.code, 'ESOMETHING')
+  t.equal(rec.error.id, 'req-123')
+  t.end()
+})
+
+test('formatError: Error without code or id', t => {
+  const rec = {}
+  formatError(rec, new Error('boom'))
+  t.notOk('code' in rec.error, 'error.code should be absent')
+  t.notOk('id' in rec.error, 'error.id should be absent')
+  t.end()
+})
+
 test('formatError: non-Error', t => {
   const rec = {}
   const nonError = { foo: 'bar' }

@@ -1,5 +1,13 @@
 # @elastic/ecs-helpers Changelog
 
+## v2.2.0
+
+- `formatError()` now includes the [`error.id`](https://www.elastic.co/docs/reference/ecs/ecs-error#field-error-id)
+  and [`error.code`](https://www.elastic.co/docs/reference/ecs/ecs-error#field-error-code)
+  fields on the emitted `error` object when the source `Error` instance has
+  matching `id` or `code` properties. Previously these were silently dropped,
+  even though they are part of the ECS [error field set](https://www.elastic.co/docs/reference/ecs/ecs-error).
+
 ## v2.1.1
 
 - fix: Use `req.originalUrl`, if available, when converting `req` to ECS fields.
