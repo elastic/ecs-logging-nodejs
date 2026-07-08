@@ -35,6 +35,12 @@ function formatError (ecsFields, err) {
     message: err.message,
     stack_trace: err.stack
   }
+  if (err.code !== undefined) {
+    ecsFields.error.code = err.code
+  }
+  if (err.id !== undefined) {
+    ecsFields.error.id = err.id
+  }
 
   return true
 }
