@@ -1,3 +1,4 @@
+import type { IncomingMessage, ServerResponse } from 'http';
 import type { FormatFn } from "morgan";
 
 interface Config {
@@ -42,6 +43,8 @@ interface Config {
   /** Specify "event.dataset" field. Defaults `${serviceName}`. */
   eventDataset?: string;
 
+  /** Callback for custom modification of the fields */
+  logHook: (event: { record: any, req: IncomingMessage, res: ServerResponse }) => void;
 }
 
 declare function ecsFormat(config?: Config): FormatFn;
